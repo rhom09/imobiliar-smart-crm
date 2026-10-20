@@ -29,7 +29,6 @@ import { timeAgo } from "./LeadCard";
 import {
   STAGES,
   brl,
-  brlCompact,
   contextualMessage,
   formatPhone,
   propertySheet,
@@ -433,4 +432,3 @@ function HistoryTab({ lead }: { lead: Lead }) {
   );
 }
 
-export { brlCompact };
