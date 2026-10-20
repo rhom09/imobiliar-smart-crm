@@ -59,7 +59,7 @@ function NewPropertyPage() {
     title: "",
     type: "Apartamento" as PropertyType,
     price: "",
-    neighborhood: NEIGHBORHOODS[0],
+    neighborhood: NEIGHBORHOODS[0]!,
     address: "",
     bedrooms: "2",
     suites: "1",
@@ -71,7 +71,7 @@ function NewPropertyPage() {
     description: "",
     features: "",
     status: "disponivel" as PropertyStatus,
-    brokerId: viewer.kind === "broker" ? viewer.brokerId : brokers[0].id,
+    brokerId: viewer.kind === "broker" ? viewer.brokerId : brokers[0]!.id,
   });
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setF((x) => ({ ...x, [k]: e.target.value }));
@@ -89,8 +89,14 @@ function NewPropertyPage() {
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!f.title.trim() || !num(f.price) || !num(f.area)) return toast.error("Preencha título, preço e área");
-    if (photos.length === 0) return toast.error("Adicione ao menos uma foto");
+    if (!f.title.trim() || !num(f.price) || !num(f.area)) {
+      toast.error("Preencha título, preço e área");
+      return;
+    }
+    if (photos.length === 0) {
+      toast.error("Adicione ao menos uma foto");
+      return;
+    }
     const p = addProperty({
       title: f.title.trim(),
       type: f.type,

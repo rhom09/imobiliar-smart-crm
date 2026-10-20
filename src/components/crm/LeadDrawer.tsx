@@ -313,7 +313,10 @@ function HistoryTab({ lead }: { lead: Lead }) {
       addInteraction(lead.id, { kind, text: text.trim() });
       toast.success("Interação registrada");
     } else {
-      if (!when) return toast.error("Escolha data e horário");
+      if (!when) {
+        toast.error("Escolha data e horário");
+        return;
+      }
       const p = properties.find((x) => x.id === propId);
       addInteraction(lead.id, {
         kind: "visita",

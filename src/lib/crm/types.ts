@@ -20,7 +20,7 @@ export type Interaction = {
   kind: InteractionKind;
   text: string;
   at: string; // ISO
-  scheduledFor?: string; // ISO, for visits
+  scheduledFor?: string | undefined; // ISO, for visits
   authorId: string; // broker id or "admin"
 };
 
@@ -36,7 +36,7 @@ export type Lead = {
   budgetMax: number;
   bedrooms: number;
   neighborhoods: string[];
-  interestPropertyId?: string;
+  interestPropertyId?: string | undefined;
   source: string;
   createdAt: string;
   lastContactAt: string;

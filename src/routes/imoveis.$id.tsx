@@ -61,8 +61,10 @@ function PropertyPage() {
   const sheet = propertySheet(p, url);
   const interested = leads
     .filter((l) => l.stage !== "ganho" && l.stage !== "perdido")
-    .map((l) => ({ lead: l, match: smartMatch(l, [p])[0] }))
-    .filter((x) => x.match)
+    .flatMap((l) => {
+      const match = smartMatch(l, [p])[0];
+      return match ? [{ lead: l, match }] : [];
+    })
     .sort((a, b) => b.match.score - a.match.score);
 
   async function share() {

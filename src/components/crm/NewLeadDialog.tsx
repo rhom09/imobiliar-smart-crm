@@ -24,7 +24,7 @@ export function NewLeadDialog({ onCreated }: { onCreated?: (id: string) => void 
     bedrooms: "2",
     neighborhoods: [] as string[],
     source: "WhatsApp",
-    ownerId: brokers[0].id,
+    ownerId: brokers[0]!.id,
   });
   const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) => setForm((f) => ({ ...f, [k]: v }));
 
@@ -32,9 +32,18 @@ export function NewLeadDialog({ onCreated }: { onCreated?: (id: string) => void 
     e.preventDefault();
     const min = Number(form.budgetMin.replace(/\D/g, ""));
     const max = Number(form.budgetMax.replace(/\D/g, ""));
-    if (!form.name.trim() || form.phone.replace(/\D/g, "").length < 10) return toast.error("Informe nome e telefone com DDD");
-    if (!max || min > max) return toast.error("Confira a faixa de orçamento");
-    if (form.neighborhoods.length === 0) return toast.error("Escolha ao menos um bairro");
+    if (!form.name.trim() || form.phone.replace(/\D/g, "").length < 10) {
+      toast.error("Informe nome e telefone com DDD");
+      return;
+    }
+    if (!max || min > max) {
+      toast.error("Confira a faixa de orçamento");
+      return;
+    }
+    if (form.neighborhoods.length === 0) {
+      toast.error("Escolha ao menos um bairro");
+      return;
+    }
     const lead = addLead({
       name: form.name.trim(),
       phone: normalizePhone(form.phone),

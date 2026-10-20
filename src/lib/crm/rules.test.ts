@@ -19,10 +19,10 @@ describe("permissões por papel", () => {
 });
 
 describe("smart match", () => {
-  const base: Lead = { ...leads[0], propertyType: "Apartamento", budgetMin: 1_100_000, budgetMax: 1_500_000, neighborhoods: ["Pinheiros"] };
+  const base: Lead = { ...leads[0]!, propertyType: "Apartamento", budgetMin: 1_100_000, budgetMax: 1_500_000, neighborhoods: ["Pinheiros"] };
 
   it("prioriza imóvel com tipo, orçamento e bairro compatíveis", () => {
-    const [top] = smartMatch(base, properties);
+    const top = smartMatch(base, properties)[0]!;
     expect(top.property.id).toBe("p1");
     expect(top.score).toBe(100);
   });

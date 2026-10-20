@@ -14,7 +14,7 @@ type Ctx = {
   leads: Lead[]; // already filtered by permission
   allLeads: Lead[];
   properties: Property[];
-  currentBroker?: Broker;
+  currentBroker?: Broker | undefined;
   brokerById: (id: string) => Broker | undefined;
   setViewer: (v: Viewer) => void;
   moveLead: (id: string, stage: StageId) => void;

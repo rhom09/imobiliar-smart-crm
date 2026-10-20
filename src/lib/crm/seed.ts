@@ -147,7 +147,7 @@ export function buildSeed(now = Date.now()) {
       id: s.id,
       name: s.name,
       phone: s.phone,
-      email: `${s.name.split(" ")[0].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}@email.com`,
+      email: `${(s.name.split(" ")[0] ?? "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}@email.com`,
       ownerId: s.ownerId,
       stage: s.stage,
       propertyType: s.type,
