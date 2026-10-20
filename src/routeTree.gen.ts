@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ImoveisIndexRouteImport } from './routes/imoveis.index'
+import { Route as ImoveisIdRouteImport } from './routes/imoveis.$id'
+import { Route as ImoveisNovoRouteImport } from './routes/imoveis.novo'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,30 +24,48 @@ const ImoveisIndexRoute = ImoveisIndexRouteImport.update({
   path: '/imoveis/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImoveisIdRoute = ImoveisIdRouteImport.update({
+  id: '/imoveis/$id',
+  path: '/imoveis/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImoveisNovoRoute = ImoveisNovoRouteImport.update({
+  id: '/imoveis/novo',
+  path: '/imoveis/novo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/imoveis/$id': typeof ImoveisIdRoute
+  '/imoveis/novo': typeof ImoveisNovoRoute
   '/imoveis/': typeof ImoveisIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/imoveis/$id': typeof ImoveisIdRoute
+  '/imoveis/novo': typeof ImoveisNovoRoute
   '/imoveis': typeof ImoveisIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/imoveis/$id': typeof ImoveisIdRoute
+  '/imoveis/novo': typeof ImoveisNovoRoute
   '/imoveis/': typeof ImoveisIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/imoveis/'
+  fullPaths: '/' | '/imoveis/$id' | '/imoveis/novo' | '/imoveis/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/imoveis'
-  id: '__root__' | '/' | '/imoveis/'
+  to: '/' | '/imoveis/$id' | '/imoveis/novo' | '/imoveis'
+  id: '__root__' | '/' | '/imoveis/$id' | '/imoveis/novo' | '/imoveis/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ImoveisIdRoute: typeof ImoveisIdRoute
+  ImoveisNovoRoute: typeof ImoveisNovoRoute
   ImoveisIndexRoute: typeof ImoveisIndexRoute
 }
 
@@ -65,11 +85,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImoveisIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/imoveis/$id': {
+      id: '/imoveis/$id'
+      path: '/imoveis/$id'
+      fullPath: '/imoveis/$id'
+      preLoaderRoute: typeof ImoveisIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/imoveis/novo': {
+      id: '/imoveis/novo'
+      path: '/imoveis/novo'
+      fullPath: '/imoveis/novo'
+      preLoaderRoute: typeof ImoveisNovoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ImoveisIdRoute: ImoveisIdRoute,
+  ImoveisNovoRoute: ImoveisNovoRoute,
   ImoveisIndexRoute: ImoveisIndexRoute,
 }
 export const routeTree = rootRouteImport
