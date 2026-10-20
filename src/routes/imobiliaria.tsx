@@ -100,7 +100,7 @@ function AgencyPage() {
             {kpis.map((k) => (
               <div key={k.label} className="rounded-2xl border bg-card p-4 shadow-card">
                 <p className="text-xs text-muted-foreground">{k.label}</p>
-                <p className="mt-1 font-display text-2xl font-bold">{k.value}</p>
+                <p className="mt-1 whitespace-nowrap font-display text-xl font-bold xl:text-2xl">{k.value}</p>
               </div>
             ))}
           </div>

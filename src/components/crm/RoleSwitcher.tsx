@@ -45,7 +45,7 @@ export function RoleSwitcher({ compact = false, className }: { compact?: boolean
             <SelectItem value="admin">
               <span className="flex items-center gap-2">
                 <Crown className="size-3.5 text-highlight-foreground" />
-                {compact ? "Admin" : `${AGENCY.ownerName} · Admin`}
+                {compact ? "Admin" : AGENCY.ownerName}
               </span>
             </SelectItem>
           </SelectGroup>
@@ -55,7 +55,7 @@ export function RoleSwitcher({ compact = false, className }: { compact?: boolean
               <SelectItem key={b.id} value={b.id}>
                 <span className="flex items-center gap-2">
                   <UserRound className="size-3.5 text-muted-foreground" />
-                  {compact ? b.name.split(" ")[0] : `${b.name} · Corretor`}
+                  {compact ? b.name.split(" ")[0] : b.name}
                 </span>
               </SelectItem>
             ))}

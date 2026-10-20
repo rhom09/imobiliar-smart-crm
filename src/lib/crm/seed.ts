@@ -107,7 +107,7 @@ type LeadSeed = {
 };
 
 const LEADS: LeadSeed[] = [
-  { id: "l1", name: "Mariana Alves", phone: "5511991110001", ownerId: "b1", stage: "novo", type: "Apartamento", min: 1_100_000, max: 1_500_000, beds: 3, hoods: ["Pinheiros", "Vila Madalena"], interest: "p1", source: "Portal ZAP", createdDays: 0, lastHours: 3, notes: [["Lead entrou pelo portal pedindo mais fotos do MOR-1021.", "nota", 3]] },
+  { id: "l1", name: "Mariana Alves", phone: "5511991110001", ownerId: "b1", stage: "novo", type: "Apartamento", min: 1_100_000, max: 1_500_000, beds: 3, hoods: ["Pinheiros", "Vila Madalena"], interest: "p1", source: "Portal ZAP", createdDays: 0.2, lastHours: 3, notes: [["Lead entrou pelo portal pedindo mais fotos do MOR-1021.", "nota", 3]] },
   { id: "l2", name: "Rafael Costa", phone: "5511991110002", ownerId: "b2", stage: "novo", type: "Casa", min: 3_000_000, max: 4_500_000, beds: 4, hoods: ["Brooklin", "Moema"], source: "Instagram", createdDays: 1, lastHours: 26, notes: [["Respondeu anúncio patrocinado de casa no Brooklin.", "nota", 26]] },
   { id: "l3", name: "Beatriz Lima", phone: "5511991110003", ownerId: "b3", stage: "novo", type: "Cobertura", min: 4_500_000, max: 6_500_000, beds: 4, hoods: ["Itaim Bibi", "Jardins"], interest: "p3", source: "Indicação", createdDays: 2, lastHours: 50, notes: [["Indicada pelo cliente Paulo Reis. Busca cobertura com piscina.", "nota", 50]] },
   { id: "l4", name: "Lucas Ferreira", phone: "5511991110004", ownerId: "b1", stage: "contato", type: "Studio", min: 400_000, max: 650_000, beds: 1, hoods: ["Vila Madalena", "Itaim Bibi"], interest: "p4", source: "Site", createdDays: 6, lastHours: 30, notes: [["Investidor, quer imóvel para Airbnb.", "ligacao", 120], ["Enviei opções de studios pelo WhatsApp.", "whatsapp", 30]] },
