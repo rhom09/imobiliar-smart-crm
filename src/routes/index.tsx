@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { AlertTriangle, CalendarClock, FileSignature, Search, Users } from "lucide-react";
-import { AppShellContent } from "@/components/crm/AppShellContent";
 import { PageHeader, LoadingBlock } from "@/components/crm/AppShell";
 import { KanbanBoard } from "@/components/crm/KanbanBoard";
 import { LeadDrawer } from "@/components/crm/LeadDrawer";
@@ -58,7 +57,7 @@ function FunnelPage() {
   ];
 
   return (
-    <AppShellContent>
+    <div>
       <PageHeader
         title={viewer.kind === "admin" ? "Funil da imobiliária" : `Funil de ${currentBroker?.name.split(" ")[0]}`}
         subtitle={
@@ -117,6 +116,6 @@ function FunnelPage() {
           <LeadDrawer leadId={openId} onClose={() => setOpenId(null)} />
         </>
       )}
-    </AppShellContent>
+    </div>
   );
 }
