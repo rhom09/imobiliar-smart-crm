@@ -1,17 +1,22 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { BROKERS, buildSeed } from "./seed";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import { visibleLeads } from "./rules";
-import type { Broker, Interaction, Lead, Property, StageId, Viewer } from "./types";
+import type { Broker, Interaction, InteractionKind, Lead, Property, PropertyStatus, PropertyType, StageId, Viewer } from "./types";
 
-const STORAGE_KEY = "morada-crm-v1";
-
-type Data = { leads: Lead[]; properties: Property[]; viewer: Viewer };
+type Me = { id: string; isAdmin: boolean };
 
 type Ctx = {
   ready: boolean;
+  me: Me | null;
+  /** Real role from the database. */
+  isAdmin: boolean;
   viewer: Viewer;
+  /** Sales team (corretores). */
   brokers: Broker[];
-  leads: Lead[]; // already filtered by permission
+  /** Everyone in the agency, admins included. */
+  team: (Broker & { email: string; role: "admin" | "corretor" })[];
+  leads: Lead[]; // filtered by viewer (database already filters for corretores)
   allLeads: Lead[];
   properties: Property[];
   currentBroker?: Broker | undefined;
@@ -21,105 +26,232 @@ type Ctx = {
   addInteraction: (leadId: string, i: Omit<Interaction, "id" | "at" | "authorId"> & { at?: string }) => void;
   addLead: (l: Omit<Lead, "id" | "createdAt" | "lastContactAt" | "interactions">) => Lead;
   addProperty: (p: Omit<Property, "id" | "code" | "createdAt">) => Property;
-  resetDemo: () => void;
+  reload: () => Promise<void>;
 };
 
 const CrmContext = createContext<Ctx | null>(null);
-
-const uid = () => Math.random().toString(36).slice(2, 10);
 const CONTACT_KINDS: Interaction["kind"][] = ["ligacao", "whatsapp", "visita", "nota"];
 
-export function CrmProvider({ children }: { children: ReactNode }) {
-  const [data, setData] = useState<Data | null>(null);
+const initials = (name: string) =>
+  name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]!.toUpperCase()).join("") || "?";
 
-  // Load on the client only: dates are relative to "now" and storage is browser-only.
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        setData(JSON.parse(raw));
-        return;
-      }
-    } catch {
-      /* ignore corrupted storage */
+function fail(e: unknown) {
+  console.error(e);
+  toast.error("Não foi possível salvar", { description: "Verifique sua conexão e tente novamente." });
+}
+
+export function CrmProvider({ children }: { children: ReactNode }) {
+  const [me, setMe] = useState<Me | null>(null);
+  const [team, setTeam] = useState<Ctx["team"]>([]);
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [ready, setReady] = useState(false);
+  const [viewer, setViewer] = useState<Viewer>({ kind: "admin" });
+
+  const reload = useCallback(async () => {
+    const { data: u } = await supabase.auth.getUser();
+    if (!u.user) return;
+    const [profiles, roles, props, leadRows, inter] = await Promise.all([
+      supabase.from("profiles").select("*").order("created_at"),
+      supabase.from("user_roles").select("user_id, role"),
+      supabase.from("properties").select("*").order("created_at", { ascending: false }),
+      supabase.from("leads").select("*").order("created_at", { ascending: false }),
+      supabase.from("interactions").select("*").order("at", { ascending: false }),
+    ]);
+    const err = profiles.error || roles.error || props.error || leadRows.error || inter.error;
+    if (err) {
+      fail(err);
+      return;
     }
-    setData({ ...buildSeed(), viewer: { kind: "admin" } });
+    const adminIds = new Set(roles.data!.filter((r) => r.role === "admin").map((r) => r.user_id));
+    const isAdmin = adminIds.has(u.user.id);
+    setMe({ id: u.user.id, isAdmin });
+    setTeam(
+      profiles.data!.map((p) => ({
+        id: p.id,
+        name: p.name || p.email,
+        phone: p.phone,
+        creci: p.creci,
+        email: p.email,
+        initials: initials(p.name || p.email),
+        role: adminIds.has(p.id) ? "admin" : "corretor",
+      })),
+    );
+    setProperties(
+      props.data!.map((p) => ({
+        id: p.id,
+        code: p.code,
+        title: p.title,
+        type: p.type as PropertyType,
+        price: Number(p.price),
+        neighborhood: p.neighborhood,
+        city: p.city,
+        address: p.address,
+        bedrooms: p.bedrooms,
+        suites: p.suites,
+        bathrooms: p.bathrooms,
+        parking: p.parking,
+        area: Number(p.area),
+        condo: Number(p.condo),
+        iptu: Number(p.iptu),
+        description: p.description,
+        features: p.features,
+        photos: p.photos,
+        brokerId: p.broker_id ?? "",
+        status: p.status as PropertyStatus,
+        createdAt: p.created_at,
+      })),
+    );
+    const byLead = new Map<string, Interaction[]>();
+    for (const i of inter.data!) {
+      const list = byLead.get(i.lead_id) ?? [];
+      list.push({
+        id: i.id,
+        kind: i.kind as InteractionKind,
+        text: i.text,
+        at: i.at,
+        scheduledFor: i.scheduled_for ?? undefined,
+        authorId: i.author_id,
+      });
+      byLead.set(i.lead_id, list);
+    }
+    setLeads(
+      leadRows.data!.map((l) => ({
+        id: l.id,
+        name: l.name,
+        phone: l.phone,
+        email: l.email,
+        ownerId: l.owner_id,
+        stage: l.stage as StageId,
+        propertyType: l.property_type as PropertyType,
+        budgetMin: Number(l.budget_min),
+        budgetMax: Number(l.budget_max),
+        bedrooms: l.bedrooms,
+        neighborhoods: l.neighborhoods,
+        interestPropertyId: l.interest_property_id ?? undefined,
+        source: l.source,
+        createdAt: l.created_at,
+        lastContactAt: l.last_contact_at,
+        interactions: byLead.get(l.id) ?? [],
+      })),
+    );
+    setViewer((v) => (isAdmin ? v : { kind: "broker", brokerId: u.user!.id }));
+    setReady(true);
   }, []);
 
   useEffect(() => {
-    if (!data) return;
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    } catch {
-      /* quota exceeded (large photos) — keep in memory */
-    }
-  }, [data]);
-
-  const update = useCallback((fn: (d: Data) => Data) => setData((d) => (d ? fn(d) : d)), []);
-  const viewer: Viewer = data?.viewer ?? { kind: "admin" };
-  const authorId = viewer.kind === "admin" ? "admin" : viewer.brokerId;
+    void reload();
+  }, [reload]);
 
   const value = useMemo<Ctx>(() => {
-    const allLeads = data?.leads ?? [];
+    const authorId = me?.id ?? "";
+    const brokers = team.filter((t) => t.role === "corretor");
+    const pushInteraction = (leadId: string, kind: InteractionKind, text: string, at: string, scheduledFor?: string) => {
+      const id = crypto.randomUUID();
+      setLeads((ls) =>
+        ls.map((l) =>
+          l.id !== leadId
+            ? l
+            : {
+                ...l,
+                lastContactAt: CONTACT_KINDS.includes(kind) ? at : l.lastContactAt,
+                interactions: [{ id, kind, text, at, scheduledFor, authorId }, ...l.interactions],
+              },
+        ),
+      );
+      void supabase
+        .from("interactions")
+        .insert({ id, lead_id: leadId, kind, text, at, scheduled_for: scheduledFor ?? null, author_id: authorId })
+        .then(({ error }) => error && fail(error));
+      if (CONTACT_KINDS.includes(kind)) {
+        void supabase.from("leads").update({ last_contact_at: at }).eq("id", leadId).then(({ error }) => error && fail(error));
+      }
+    };
+
     return {
-      ready: !!data,
+      ready,
+      me,
+      isAdmin: !!me?.isAdmin,
       viewer,
-      brokers: BROKERS,
-      allLeads,
-      leads: visibleLeads(allLeads, viewer),
-      properties: data?.properties ?? [],
-      currentBroker: viewer.kind === "broker" ? BROKERS.find((b) => b.id === viewer.brokerId) : undefined,
-      brokerById: (id) => BROKERS.find((b) => b.id === id),
-      setViewer: (v) => update((d) => ({ ...d, viewer: v })),
-      moveLead: (id, stage) =>
-        update((d) => ({
-          ...d,
-          leads: d.leads.map((l) =>
-            l.id === id && l.stage !== stage
-              ? {
-                  ...l,
-                  stage,
-                  interactions: [
-                    { id: uid(), kind: "etapa", text: stage, at: new Date().toISOString(), authorId },
-                    ...l.interactions,
-                  ],
-                }
-              : l,
-          ),
-        })),
-      addInteraction: (leadId, i) =>
-        update((d) => ({
-          ...d,
-          leads: d.leads.map((l) => {
-            if (l.id !== leadId) return l;
-            const at = i.at ?? new Date().toISOString();
-            return {
-              ...l,
-              lastContactAt: CONTACT_KINDS.includes(i.kind) ? at : l.lastContactAt,
-              interactions: [{ ...i, id: uid(), at, authorId }, ...l.interactions],
-            };
-          }),
-        })),
+      brokers,
+      team,
+      allLeads: leads,
+      leads: visibleLeads(leads, viewer),
+      properties,
+      currentBroker: viewer.kind === "broker" ? team.find((b) => b.id === viewer.brokerId) : undefined,
+      brokerById: (id) => team.find((b) => b.id === id),
+      setViewer: (v) => {
+        if (me?.isAdmin) setViewer(v); // corretores can never widen their view
+      },
+      moveLead: (id, stage) => {
+        const lead = leads.find((l) => l.id === id);
+        if (!lead || lead.stage === stage) return;
+        setLeads((ls) => ls.map((l) => (l.id === id ? { ...l, stage } : l)));
+        void supabase.from("leads").update({ stage }).eq("id", id).then(({ error }) => error && fail(error));
+        pushInteraction(id, "etapa", stage, new Date().toISOString());
+      },
+      addInteraction: (leadId, i) => pushInteraction(leadId, i.kind, i.text, i.at ?? new Date().toISOString(), i.scheduledFor),
       addLead: (l) => {
         const now = new Date().toISOString();
-        const lead: Lead = { ...l, id: uid(), createdAt: now, lastContactAt: now, interactions: [] };
-        update((d) => ({ ...d, leads: [lead, ...d.leads] }));
+        const lead: Lead = { ...l, id: crypto.randomUUID(), createdAt: now, lastContactAt: now, interactions: [] };
+        setLeads((ls) => [lead, ...ls]);
+        void supabase
+          .from("leads")
+          .insert({
+            id: lead.id,
+            name: lead.name,
+            phone: lead.phone,
+            email: lead.email,
+            owner_id: lead.ownerId,
+            stage: lead.stage,
+            property_type: lead.propertyType,
+            budget_min: lead.budgetMin,
+            budget_max: lead.budgetMax,
+            bedrooms: lead.bedrooms,
+            neighborhoods: lead.neighborhoods,
+            interest_property_id: lead.interestPropertyId ?? null,
+            source: lead.source,
+          })
+          .then(({ error }) => error && fail(error));
         return lead;
       },
       addProperty: (p) => {
-        const count = (data?.properties.length ?? 0) + 1;
-        const prop: Property = {
-          ...p,
-          id: uid(),
-          code: `MOR-${1100 + count}`,
-          createdAt: new Date().toISOString(),
-        };
-        update((d) => ({ ...d, properties: [prop, ...d.properties] }));
+        const prop: Property = { ...p, id: crypto.randomUUID(), code: "MOR-…", createdAt: new Date().toISOString() };
+        setProperties((ps) => [prop, ...ps]);
+        void supabase
+          .from("properties")
+          .insert({
+            id: prop.id,
+            title: p.title,
+            type: p.type,
+            price: p.price,
+            neighborhood: p.neighborhood,
+            city: p.city,
+            address: p.address,
+            bedrooms: p.bedrooms,
+            suites: p.suites,
+            bathrooms: p.bathrooms,
+            parking: p.parking,
+            area: p.area,
+            condo: p.condo,
+            iptu: p.iptu,
+            description: p.description,
+            features: p.features,
+            photos: p.photos,
+            broker_id: p.brokerId || null,
+            status: p.status,
+          })
+          .select("code")
+          .single()
+          .then(({ data, error }) => {
+            if (error) return fail(error);
+            setProperties((ps) => ps.map((x) => (x.id === prop.id ? { ...x, code: data.code } : x)));
+          });
         return prop;
       },
-      resetDemo: () => setData({ ...buildSeed(), viewer }),
+      reload,
     };
-  }, [data, viewer, authorId, update]);
+  }, [ready, me, team, leads, properties, viewer, reload]);
 
   return <CrmContext.Provider value={value}>{children}</CrmContext.Provider>;
 }
