@@ -14,16 +14,239 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      interactions: {
+        Row: {
+          at: string
+          author_id: string
+          id: string
+          kind: string
+          lead_id: string
+          scheduled_for: string | null
+          text: string
+        }
+        Insert: {
+          at?: string
+          author_id?: string
+          id?: string
+          kind: string
+          lead_id: string
+          scheduled_for?: string | null
+          text?: string
+        }
+        Update: {
+          at?: string
+          author_id?: string
+          id?: string
+          kind?: string
+          lead_id?: string
+          scheduled_for?: string | null
+          text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "interactions_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          bedrooms: number
+          budget_max: number
+          budget_min: number
+          created_at: string
+          email: string
+          id: string
+          interest_property_id: string | null
+          last_contact_at: string
+          name: string
+          neighborhoods: string[]
+          owner_id: string
+          phone: string
+          property_type: string
+          source: string
+          stage: string
+        }
+        Insert: {
+          bedrooms?: number
+          budget_max?: number
+          budget_min?: number
+          created_at?: string
+          email?: string
+          id?: string
+          interest_property_id?: string | null
+          last_contact_at?: string
+          name: string
+          neighborhoods?: string[]
+          owner_id: string
+          phone?: string
+          property_type?: string
+          source?: string
+          stage?: string
+        }
+        Update: {
+          bedrooms?: number
+          budget_max?: number
+          budget_min?: number
+          created_at?: string
+          email?: string
+          id?: string
+          interest_property_id?: string | null
+          last_contact_at?: string
+          name?: string
+          neighborhoods?: string[]
+          owner_id?: string
+          phone?: string
+          property_type?: string
+          source?: string
+          stage?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_interest_property_id_fkey"
+            columns: ["interest_property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          creci: string
+          email: string
+          id: string
+          name: string
+          phone: string
+        }
+        Insert: {
+          created_at?: string
+          creci?: string
+          email?: string
+          id: string
+          name?: string
+          phone?: string
+        }
+        Update: {
+          created_at?: string
+          creci?: string
+          email?: string
+          id?: string
+          name?: string
+          phone?: string
+        }
+        Relationships: []
+      }
+      properties: {
+        Row: {
+          address: string
+          area: number
+          bathrooms: number
+          bedrooms: number
+          broker_id: string | null
+          city: string
+          code: string
+          condo: number
+          created_at: string
+          description: string
+          features: string[]
+          id: string
+          iptu: number
+          neighborhood: string
+          parking: number
+          photos: string[]
+          price: number
+          status: string
+          suites: number
+          title: string
+          type: string
+        }
+        Insert: {
+          address?: string
+          area?: number
+          bathrooms?: number
+          bedrooms?: number
+          broker_id?: string | null
+          city?: string
+          code?: string
+          condo?: number
+          created_at?: string
+          description?: string
+          features?: string[]
+          id?: string
+          iptu?: number
+          neighborhood?: string
+          parking?: number
+          photos?: string[]
+          price?: number
+          status?: string
+          suites?: number
+          title: string
+          type: string
+        }
+        Update: {
+          address?: string
+          area?: number
+          bathrooms?: number
+          bedrooms?: number
+          broker_id?: string | null
+          city?: string
+          code?: string
+          condo?: number
+          created_at?: string
+          description?: string
+          features?: string[]
+          id?: string
+          iptu?: number
+          neighborhood?: string
+          parking?: number
+          photos?: string[]
+          price?: number
+          status?: string
+          suites?: number
+          title?: string
+          type?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      can_access_lead: { Args: { _lead_id: string }; Returns: boolean }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "corretor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +373,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "corretor"],
+    },
   },
 } as const
