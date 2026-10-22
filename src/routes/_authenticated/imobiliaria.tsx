@@ -7,7 +7,7 @@ import { useCrm } from "@/lib/crm/store";
 import type { Lead, Property } from "@/lib/crm/types";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/imobiliaria")({
+export const Route = createFileRoute("/_authenticated/imobiliaria")({
   head: () => ({
     meta: [
       { title: "Imobiliária e equipe — Morada CRM" },

@@ -10,7 +10,7 @@ import { NEIGHBORHOODS, PROPERTY_TYPES } from "@/lib/crm/rules";
 import { useCrm } from "@/lib/crm/store";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/imoveis/")({
+export const Route = createFileRoute("/_authenticated/imoveis/")({
   head: () => ({
     meta: [
       { title: "Catálogo de imóveis — Morada CRM" },

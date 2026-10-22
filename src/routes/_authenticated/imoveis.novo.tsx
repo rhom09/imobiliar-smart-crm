@@ -14,7 +14,7 @@ import { useCrm } from "@/lib/crm/store";
 import type { PropertyStatus, PropertyType } from "@/lib/crm/types";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/imoveis/novo")({
+export const Route = createFileRoute("/_authenticated/imoveis/novo")({
   head: () => ({
     meta: [
       { title: "Cadastrar imóvel — Morada CRM" },
