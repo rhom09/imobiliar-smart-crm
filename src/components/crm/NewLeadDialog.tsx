@@ -12,7 +12,7 @@ import type { PropertyType } from "@/lib/crm/types";
 import { cn } from "@/lib/utils";
 
 export function NewLeadDialog({ onCreated }: { onCreated?: (id: string) => void }) {
-  const { viewer, brokers, addLead } = useCrm();
+  const { viewer, team: brokers, addLead, me } = useCrm();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
     name: "",
@@ -24,7 +24,7 @@ export function NewLeadDialog({ onCreated }: { onCreated?: (id: string) => void 
     bedrooms: "2",
     neighborhoods: [] as string[],
     source: "WhatsApp",
-    ownerId: brokers[0]!.id,
+    ownerId: me?.id ?? "",
   });
   const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) => setForm((f) => ({ ...f, [k]: v }));
 

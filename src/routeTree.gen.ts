@@ -9,129 +9,132 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as ImobiliariaRouteImport } from './routes/imobiliaria'
-import { Route as ImoveisIndexRouteImport } from './routes/imoveis.index'
-import { Route as ImoveisIdRouteImport } from './routes/imoveis.$id'
-import { Route as ImoveisNovoRouteImport } from './routes/imoveis.novo'
+import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedImobiliariaRouteImport } from './routes/_authenticated/imobiliaria'
+import { Route as AuthenticatedImoveisIndexRouteImport } from './routes/_authenticated/imoveis.index'
+import { Route as AuthenticatedImoveisIdRouteImport } from './routes/_authenticated/imoveis.$id'
+import { Route as AuthenticatedImoveisNovoRouteImport } from './routes/_authenticated/imoveis.novo'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
+  id: '/_authenticated/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ImobiliariaRoute = ImobiliariaRouteImport.update({
-  id: '/imobiliaria',
-  path: '/imobiliaria',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ImoveisIndexRoute = ImoveisIndexRouteImport.update({
-  id: '/imoveis/',
-  path: '/imoveis/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ImoveisIdRoute = ImoveisIdRouteImport.update({
-  id: '/imoveis/$id',
+const AuthenticatedImobiliariaRoute =
+  AuthenticatedImobiliariaRouteImport.update({
+    id: '/_authenticated/imobiliaria',
+    path: '/imobiliaria',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedImoveisIndexRoute =
+  AuthenticatedImoveisIndexRouteImport.update({
+    id: '/_authenticated/imoveis/',
+    path: '/imoveis/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedImoveisIdRoute = AuthenticatedImoveisIdRouteImport.update({
+  id: '/_authenticated/imoveis/$id',
   path: '/imoveis/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ImoveisNovoRoute = ImoveisNovoRouteImport.update({
-  id: '/imoveis/novo',
-  path: '/imoveis/novo',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const AuthenticatedImoveisNovoRoute =
+  AuthenticatedImoveisNovoRouteImport.update({
+    id: '/_authenticated/imoveis/novo',
+    path: '/imoveis/novo',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/imobiliaria': typeof ImobiliariaRoute
-  '/imoveis/$id': typeof ImoveisIdRoute
-  '/imoveis/novo': typeof ImoveisNovoRoute
-  '/imoveis/': typeof ImoveisIndexRoute
+  '/imobiliaria': typeof AuthenticatedImobiliariaRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/imoveis/$id': typeof AuthenticatedImoveisIdRoute
+  '/imoveis/novo': typeof AuthenticatedImoveisNovoRoute
+  '/imoveis/': typeof AuthenticatedImoveisIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/imobiliaria': typeof ImobiliariaRoute
-  '/imoveis/$id': typeof ImoveisIdRoute
-  '/imoveis/novo': typeof ImoveisNovoRoute
-  '/imoveis': typeof ImoveisIndexRoute
+  '/imobiliaria': typeof AuthenticatedImobiliariaRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/imoveis/$id': typeof AuthenticatedImoveisIdRoute
+  '/imoveis/novo': typeof AuthenticatedImoveisNovoRoute
+  '/imoveis': typeof AuthenticatedImoveisIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/imobiliaria': typeof ImobiliariaRoute
-  '/imoveis/$id': typeof ImoveisIdRoute
-  '/imoveis/novo': typeof ImoveisNovoRoute
-  '/imoveis/': typeof ImoveisIndexRoute
+  '/_authenticated/imobiliaria': typeof AuthenticatedImobiliariaRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/imoveis/$id': typeof AuthenticatedImoveisIdRoute
+  '/_authenticated/imoveis/novo': typeof AuthenticatedImoveisNovoRoute
+  '/_authenticated/imoveis/': typeof AuthenticatedImoveisIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/imobiliaria' | '/imoveis/$id' | '/imoveis/novo' | '/imoveis/'
+    '/imobiliaria' | '/' | '/imoveis/$id' | '/imoveis/novo' | '/imoveis/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/imobiliaria' | '/imoveis/$id' | '/imoveis/novo' | '/imoveis'
+  to: '/imobiliaria' | '/' | '/imoveis/$id' | '/imoveis/novo' | '/imoveis'
   id:
     | '__root__'
-    | '/'
-    | '/imobiliaria'
-    | '/imoveis/$id'
-    | '/imoveis/novo'
-    | '/imoveis/'
+    | '/_authenticated/imobiliaria'
+    | '/_authenticated/'
+    | '/_authenticated/imoveis/$id'
+    | '/_authenticated/imoveis/novo'
+    | '/_authenticated/imoveis/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  ImobiliariaRoute: typeof ImobiliariaRoute
-  ImoveisIdRoute: typeof ImoveisIdRoute
-  ImoveisNovoRoute: typeof ImoveisNovoRoute
-  ImoveisIndexRoute: typeof ImoveisIndexRoute
+  AuthenticatedImobiliariaRoute: typeof AuthenticatedImobiliariaRoute
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedImoveisIdRoute: typeof AuthenticatedImoveisIdRoute
+  AuthenticatedImoveisNovoRoute: typeof AuthenticatedImoveisNovoRoute
+  AuthenticatedImoveisIndexRoute: typeof AuthenticatedImoveisIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_authenticated/': {
+      id: '/_authenticated/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/imobiliaria': {
-      id: '/imobiliaria'
+    '/_authenticated/imobiliaria': {
+      id: '/_authenticated/imobiliaria'
       path: '/imobiliaria'
       fullPath: '/imobiliaria'
-      preLoaderRoute: typeof ImobiliariaRouteImport
+      preLoaderRoute: typeof AuthenticatedImobiliariaRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/imoveis/': {
-      id: '/imoveis/'
+    '/_authenticated/imoveis/': {
+      id: '/_authenticated/imoveis/'
       path: '/imoveis'
       fullPath: '/imoveis/'
-      preLoaderRoute: typeof ImoveisIndexRouteImport
+      preLoaderRoute: typeof AuthenticatedImoveisIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/imoveis/$id': {
-      id: '/imoveis/$id'
+    '/_authenticated/imoveis/$id': {
+      id: '/_authenticated/imoveis/$id'
       path: '/imoveis/$id'
       fullPath: '/imoveis/$id'
-      preLoaderRoute: typeof ImoveisIdRouteImport
+      preLoaderRoute: typeof AuthenticatedImoveisIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/imoveis/novo': {
-      id: '/imoveis/novo'
+    '/_authenticated/imoveis/novo': {
+      id: '/_authenticated/imoveis/novo'
       path: '/imoveis/novo'
       fullPath: '/imoveis/novo'
-      preLoaderRoute: typeof ImoveisNovoRouteImport
+      preLoaderRoute: typeof AuthenticatedImoveisNovoRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  ImobiliariaRoute: ImobiliariaRoute,
-  ImoveisIdRoute: ImoveisIdRoute,
-  ImoveisNovoRoute: ImoveisNovoRoute,
-  ImoveisIndexRoute: ImoveisIndexRoute,
+  AuthenticatedImobiliariaRoute: AuthenticatedImobiliariaRoute,
+  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedImoveisIdRoute: AuthenticatedImoveisIdRoute,
+  AuthenticatedImoveisNovoRoute: AuthenticatedImoveisNovoRoute,
+  AuthenticatedImoveisIndexRoute: AuthenticatedImoveisIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

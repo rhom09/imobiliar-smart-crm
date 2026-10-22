@@ -51,7 +51,7 @@ function resizeImage(file: File, max = 1280): Promise<string> {
 }
 
 function NewPropertyPage() {
-  const { addProperty, brokers, viewer } = useCrm();
+  const { addProperty, team: brokers, viewer, me } = useCrm();
   const navigate = useNavigate();
   const fileRef = useRef<HTMLInputElement>(null);
   const [photos, setPhotos] = useState<string[]>([]);
@@ -71,7 +71,7 @@ function NewPropertyPage() {
     description: "",
     features: "",
     status: "disponivel" as PropertyStatus,
-    brokerId: viewer.kind === "broker" ? viewer.brokerId : brokers[0]!.id,
+    brokerId: viewer.kind === "broker" ? viewer.brokerId : me?.id ?? "",
   });
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setF((x) => ({ ...x, [k]: e.target.value }));
