@@ -9,49 +9,78 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedEquipeRouteImport } from './routes/_authenticated/equipe'
 import { Route as AuthenticatedImobiliariaRouteImport } from './routes/_authenticated/imobiliaria'
 import { Route as AuthenticatedImoveisIndexRouteImport } from './routes/_authenticated/imoveis.index'
 import { Route as AuthenticatedImoveisIdRouteImport } from './routes/_authenticated/imoveis.$id'
 import { Route as AuthenticatedImoveisNovoRouteImport } from './routes/_authenticated/imoveis.novo'
 
-const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
-  id: '/_authenticated/',
-  path: '/',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedEquipeRoute = AuthenticatedEquipeRouteImport.update({
+  id: '/equipe',
+  path: '/equipe',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedImobiliariaRoute =
   AuthenticatedImobiliariaRouteImport.update({
-    id: '/_authenticated/imobiliaria',
+    id: '/imobiliaria',
     path: '/imobiliaria',
-    getParentRoute: () => rootRouteImport,
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedImoveisIndexRoute =
   AuthenticatedImoveisIndexRouteImport.update({
-    id: '/_authenticated/imoveis/',
+    id: '/imoveis/',
     path: '/imoveis/',
-    getParentRoute: () => rootRouteImport,
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedImoveisIdRoute = AuthenticatedImoveisIdRouteImport.update({
-  id: '/_authenticated/imoveis/$id',
+  id: '/imoveis/$id',
   path: '/imoveis/$id',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedImoveisNovoRoute =
   AuthenticatedImoveisNovoRouteImport.update({
-    id: '/_authenticated/imoveis/novo',
+    id: '/imoveis/novo',
     path: '/imoveis/novo',
-    getParentRoute: () => rootRouteImport,
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/imobiliaria': typeof AuthenticatedImobiliariaRoute
   '/': typeof AuthenticatedIndexRoute
+  '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/equipe': typeof AuthenticatedEquipeRoute
+  '/imobiliaria': typeof AuthenticatedImobiliariaRoute
   '/imoveis/$id': typeof AuthenticatedImoveisIdRoute
   '/imoveis/novo': typeof AuthenticatedImoveisNovoRoute
   '/imoveis/': typeof AuthenticatedImoveisIndexRoute
 }
 export interface FileRoutesByTo {
+  '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/equipe': typeof AuthenticatedEquipeRoute
   '/imobiliaria': typeof AuthenticatedImobiliariaRoute
   '/': typeof AuthenticatedIndexRoute
   '/imoveis/$id': typeof AuthenticatedImoveisIdRoute
@@ -60,6 +89,10 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/_authenticated/equipe': typeof AuthenticatedEquipeRoute
   '/_authenticated/imobiliaria': typeof AuthenticatedImobiliariaRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/imoveis/$id': typeof AuthenticatedImoveisIdRoute
@@ -69,11 +102,30 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/imobiliaria' | '/' | '/imoveis/$id' | '/imoveis/novo' | '/imoveis/'
+    | '/'
+    | '/auth'
+    | '/reset-password'
+    | '/equipe'
+    | '/imobiliaria'
+    | '/imoveis/$id'
+    | '/imoveis/novo'
+    | '/imoveis/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/imobiliaria' | '/' | '/imoveis/$id' | '/imoveis/novo' | '/imoveis'
+  to:
+    | '/auth'
+    | '/reset-password'
+    | '/equipe'
+    | '/imobiliaria'
+    | '/'
+    | '/imoveis/$id'
+    | '/imoveis/novo'
+    | '/imoveis'
   id:
     | '__root__'
+    | '/_authenticated'
+    | '/auth'
+    | '/reset-password'
+    | '/_authenticated/equipe'
     | '/_authenticated/imobiliaria'
     | '/_authenticated/'
     | '/_authenticated/imoveis/$id'
@@ -82,6 +134,81 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+}
+
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/': {
+      id: '/_authenticated/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/equipe': {
+      id: '/_authenticated/equipe'
+      path: '/equipe'
+      fullPath: '/equipe'
+      preLoaderRoute: typeof AuthenticatedEquipeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/imobiliaria': {
+      id: '/_authenticated/imobiliaria'
+      path: '/imobiliaria'
+      fullPath: '/imobiliaria'
+      preLoaderRoute: typeof AuthenticatedImobiliariaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/imoveis/': {
+      id: '/_authenticated/imoveis/'
+      path: '/imoveis'
+      fullPath: '/imoveis/'
+      preLoaderRoute: typeof AuthenticatedImoveisIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/imoveis/$id': {
+      id: '/_authenticated/imoveis/$id'
+      path: '/imoveis/$id'
+      fullPath: '/imoveis/$id'
+      preLoaderRoute: typeof AuthenticatedImoveisIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/imoveis/novo': {
+      id: '/_authenticated/imoveis/novo'
+      path: '/imoveis/novo'
+      fullPath: '/imoveis/novo'
+      preLoaderRoute: typeof AuthenticatedImoveisNovoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+  }
+}
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedEquipeRoute: typeof AuthenticatedEquipeRoute
   AuthenticatedImobiliariaRoute: typeof AuthenticatedImobiliariaRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedImoveisIdRoute: typeof AuthenticatedImoveisIdRoute
@@ -89,52 +216,22 @@ export interface RootRouteChildren {
   AuthenticatedImoveisIndexRoute: typeof AuthenticatedImoveisIndexRoute
 }
 
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/_authenticated/': {
-      id: '/_authenticated/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/imobiliaria': {
-      id: '/_authenticated/imobiliaria'
-      path: '/imobiliaria'
-      fullPath: '/imobiliaria'
-      preLoaderRoute: typeof AuthenticatedImobiliariaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/imoveis/': {
-      id: '/_authenticated/imoveis/'
-      path: '/imoveis'
-      fullPath: '/imoveis/'
-      preLoaderRoute: typeof AuthenticatedImoveisIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/imoveis/$id': {
-      id: '/_authenticated/imoveis/$id'
-      path: '/imoveis/$id'
-      fullPath: '/imoveis/$id'
-      preLoaderRoute: typeof AuthenticatedImoveisIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/imoveis/novo': {
-      id: '/_authenticated/imoveis/novo'
-      path: '/imoveis/novo'
-      fullPath: '/imoveis/novo'
-      preLoaderRoute: typeof AuthenticatedImoveisNovoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-  }
-}
-
-const rootRouteChildren: RootRouteChildren = {
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedEquipeRoute: AuthenticatedEquipeRoute,
   AuthenticatedImobiliariaRoute: AuthenticatedImobiliariaRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedImoveisIdRoute: AuthenticatedImoveisIdRoute,
   AuthenticatedImoveisNovoRoute: AuthenticatedImoveisNovoRoute,
   AuthenticatedImoveisIndexRoute: AuthenticatedImoveisIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,5 +1,7 @@
-import { Link, useRouterState } from "@tanstack/react-router";
-import { Building2, KanbanSquare, Home, RotateCcw, ShieldCheck, Eye } from "lucide-react";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Building2, KanbanSquare, Home, LogOut, ShieldCheck, Eye } from "lucide-react";
 import type { ReactNode } from "react";
 import { RoleSwitcher } from "./RoleSwitcher";
 import { useCrm } from "@/lib/crm/store";
@@ -35,7 +37,16 @@ function Logo({ inverted = false }: { inverted?: boolean }) {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { viewer, currentBroker, resetDemo } = useCrm();
+  const { viewer, currentBroker, isAdmin, me, brokerById } = useCrm();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const myName = me ? brokerById(me.id)?.name : undefined;
+  async function signOut() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/auth", replace: true });
+  }
   const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 
   return (
@@ -65,7 +76,11 @@ export function AppShell({ children }: { children: ReactNode }) {
 
         <div className="mt-auto space-y-4 p-4">
           <div className="rounded-2xl border border-sidebar-border bg-sidebar-accent/50 p-3.5">
-            <RoleSwitcher />
+            {isAdmin ? (
+              <RoleSwitcher />
+            ) : (
+              <p className="text-sm font-semibold text-sidebar-accent-foreground">{myName ?? "Corretor"}</p>
+            )}
             <p className="mt-3 flex items-start gap-2 text-xs leading-relaxed text-sidebar-foreground/70">
               {viewer.kind === "admin" ? (
                 <>
@@ -81,10 +96,10 @@ export function AppShell({ children }: { children: ReactNode }) {
             </p>
           </div>
           <button
-            onClick={resetDemo}
+            onClick={signOut}
             className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-xs text-sidebar-foreground/55 transition-colors hover:text-sidebar-foreground"
           >
-            <RotateCcw className="size-3.5" /> Restaurar dados de demonstração
+            <LogOut className="size-3.5" /> Sair{myName ? ` (${myName.split(" ")[0]})` : ""}
           </button>
         </div>
       </aside>
@@ -92,7 +107,12 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* Mobile header */}
       <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b bg-background/90 px-4 py-3 backdrop-blur md:hidden">
         <Logo />
-        <RoleSwitcher compact />
+        <div className="flex items-center gap-2">
+          {isAdmin && <RoleSwitcher compact />}
+          <button onClick={signOut} aria-label="Sair" className="grid size-9 place-items-center rounded-full border bg-card text-muted-foreground">
+            <LogOut className="size-4" />
+          </button>
+        </div>
       </header>
 
       <main className="pb-24 md:pb-0 md:pl-64">{children}</main>
