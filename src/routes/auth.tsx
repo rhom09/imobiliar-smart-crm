@@ -53,7 +53,10 @@ function AuthPage() {
       redirectTo: `${window.location.origin}/reset-password`,
     });
     setBusy(false);
-    if (error) return toast.error("Não foi possível enviar o e-mail");
+    if (error) {
+      toast.error("Não foi possível enviar o e-mail");
+      return;
+    }
     toast.success("E-mail enviado", { description: "Confira sua caixa de entrada para criar uma nova senha." });
     setMode("login");
   }

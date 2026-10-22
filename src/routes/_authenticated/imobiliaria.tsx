@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Building2, Check, Crown, Lock, MapPin, Phone, Trophy, X } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Building2, Check, Crown, Lock, MapPin, Phone, Trophy, Users, X } from "lucide-react";
 import { PageHeader, LoadingBlock } from "@/components/crm/AppShell";
 import { OPEN_STAGES, STAGES, brlCompact, formatPhone } from "@/lib/crm/rules";
 import { AGENCY } from "@/lib/crm/seed";
@@ -49,7 +49,7 @@ const PERMISSIONS = [
 ];
 
 function AgencyPage() {
-  const { ready, viewer, allLeads, leads, properties, brokers, currentBroker } = useCrm();
+  const { ready, viewer, allLeads, leads, properties, brokers, currentBroker, isAdmin: realAdmin } = useCrm();
   if (!ready) return <LoadingBlock />;
 
   const isAdmin = viewer.kind === "admin";
