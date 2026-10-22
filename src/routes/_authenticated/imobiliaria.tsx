@@ -67,6 +67,16 @@ function AgencyPage() {
       <PageHeader
         title={isAdmin ? "Visão da imobiliária" : "Meu perfil"}
         subtitle={isAdmin ? "Desempenho geral e equipe de corretores." : "Seus números e o que você pode acessar no CRM."}
+        actions={
+          realAdmin ? (
+            <Link
+              to="/equipe"
+              className="inline-flex h-10 items-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground"
+            >
+              <Users className="size-4" /> Gerenciar equipe
+            </Link>
+          ) : undefined
+        }
       />
 
       <div className="grid gap-5 px-4 md:px-8 xl:grid-cols-[1fr_380px]">
