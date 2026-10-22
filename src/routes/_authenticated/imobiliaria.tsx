@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Building2, Check, Crown, Lock, MapPin, Phone, Trophy, X } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Building2, Check, Crown, Lock, MapPin, Phone, Trophy, Users, X } from "lucide-react";
 import { PageHeader, LoadingBlock } from "@/components/crm/AppShell";
 import { OPEN_STAGES, STAGES, brlCompact, formatPhone } from "@/lib/crm/rules";
 import { AGENCY } from "@/lib/crm/seed";
@@ -7,7 +7,7 @@ import { useCrm } from "@/lib/crm/store";
 import type { Lead, Property } from "@/lib/crm/types";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/imobiliaria")({
+export const Route = createFileRoute("/_authenticated/imobiliaria")({
   head: () => ({
     meta: [
       { title: "Imobiliária e equipe — Morada CRM" },
@@ -49,7 +49,7 @@ const PERMISSIONS = [
 ];
 
 function AgencyPage() {
-  const { ready, viewer, allLeads, leads, properties, brokers, currentBroker } = useCrm();
+  const { ready, viewer, allLeads, leads, properties, brokers, currentBroker, isAdmin: realAdmin } = useCrm();
   if (!ready) return <LoadingBlock />;
 
   const isAdmin = viewer.kind === "admin";
@@ -67,6 +67,16 @@ function AgencyPage() {
       <PageHeader
         title={isAdmin ? "Visão da imobiliária" : "Meu perfil"}
         subtitle={isAdmin ? "Desempenho geral e equipe de corretores." : "Seus números e o que você pode acessar no CRM."}
+        actions={
+          realAdmin ? (
+            <Link
+              to="/equipe"
+              className="inline-flex h-10 items-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground"
+            >
+              <Users className="size-4" /> Gerenciar equipe
+            </Link>
+          ) : undefined
+        }
       />
 
       <div className="grid gap-5 px-4 md:px-8 xl:grid-cols-[1fr_380px]">

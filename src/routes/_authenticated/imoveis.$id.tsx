@@ -24,7 +24,7 @@ import { img } from "@/lib/crm/images";
 import { useCrm } from "@/lib/crm/store";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/imoveis/$id")({
+export const Route = createFileRoute("/_authenticated/imoveis/$id")({
   head: () => ({
     meta: [
       { title: "Ficha do imóvel — Morada CRM" },

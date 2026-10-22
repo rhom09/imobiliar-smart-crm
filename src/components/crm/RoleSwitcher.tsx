@@ -6,7 +6,8 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 export function RoleSwitcher({ compact = false, className }: { compact?: boolean; className?: string }) {
-  const { viewer, setViewer, brokers } = useCrm();
+  const { viewer, setViewer, brokers, me, brokerById } = useCrm();
+  const myName = (me && brokerById(me.id)?.name) || AGENCY.ownerName;
   const value = viewer.kind === "admin" ? "admin" : viewer.brokerId;
 
   return (
@@ -45,7 +46,7 @@ export function RoleSwitcher({ compact = false, className }: { compact?: boolean
             <SelectItem value="admin">
               <span className="flex items-center gap-2">
                 <Crown className="size-3.5 text-highlight-foreground" />
-                {compact ? "Admin" : AGENCY.ownerName}
+                {compact ? "Admin" : myName}
               </span>
             </SelectItem>
           </SelectGroup>

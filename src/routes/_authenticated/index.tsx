@@ -10,7 +10,7 @@ import { OPEN_STAGES, brlCompact, contactUrgency } from "@/lib/crm/rules";
 import { useCrm } from "@/lib/crm/store";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
     meta: [
       { title: "Funil de vendas — Morada CRM imobiliário" },
