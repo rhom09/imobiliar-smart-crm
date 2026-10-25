@@ -21,6 +21,7 @@ import { LeadDrawer, propertyUrl } from "@/components/crm/LeadDrawer";
 import { Button } from "@/components/ui/button";
 import { brl, formatPhone, propertySheet, smartMatch, waLink } from "@/lib/crm/rules";
 import { img } from "@/lib/crm/images";
+import { shareLink } from "@/lib/crm/share";
 import { useCrm } from "@/lib/crm/store";
 import { cn } from "@/lib/utils";
 

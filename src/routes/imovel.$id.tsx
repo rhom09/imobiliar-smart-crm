@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useState } from "react";
-import { Bath, BedDouble, BedSingle, Car, Check, MapPin, Maximize2 } from "lucide-react";
+import { Bath, BedDouble, BedSingle, Car, Check, MapPin, Maximize2, Share2 } from "lucide-react";
+import { shareLink } from "@/lib/crm/share";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -80,7 +81,13 @@ function PublicProperty() {
     <div className="min-h-screen bg-background pb-24">
       <header className="flex items-center justify-between px-4 py-3">
         <span className="text-lg font-bold tracking-tight">Morada</span>
-        <span className="text-xs text-muted-foreground">Ref {p.code}</span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground">Ref {p.code}</span>
+          <Button size="sm" variant="outline" className="rounded-full"
+            onClick={() => shareLink({ title: p.title, text: `${p.title} • ${p.neighborhood} • ${brl(p.price)}`, url: window.location.href })}>
+            <Share2 /> Compartilhar
+          </Button>
+        </div>
       </header>
       <div className="mx-auto max-w-3xl">
         <div className="relative aspect-[4/3] overflow-hidden bg-muted sm:rounded-2xl">

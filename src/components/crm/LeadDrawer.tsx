@@ -271,17 +271,12 @@ function MatchCard({ lead, match }: { lead: Lead; match: ReturnType<typeof smart
         <button
           className="flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold transition-colors hover:bg-muted"
           onClick={async () => {
-            try {
-              await navigator.clipboard.writeText(url);
-              setCopied(true);
-              toast.success("Link copiado");
-              setTimeout(() => setCopied(false), 1500);
-            } catch {
-              toast.error("Não foi possível copiar");
-            }
+            await shareLink({ title: p.title, text: `${p.title} • ${p.neighborhood} • ${brl(p.price)}`, url });
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1500);
           }}
         >
-          {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />} Copiar link
+          {copied ? <Check className="size-3.5" /> : <Share2 className="size-3.5" />} Compartilhar
         </button>
         <a
           href={waLink(lead.phone, `Oi, ${lead.name.split(" ")[0]}! Separei este imóvel para você:\n\n${propertySheet(p, url)}`)}
