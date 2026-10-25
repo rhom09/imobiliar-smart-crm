@@ -68,16 +68,7 @@ function PropertyPage() {
     .sort((a, b) => b.match.score - a.match.score);
 
   async function share() {
-    const data = { title: p!.title, text: sheet, url };
-    if (navigator.share) {
-      try {
-        await navigator.share(data);
-        return;
-      } catch {
-        /* cancelled */
-      }
-    }
-    await copy();
+    await shareLink({ title: p!.title, text: `${p!.title} • ${p!.neighborhood} • ${brl(p!.price)}`, url });
   }
   async function copy() {
     try {
