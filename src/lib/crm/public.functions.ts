@@ -10,7 +10,7 @@ export type PublicProperty = {
 
 /** Public: returns only showcase fields of one property (no address, no leads). */
 export const getPublicProperty = createServerFn({ method: "GET" })
-  .inputValidator((id: string) => {
+  .validator((id: string) => {
     const v = String(id ?? "");
     if (!/^[0-9a-f-]{36}$/i.test(v)) throw new Error("not-found");
     return v;
@@ -36,7 +36,7 @@ export const getPublicProperty = createServerFn({ method: "GET" })
 
 /** Public: visitor "Tenho interesse" form → creates a Novo Lead owned by the property's broker. */
 export const submitInterest = createServerFn({ method: "POST" })
-  .inputValidator((input: { propertyId: string; name: string; phone: string; message?: string }) => {
+  .validator((input: { propertyId: string; name: string; phone: string; message?: string }) => {
     const propertyId = String(input.propertyId ?? "");
     const name = String(input.name ?? "").trim().slice(0, 120);
     let phone = String(input.phone ?? "").replace(/\D/g, "");
