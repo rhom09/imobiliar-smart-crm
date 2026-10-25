@@ -21,6 +21,7 @@ import { LeadDrawer, propertyUrl } from "@/components/crm/LeadDrawer";
 import { Button } from "@/components/ui/button";
 import { brl, formatPhone, propertySheet, smartMatch, waLink } from "@/lib/crm/rules";
 import { img } from "@/lib/crm/images";
+import { shareLink } from "@/lib/crm/share";
 import { useCrm } from "@/lib/crm/store";
 import { cn } from "@/lib/utils";
 
@@ -68,16 +69,7 @@ function PropertyPage() {
     .sort((a, b) => b.match.score - a.match.score);
 
   async function share() {
-    const data = { title: p!.title, text: sheet, url };
-    if (navigator.share) {
-      try {
-        await navigator.share(data);
-        return;
-      } catch {
-        /* cancelled */
-      }
-    }
-    await copy();
+    await shareLink({ title: p!.title, text: `${p!.title} • ${p!.neighborhood} • ${brl(p!.price)}`, url });
   }
   async function copy() {
     try {
