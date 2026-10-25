@@ -50,7 +50,7 @@ const KIND_META: Record<InteractionKind, { label: string; icon: typeof StickyNot
 };
 
 export function propertyUrl(id: string) {
-  return typeof window === "undefined" ? `/imoveis/${id}` : `${window.location.origin}/imoveis/${id}`;
+  return typeof window === "undefined" ? `/imovel/${id}` : `${window.location.origin}/imovel/${id}`;
 }
 
 export function LeadDrawer({ leadId, onClose }: { leadId: string | null; onClose: () => void }) {
