@@ -5,7 +5,7 @@ import {
   BedDouble,
   CalendarClock,
   Check,
-  Copy,
+  Share2,
   Mail,
   MapPin,
   MessageSquareText,
@@ -38,6 +38,7 @@ import {
 } from "@/lib/crm/rules";
 import { useCrm } from "@/lib/crm/store";
 import { img } from "@/lib/crm/images";
+import { shareLink } from "@/lib/crm/share";
 import type { InteractionKind, Lead, StageId } from "@/lib/crm/types";
 import { cn } from "@/lib/utils";
 
