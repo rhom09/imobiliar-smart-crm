@@ -15,6 +15,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedEquipeRouteImport } from './routes/_authenticated/equipe'
 import { Route as AuthenticatedImobiliariaRouteImport } from './routes/_authenticated/imobiliaria'
+import { Route as ImovelIdRouteImport } from './routes/imovel.$id'
 import { Route as AuthenticatedImoveisIndexRouteImport } from './routes/_authenticated/imoveis.index'
 import { Route as AuthenticatedImoveisIdRouteImport } from './routes/_authenticated/imoveis.$id'
 import { Route as AuthenticatedImoveisNovoRouteImport } from './routes/_authenticated/imoveis.novo'
@@ -49,6 +50,11 @@ const AuthenticatedImobiliariaRoute =
     path: '/imobiliaria',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ImovelIdRoute = ImovelIdRouteImport.update({
+  id: '/imovel/$id',
+  path: '/imovel/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedImoveisIndexRoute =
   AuthenticatedImoveisIndexRouteImport.update({
     id: '/imoveis/',
@@ -73,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/equipe': typeof AuthenticatedEquipeRoute
   '/imobiliaria': typeof AuthenticatedImobiliariaRoute
+  '/imovel/$id': typeof ImovelIdRoute
   '/imoveis/$id': typeof AuthenticatedImoveisIdRoute
   '/imoveis/novo': typeof AuthenticatedImoveisNovoRoute
   '/imoveis/': typeof AuthenticatedImoveisIndexRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/equipe': typeof AuthenticatedEquipeRoute
   '/imobiliaria': typeof AuthenticatedImobiliariaRoute
+  '/imovel/$id': typeof ImovelIdRoute
   '/': typeof AuthenticatedIndexRoute
   '/imoveis/$id': typeof AuthenticatedImoveisIdRoute
   '/imoveis/novo': typeof AuthenticatedImoveisNovoRoute
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/equipe': typeof AuthenticatedEquipeRoute
   '/_authenticated/imobiliaria': typeof AuthenticatedImobiliariaRoute
+  '/imovel/$id': typeof ImovelIdRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/imoveis/$id': typeof AuthenticatedImoveisIdRoute
   '/_authenticated/imoveis/novo': typeof AuthenticatedImoveisNovoRoute
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/equipe'
     | '/imobiliaria'
+    | '/imovel/$id'
     | '/imoveis/$id'
     | '/imoveis/novo'
     | '/imoveis/'
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/equipe'
     | '/imobiliaria'
+    | '/imovel/$id'
     | '/'
     | '/imoveis/$id'
     | '/imoveis/novo'
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/_authenticated/equipe'
     | '/_authenticated/imobiliaria'
+    | '/imovel/$id'
     | '/_authenticated/'
     | '/_authenticated/imoveis/$id'
     | '/_authenticated/imoveis/novo'
@@ -137,6 +149,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ImovelIdRoute: typeof ImovelIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -182,6 +195,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/imobiliaria'
       preLoaderRoute: typeof AuthenticatedImobiliariaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/imovel/$id': {
+      id: '/imovel/$id'
+      path: '/imovel/$id'
+      fullPath: '/imovel/$id'
+      preLoaderRoute: typeof ImovelIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/imoveis/': {
       id: '/_authenticated/imoveis/'
@@ -232,6 +252,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ImovelIdRoute: ImovelIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
