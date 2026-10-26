@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { visibleLeads } from "./rules";
+import { PHOTO_BUCKET, STORAGE_PREFIX, registerPhotoUrl, storagePaths } from "./images";
 import type { Broker, Interaction, InteractionKind, Lead, Property, PropertyStatus, PropertyType, StageId, Viewer } from "./types";
 
 type Me = { id: string; isAdmin: boolean };

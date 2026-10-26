@@ -28,26 +28,33 @@ export const Route = createFileRoute("/_authenticated/imoveis/novo")({
   component: NewPropertyPage,
 });
 
-/** Downscale uploads so they fit in browser storage. */
-function resizeImage(file: File, max = 1280): Promise<string> {
+/** Downscale uploads before sending them to storage. */
+function resizeImage(file: File, max = 1600): Promise<Blob> {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onerror = reject;
-    reader.onload = () => {
-      const image = new Image();
-      image.onerror = reject;
-      image.onload = () => {
-        const scale = Math.min(1, max / Math.max(image.width, image.height));
-        const canvas = document.createElement("canvas");
-        canvas.width = Math.round(image.width * scale);
-        canvas.height = Math.round(image.height * scale);
-        canvas.getContext("2d")!.drawImage(image, 0, 0, canvas.width, canvas.height);
-        resolve(canvas.toDataURL("image/jpeg", 0.72));
-      };
-      image.src = String(reader.result);
+    const url = URL.createObjectURL(file);
+    const image = new Image();
+    image.onerror = reject;
+    image.onload = () => {
+      const scale = Math.min(1, max / Math.max(image.width, image.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(image.width * scale);
+      canvas.height = Math.round(image.height * scale);
+      canvas.getContext("2d")!.drawImage(image, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+      canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("blob"))), "image/jpeg", 0.82);
     };
-    reader.readAsDataURL(file);
+    image.src = url;
   });
+}
+
+async function uploadPhoto(file: File): Promise<string> {
+  const blob = await resizeImage(file);
+  const path = `${crypto.randomUUID()}.jpg`;
+  const { error } = await supabase.storage.from(PHOTO_BUCKET).upload(path, blob, { contentType: "image/jpeg" });
+  if (error) throw error;
+  const key = STORAGE_PREFIX + path;
+  registerPhotoUrl(key, URL.createObjectURL(blob));
+  return key;
 }
 
 function NewPropertyPage() {
@@ -55,6 +62,7 @@ function NewPropertyPage() {
   const navigate = useNavigate();
   const fileRef = useRef<HTMLInputElement>(null);
   const [photos, setPhotos] = useState<string[]>([]);
+  const [uploading, setUploading] = useState(0);
   const [f, setF] = useState({
     title: "",
     type: "Apartamento" as PropertyType,
@@ -79,12 +87,20 @@ function NewPropertyPage() {
 
   async function onFiles(files: FileList | null) {
     if (!files) return;
-    try {
-      const urls = await Promise.all(Array.from(files).slice(0, 8).map((file) => resizeImage(file)));
-      setPhotos((p) => [...p, ...urls]);
-    } catch {
-      toast.error("Não foi possível ler a imagem");
-    }
+    const list = Array.from(files).slice(0, 12);
+    setUploading((n) => n + list.length);
+    await Promise.all(
+      list.map(async (file) => {
+        try {
+          const key = await uploadPhoto(file);
+          setPhotos((p) => [...p, key]);
+        } catch {
+          toast.error(`Não foi possível enviar ${file.name}`);
+        } finally {
+          setUploading((n) => n - 1);
+        }
+      }),
+    );
   }
 
   function submit(e: React.FormEvent) {
