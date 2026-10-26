@@ -9,7 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { NEIGHBORHOODS, PROPERTY_TYPES } from "@/lib/crm/rules";
-import { SAMPLE_PHOTO_KEYS, img } from "@/lib/crm/images";
+import { PHOTO_BUCKET, SAMPLE_PHOTO_KEYS, STORAGE_PREFIX, img, registerPhotoUrl } from "@/lib/crm/images";
+import { supabase } from "@/integrations/supabase/client";
 import { useCrm } from "@/lib/crm/store";
 import type { PropertyStatus, PropertyType } from "@/lib/crm/types";
 import { cn } from "@/lib/utils";
@@ -229,7 +230,7 @@ function NewPropertyPage() {
                 onClick={() => fileRef.current?.click()}
                 className="grid aspect-square place-items-center rounded-xl border-2 border-dashed text-muted-foreground transition hover:border-primary hover:text-primary"
               >
-                <span className="flex flex-col items-center gap-1 text-[11px] font-semibold"><ImagePlus className="size-5" />Enviar</span>
+                <span className="flex flex-col items-center gap-1 text-[11px] font-semibold"><ImagePlus className="size-5" />{uploading ? `Enviando ${uploading}…` : "Enviar"}</span>
               </button>
             </div>
             <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
