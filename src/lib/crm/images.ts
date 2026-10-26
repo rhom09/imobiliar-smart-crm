@@ -20,7 +20,20 @@ export const ASSETS: Record<string, string> = {
 
 export const SAMPLE_PHOTO_KEYS = Object.keys(ASSETS);
 
+export const PHOTO_BUCKET = "property-photos";
+export const STORAGE_PREFIX = "storage:";
+
+/** Resolved URLs for "storage:<path>" photos (signed URLs or local previews). */
+const resolved = new Map<string, string>();
+export function registerPhotoUrl(key: string, url: string) {
+  resolved.set(key, url);
+}
+
+export function storagePaths(photos: string[]) {
+  return photos.filter((s) => s.startsWith(STORAGE_PREFIX)).map((s) => s.slice(STORAGE_PREFIX.length));
+}
+
 export function img(src: string | undefined) {
   if (!src) return living;
-  return ASSETS[src] ?? src;
+  return ASSETS[src] ?? resolved.get(src) ?? (src.startsWith(STORAGE_PREFIX) ? living : src);
 }

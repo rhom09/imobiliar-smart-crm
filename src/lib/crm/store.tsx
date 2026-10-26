@@ -77,6 +77,11 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         role: adminIds.has(p.id) ? "admin" : "corretor",
       })),
     );
+    const paths = props.data!.flatMap((p) => storagePaths(p.photos ?? []));
+    if (paths.length) {
+      const { data: signed } = await supabase.storage.from(PHOTO_BUCKET).createSignedUrls(paths, 60 * 60 * 24 * 7);
+      for (const s of signed ?? []) if (s.signedUrl && s.path) registerPhotoUrl(STORAGE_PREFIX + s.path, s.signedUrl);
+    }
     setProperties(
       props.data!.map((p) => ({
         id: p.id,
