@@ -110,6 +110,10 @@ function NewPropertyPage() {
       toast.error("Preencha título, preço e área");
       return;
     }
+    if (uploading) {
+      toast.error("Aguarde o envio das fotos terminar");
+      return;
+    }
     if (photos.length === 0) {
       toast.error("Adicione ao menos uma foto");
       return;

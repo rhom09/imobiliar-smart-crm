@@ -14,5 +14,5 @@
 - Lead visibility is enforced by database RLS (owner or admin role via `has_role`); the admin "Simular como" switcher only narrows the client view and never widens what a corretor can read.
 - Public sign-up is disabled; accounts are created only by an admin through the `createTeamMember` server function (role re-checked server-side). The first account ever created becomes admin via the `handle_new_user` trigger.
 - Permission and matching logic (`visibleLeads`, `smartMatch`, WhatsApp links, urgency) stays pure in `src/lib/crm/rules.ts` with tests in `rules.test.ts`; components never re-implement these rules.
-- Property photos are stored as `asset:<key>` references (or data URLs for uploads) and resolved through `img()` in `src/lib/crm/images.ts`, so bundled asset hashes never end up persisted.
+- Property photos are stored as `asset:<key>` (bundled samples) or `storage:<path>` (private `property-photos` bucket; workspace blocks public buckets) and resolved through `img()` in `src/lib/crm/images.ts`; the store and public functions pre-sign storage paths, so URLs never get persisted.
 - Public property showcase lives at top-level `/imovel/$id` (SSR, no login); it reads/writes only through `src/lib/crm/public.functions.ts`, which exposes showcase fields only and creates leads in stage "novo" owned by the property's broker (fallback: admin).
