@@ -24,12 +24,22 @@ export const getPublicProperty = createServerFn({ method: "GET" })
       const { data: b } = await supabaseAdmin.from("profiles").select("name, phone, creci").eq("id", p.broker_id).maybeSingle();
       if (b) broker = { name: b.name, phone: b.phone, creci: b.creci };
     }
+    const raw: string[] = p.photos ?? [];
+    const paths = raw.filter((s) => s.startsWith("storage:")).map((s) => s.slice(8));
+    const signed = new Map<string, string>();
+    if (paths.length) {
+      const { data: urls } = await supabaseAdmin.storage.from("property-photos").createSignedUrls(paths, 60 * 60 * 24 * 7);
+      for (const u of urls ?? []) if (u.path && u.signedUrl) signed.set("storage:" + u.path, u.signedUrl);
+    }
+    const photos = raw
+      .map((s) => (s.startsWith("storage:") ? signed.get(s) ?? "" : s))
+      .filter((s) => s.startsWith("asset:") || s.startsWith("https://") || s.startsWith("data:"));
     return {
       id: p.id, code: p.code, title: p.title, type: p.type, price: Number(p.price),
       neighborhood: p.neighborhood, city: p.city, bedrooms: p.bedrooms, suites: p.suites,
       bathrooms: p.bathrooms, parking: p.parking, area: Number(p.area), condo: Number(p.condo),
       iptu: Number(p.iptu), description: p.description, features: p.features ?? [],
-      photos: (p.photos ?? []).filter((s: string) => s.startsWith("asset:") || s.startsWith("https://") || s.startsWith("data:")),
+      photos,
       status: p.status, broker,
     };
   });

@@ -1,0 +1,3 @@
+CREATE POLICY "Team can upload property photos" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'property-photos');
+CREATE POLICY "Team can view property photos" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'property-photos');
+CREATE POLICY "Admin can delete property photos" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'property-photos' AND public.has_role(auth.uid(), 'admin'));
