@@ -31,7 +31,10 @@ type Ctx = {
   reload: () => Promise<void>;
 };
 
-const CrmContext = createContext<Ctx | null>(null);
+// Keep one context object across dev hot reloads; a re-created context would orphan
+// the already-mounted provider and make useCrm throw until a full page reload.
+const globalCtx = globalThis as { __crmContext?: React.Context<Ctx | null> };
+const CrmContext = (globalCtx.__crmContext ??= createContext<Ctx | null>(null));
 const CONTACT_KINDS: Interaction["kind"][] = ["ligacao", "whatsapp", "visita", "nota"];
 
 const initials = (name: string) =>
