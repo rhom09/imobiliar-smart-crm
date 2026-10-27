@@ -261,7 +261,7 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         const row: Record<string, unknown> = {};
         const map: Record<string, string> = { brokerId: "broker_id" };
         for (const [k, v] of Object.entries(p)) row[map[k] ?? k] = k === "brokerId" ? v || null : v;
-        void supabase.from("properties").update(row).eq("id", id).then(({ error }) => error && fail(error));
+        void supabase.from("properties").update(row as never).eq("id", id).then(({ error }) => error && fail(error));
       },
       reload,
     };

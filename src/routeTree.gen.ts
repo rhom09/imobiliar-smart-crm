@@ -19,6 +19,7 @@ import { Route as ImovelIdRouteImport } from './routes/imovel.$id'
 import { Route as AuthenticatedImoveisIndexRouteImport } from './routes/_authenticated/imoveis.index'
 import { Route as AuthenticatedImoveisIdRouteImport } from './routes/_authenticated/imoveis.$id'
 import { Route as AuthenticatedImoveisNovoRouteImport } from './routes/_authenticated/imoveis.novo'
+import { Route as AuthenticatedImoveisIdEditarRouteImport } from './routes/_authenticated/imoveis.$id_.editar'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
@@ -72,6 +73,12 @@ const AuthenticatedImoveisNovoRoute =
     path: '/imoveis/novo',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedImoveisIdEditarRoute =
+  AuthenticatedImoveisIdEditarRouteImport.update({
+    id: '/imoveis/$id_/editar',
+    path: '/imoveis/$id/editar',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
@@ -83,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/imoveis/$id': typeof AuthenticatedImoveisIdRoute
   '/imoveis/novo': typeof AuthenticatedImoveisNovoRoute
   '/imoveis/': typeof AuthenticatedImoveisIndexRoute
+  '/imoveis/$id/editar': typeof AuthenticatedImoveisIdEditarRoute
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
@@ -94,6 +102,7 @@ export interface FileRoutesByTo {
   '/imoveis/$id': typeof AuthenticatedImoveisIdRoute
   '/imoveis/novo': typeof AuthenticatedImoveisNovoRoute
   '/imoveis': typeof AuthenticatedImoveisIndexRoute
+  '/imoveis/$id/editar': typeof AuthenticatedImoveisIdEditarRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +116,7 @@ export interface FileRoutesById {
   '/_authenticated/imoveis/$id': typeof AuthenticatedImoveisIdRoute
   '/_authenticated/imoveis/novo': typeof AuthenticatedImoveisNovoRoute
   '/_authenticated/imoveis/': typeof AuthenticatedImoveisIndexRoute
+  '/_authenticated/imoveis/$id_/editar': typeof AuthenticatedImoveisIdEditarRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -120,6 +130,7 @@ export interface FileRouteTypes {
     | '/imoveis/$id'
     | '/imoveis/novo'
     | '/imoveis/'
+    | '/imoveis/$id/editar'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
@@ -131,6 +142,7 @@ export interface FileRouteTypes {
     | '/imoveis/$id'
     | '/imoveis/novo'
     | '/imoveis'
+    | '/imoveis/$id/editar'
   id:
     | '__root__'
     | '/_authenticated'
@@ -143,6 +155,7 @@ export interface FileRouteTypes {
     | '/_authenticated/imoveis/$id'
     | '/_authenticated/imoveis/novo'
     | '/_authenticated/imoveis/'
+    | '/_authenticated/imoveis/$id_/editar'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -224,6 +237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedImoveisNovoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/imoveis/$id_/editar': {
+      id: '/_authenticated/imoveis/$id_/editar'
+      path: '/imoveis/$id/editar'
+      fullPath: '/imoveis/$id/editar'
+      preLoaderRoute: typeof AuthenticatedImoveisIdEditarRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -234,6 +254,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedImoveisIdRoute: typeof AuthenticatedImoveisIdRoute
   AuthenticatedImoveisNovoRoute: typeof AuthenticatedImoveisNovoRoute
   AuthenticatedImoveisIndexRoute: typeof AuthenticatedImoveisIndexRoute
+  AuthenticatedImoveisIdEditarRoute: typeof AuthenticatedImoveisIdEditarRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -243,6 +264,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedImoveisIdRoute: AuthenticatedImoveisIdRoute,
   AuthenticatedImoveisNovoRoute: AuthenticatedImoveisNovoRoute,
   AuthenticatedImoveisIndexRoute: AuthenticatedImoveisIndexRoute,
+  AuthenticatedImoveisIdEditarRoute: AuthenticatedImoveisIdEditarRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
