@@ -14,6 +14,7 @@ import {
   StickyNote,
   Wallet,
   Home,
+  Trash2,
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
@@ -25,6 +26,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { WhatsAppIcon } from "./WhatsAppIcon";
+import { ConfirmDelete } from "./ConfirmDelete";
 import { timeAgo } from "./LeadCard";
 import {
   STAGES,
@@ -67,7 +69,7 @@ export function LeadDrawer({ leadId, onClose }: { leadId: string | null; onClose
 }
 
 function LeadDetails({ lead }: { lead: Lead }) {
-  const { brokerById, properties, moveLead, addInteraction, viewer } = useCrm();
+  const { brokerById, properties, moveLead, addInteraction, viewer, deleteLead } = useCrm();
   const owner = brokerById(lead.ownerId);
   const interest = properties.find((p) => p.id === lead.interestPropertyId);
   const matches = smartMatch(lead, properties);
@@ -127,7 +129,21 @@ function LeadDetails({ lead }: { lead: Lead }) {
             </a>
           </Button>
         </div>
+        <ConfirmDelete
+          title={`Excluir ${lead.name}?`}
+          description="O cliente e todo o histórico de atendimento serão apagados de vez. Essa ação não pode ser desfeita."
+          onConfirm={async () => {
+            if (await deleteLead(lead.id)) toast.success("Cliente excluído");
+            else toast.error("Não foi possível excluir este cliente");
+          }}
+          trigger={
+            <Button variant="ghost" size="sm" className="mt-3 w-full text-destructive hover:text-destructive">
+              <Trash2 /> Excluir cliente
+            </Button>
+          }
+        />
       </div>
+
 
       <Tabs defaultValue="match" className="flex-1 px-5 pt-4 pb-8">
         <TabsList className="grid w-full grid-cols-3">
