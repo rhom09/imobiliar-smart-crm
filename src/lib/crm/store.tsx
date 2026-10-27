@@ -28,6 +28,9 @@ type Ctx = {
   addLead: (l: Omit<Lead, "id" | "createdAt" | "lastContactAt" | "interactions">) => Lead;
   addProperty: (p: Omit<Property, "id" | "code" | "createdAt">) => Property;
   updateProperty: (id: string, p: Partial<Omit<Property, "id" | "code" | "createdAt">>) => void;
+  /** Resolve false when the database refused (e.g. no permission). */
+  deleteLead: (id: string) => Promise<boolean>;
+  deleteProperty: (id: string) => Promise<boolean>;
   reload: () => Promise<void>;
 };
 
@@ -265,6 +268,19 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         const map: Record<string, string> = { brokerId: "broker_id" };
         for (const [k, v] of Object.entries(p)) row[map[k] ?? k] = k === "brokerId" ? v || null : v;
         void supabase.from("properties").update(row as never).eq("id", id).then(({ error }) => error && fail(error));
+      },
+      deleteLead: async (id) => {
+        const { data, error } = await supabase.from("leads").delete().eq("id", id).select("id");
+        if (error || !data?.length) return false;
+        setLeads((ls) => ls.filter((l) => l.id !== id));
+        return true;
+      },
+      deleteProperty: async (id) => {
+        const { data, error } = await supabase.from("properties").delete().eq("id", id).select("id");
+        if (error || !data?.length) return false;
+        setProperties((ps) => ps.filter((p) => p.id !== id));
+        setLeads((ls) => ls.map((l) => (l.interestPropertyId === id ? { ...l, interestPropertyId: undefined } : l)));
+        return true;
       },
       reload,
     };
