@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   ArrowLeft,
@@ -13,11 +13,13 @@ import {
   Share2,
   Sparkles,
   BedSingle,
+  Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { LoadingBlock } from "@/components/crm/AppShell";
 import { STATUS_META } from "@/components/crm/PropertyCard";
 import { WhatsAppIcon } from "@/components/crm/WhatsAppIcon";
+import { ConfirmDelete } from "@/components/crm/ConfirmDelete";
 import { LeadDrawer, propertyUrl } from "@/components/crm/LeadDrawer";
 import { Button } from "@/components/ui/button";
 import { brl, formatPhone, propertySheet, smartMatch, waLink } from "@/lib/crm/rules";
@@ -42,7 +44,8 @@ export const Route = createFileRoute("/_authenticated/imoveis/$id")({
 
 function PropertyPage() {
   const { id } = Route.useParams();
-  const { ready, properties, brokerById, leads, updateProperty } = useCrm();
+  const { ready, properties, brokerById, leads, updateProperty, deleteProperty, isAdmin } = useCrm();
+  const navigate = useNavigate();
   const [photo, setPhoto] = useState(0);
   const [openLead, setOpenLead] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -98,6 +101,23 @@ function PropertyPage() {
           <Link to="/imoveis"><ArrowLeft /> Catálogo</Link>
         </Button>
         <div className="flex gap-2">
+          {isAdmin && (
+            <ConfirmDelete
+              title={`Excluir ${p.title}?`}
+              description="O imóvel sai do catálogo e a página pública deixa de abrir. Os clientes interessados continuam no funil."
+              onConfirm={async () => {
+                if (await deleteProperty(p.id)) {
+                  toast.success("Imóvel excluído");
+                  void navigate({ to: "/imoveis" });
+                } else toast.error("Não foi possível excluir este imóvel");
+              }}
+              trigger={
+                <Button variant="outline" size="sm" className="rounded-full bg-card text-destructive" aria-label="Excluir imóvel">
+                  <Trash2 /> <span className="hidden sm:inline">Excluir</span>
+                </Button>
+              }
+            />
+          )}
           <Button asChild variant="outline" size="sm" className="rounded-full bg-card">
             <Link to="/imoveis/$id/editar" params={{ id: p.id }} aria-label="Editar imóvel"><Pencil /> <span className="hidden sm:inline">Editar</span></Link>
           </Button>
