@@ -99,7 +99,7 @@ function PropertyPage() {
         </Button>
         <div className="flex gap-2">
           <Button asChild variant="outline" size="sm" className="rounded-full bg-card">
-            <Link to="/imoveis/$id/editar" params={{ id: p.id }}><Pencil /> <span className="hidden sm:inline">Editar</span></Link>
+            <Link to="/imoveis/$id/editar" params={{ id: p.id }} aria-label="Editar imóvel"><Pencil /> <span className="hidden sm:inline">Editar</span></Link>
           </Button>
           <Button variant="outline" size="sm" className="rounded-full bg-card" onClick={copy}>
             {copied ? <Check /> : <Link2 />} <span className="hidden sm:inline">Copiar link</span>
