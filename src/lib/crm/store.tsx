@@ -27,6 +27,7 @@ type Ctx = {
   addInteraction: (leadId: string, i: Omit<Interaction, "id" | "at" | "authorId"> & { at?: string }) => void;
   addLead: (l: Omit<Lead, "id" | "createdAt" | "lastContactAt" | "interactions">) => Lead;
   addProperty: (p: Omit<Property, "id" | "code" | "createdAt">) => Property;
+  updateProperty: (id: string, p: Partial<Omit<Property, "id" | "code" | "createdAt">>) => void;
   reload: () => Promise<void>;
 };
 
@@ -254,6 +255,13 @@ export function CrmProvider({ children }: { children: ReactNode }) {
             setProperties((ps) => ps.map((x) => (x.id === prop.id ? { ...x, code: data.code } : x)));
           });
         return prop;
+      },
+      updateProperty: (id, p) => {
+        setProperties((ps) => ps.map((x) => (x.id === id ? { ...x, ...p } : x)));
+        const row: Record<string, unknown> = {};
+        const map: Record<string, string> = { brokerId: "broker_id" };
+        for (const [k, v] of Object.entries(p)) row[map[k] ?? k] = k === "brokerId" ? v || null : v;
+        void supabase.from("properties").update(row).eq("id", id).then(({ error }) => error && fail(error));
       },
       reload,
     };

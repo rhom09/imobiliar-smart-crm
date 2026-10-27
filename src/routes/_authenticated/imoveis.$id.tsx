@@ -7,6 +7,7 @@ import {
   Car,
   Check,
   Link2,
+  Pencil,
   MapPin,
   Maximize2,
   Share2,
@@ -41,7 +42,7 @@ export const Route = createFileRoute("/_authenticated/imoveis/$id")({
 
 function PropertyPage() {
   const { id } = Route.useParams();
-  const { ready, properties, brokerById, leads } = useCrm();
+  const { ready, properties, brokerById, leads, updateProperty } = useCrm();
   const [photo, setPhoto] = useState(0);
   const [openLead, setOpenLead] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -97,6 +98,9 @@ function PropertyPage() {
           <Link to="/imoveis"><ArrowLeft /> Catálogo</Link>
         </Button>
         <div className="flex gap-2">
+          <Button asChild variant="outline" size="sm" className="rounded-full bg-card">
+            <Link to="/imoveis/$id/editar" params={{ id: p.id }}><Pencil /> <span className="hidden sm:inline">Editar</span></Link>
+          </Button>
           <Button variant="outline" size="sm" className="rounded-full bg-card" onClick={copy}>
             {copied ? <Check /> : <Link2 />} <span className="hidden sm:inline">Copiar link</span>
           </Button>
@@ -104,6 +108,26 @@ function PropertyPage() {
             <Share2 /> Compartilhar
           </Button>
         </div>
+      </div>
+
+      <div className="mt-3 flex gap-1.5 overflow-x-auto px-4 md:px-8">
+        {(Object.keys(STATUS_META) as (keyof typeof STATUS_META)[]).map((st) => (
+          <button
+            key={st}
+            type="button"
+            onClick={() => {
+              if (st === p.status) return;
+              updateProperty(p.id, { status: st });
+              toast.success(`Situação: ${STATUS_META[st].label}`);
+            }}
+            className={cn(
+              "rounded-full border px-3 py-1.5 text-xs font-semibold transition",
+              st === p.status ? STATUS_META[st].className : "bg-card text-muted-foreground",
+            )}
+          >
+            {STATUS_META[st].label}
+          </button>
+        ))}
       </div>
 
       {/* Gallery */}
