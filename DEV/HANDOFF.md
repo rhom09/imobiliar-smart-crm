@@ -12,12 +12,12 @@ This file should stay small. Refresh it after substantive work or run `orquestra
 
 ## Latest Work
 
-- Entry: 2026-10-29 - Implementação da Exportação de Leads para CSV
-- Spec: `DEV/SPECS/ACTIVE.md`
-- Changed: `src/lib/crm/export.ts`, `src/routes/_authenticated/index.tsx`, `DEV/FEATURES.md`, `DEV/ROADMAP.md`
-- Verified: Botão "Exportar CSV" adicionado com sucesso na página do funil.
+- Entry: 2026-10-29 - Implementação da Edição de Perfil e Dados da Imobiliária
+- Spec: `DEV/ROADMAP.md` (Item 2)
+- Changed: `drizzle/migrations/0001_agency.sql`, `src/lib/crm/store.tsx`, `src/routes/_authenticated/imobiliaria.tsx`, `DEV/FEATURES.md`, `DEV/ROADMAP.md`
+- Verified: `npx tsc --noEmit` e `npx vitest run` executados com sucesso (12 testes passando).
 - Risks: Nenhum.
-- Next context: Funcionalidade de exportação de leads concluída e documentada. Pronto para novas solicitações.
+- Next context: Edição de perfil e dados da imobiliária concluída. Pronto para os próximos itens do roadmap.
 
 ## Recent Entries
 

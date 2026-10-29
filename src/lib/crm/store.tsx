@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { visibleLeads } from "./rules";
 import { PHOTO_BUCKET, STORAGE_PREFIX, registerPhotoUrl, storagePaths } from "./images";
 import type {
+  Agency,
   Broker,
   Interaction,
   InteractionKind,
@@ -22,6 +23,7 @@ import type {
   StageId,
   Viewer,
 } from "./types";
+import { AGENCY } from "./seed";
 
 type Me = { id: string; isAdmin: boolean };
 
@@ -35,6 +37,7 @@ type Ctx = {
   brokers: Broker[];
   /** Everyone in the agency, admins included. */
   team: (Broker & { email: string; role: "admin" | "corretor" })[];
+  agency: Agency;
   leads: Lead[]; // filtered by viewer (database already filters for corretores)
   allLeads: Lead[];
   properties: Property[];
@@ -49,6 +52,8 @@ type Ctx = {
   addLead: (l: Omit<Lead, "id" | "createdAt" | "lastContactAt" | "interactions">) => Lead;
   addProperty: (p: Omit<Property, "id" | "code" | "createdAt">) => Property;
   updateProperty: (id: string, p: Partial<Omit<Property, "id" | "code" | "createdAt">>) => void;
+  updateProfile: (id: string, data: { name?: string; phone?: string; creci?: string }) => Promise<boolean>;
+  updateAgency: (data: Partial<Agency>) => Promise<boolean>;
   /** Resolve false when the database refused (e.g. no permission). */
   deleteLead: (id: string) => Promise<boolean>;
   deleteProperty: (id: string) => Promise<boolean>;
@@ -79,6 +84,7 @@ function fail(e: unknown) {
 export function CrmProvider({ children }: { children: ReactNode }) {
   const [me, setMe] = useState<Me | null>(null);
   const [team, setTeam] = useState<Ctx["team"]>([]);
+  const [agency, setAgency] = useState<Agency>(AGENCY);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [properties, setProperties] = useState<Property[]>([]);
   const [ready, setReady] = useState(false);
@@ -87,12 +93,13 @@ export function CrmProvider({ children }: { children: ReactNode }) {
   const reload = useCallback(async () => {
     const { data: u } = await supabase.auth.getUser();
     if (!u.user) return;
-    const [profiles, roles, props, leadRows, inter] = await Promise.all([
+    const [profiles, roles, props, leadRows, inter, agencyRes] = await Promise.all([
       supabase.from("profiles").select("*").order("created_at"),
       supabase.from("user_roles").select("user_id, role"),
       supabase.from("properties").select("*").order("created_at", { ascending: false }),
       supabase.from("leads").select("*").order("created_at", { ascending: false }),
       supabase.from("interactions").select("*").order("at", { ascending: false }),
+      supabase.from("agency" as never).select("*").maybeSingle(),
     ]);
     const err = profiles.error || roles.error || props.error || leadRows.error || inter.error;
     if (err) {
@@ -113,6 +120,26 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         role: adminIds.has(p.id) ? "admin" : "corretor",
       })),
     );
+    const agencyData = agencyRes.data as {
+      name: string;
+      creci: string;
+      city: string;
+      address: string;
+      phone: string;
+      owner_name: string;
+      logo_url: string | null;
+    } | null;
+    if (agencyData) {
+      const baseAgency = {
+        name: agencyData.name,
+        creci: agencyData.creci,
+        city: agencyData.city,
+        address: agencyData.address,
+        phone: agencyData.phone,
+        ownerName: agencyData.owner_name,
+      };
+      setAgency(agencyData.logo_url ? { ...baseAgency, logoUrl: agencyData.logo_url } : baseAgency);
+    }
     const paths = props.data!.flatMap((p) => storagePaths(p.photos ?? []));
     if (paths.length) {
       const { data: signed } = await supabase.storage
@@ -237,6 +264,7 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       viewer,
       brokers,
       team,
+      agency,
       allLeads: leads,
       leads: visibleLeads(leads, viewer),
       properties,
@@ -341,6 +369,63 @@ export function CrmProvider({ children }: { children: ReactNode }) {
           .eq("id", id)
           .then(({ error }) => error && fail(error));
       },
+      updateProfile: async (id, data) => {
+        const updatePayload: Record<string, unknown> = {};
+        if (data.name !== undefined) updatePayload["name"] = data.name;
+        if (data.phone !== undefined) updatePayload["phone"] = data.phone;
+        if (data.creci !== undefined) updatePayload["creci"] = data.creci;
+        const { error } = await supabase
+          .from("profiles")
+          .update(updatePayload as never)
+          .eq("id", id);
+        if (error) {
+          fail(error);
+          return false;
+        }
+        setTeam((ts) =>
+          ts.map((t) =>
+            t.id === id
+              ? {
+                  ...t,
+                  name: data.name ?? t.name,
+                  phone: data.phone ?? t.phone,
+                  creci: data.creci ?? t.creci,
+                  initials: data.name ? initials(data.name) : t.initials,
+                }
+              : t,
+          ),
+        );
+        toast.success("Perfil atualizado com sucesso!");
+        return true;
+      },
+      updateAgency: async (data) => {
+        const { data: existing } = await supabase.from("agency" as never).select("id").maybeSingle();
+        let error = null;
+        const row = {
+          name: data.name ?? agency.name,
+          creci: data.creci ?? agency.creci,
+          city: data.city ?? agency.city,
+          address: data.address ?? agency.address,
+          phone: data.phone ?? agency.phone,
+          owner_name: data.ownerName ?? agency.ownerName,
+          logo_url: data.logoUrl !== undefined ? data.logoUrl : agency.logoUrl ?? null,
+        };
+        const existingRecord = existing as { id: string } | null;
+        if (existingRecord) {
+          const res = await supabase.from("agency" as never).update(row as never).eq("id", existingRecord.id);
+          error = res.error;
+        } else {
+          const res = await supabase.from("agency" as never).insert(row as never);
+          error = res.error;
+        }
+        if (error) {
+          fail(error);
+          return false;
+        }
+        setAgency((a) => ({ ...a, ...data }));
+        toast.success("Dados da imobiliária atualizados com sucesso!");
+        return true;
+      },
       deleteLead: async (id) => {
         const { data, error } = await supabase.from("leads").delete().eq("id", id).select("id");
         if (error || !data?.length) return false;
@@ -364,7 +449,7 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       },
       reload,
     };
-  }, [ready, me, team, leads, properties, viewer, reload]);
+  }, [ready, me, team, agency, leads, properties, viewer, reload]);
 
   return <CrmContext.Provider value={value}>{children}</CrmContext.Provider>;
 }

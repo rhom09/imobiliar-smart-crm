@@ -39,10 +39,11 @@
 - Cadastro de corretores restrito ao Dono/Admin (`createTeamMember`).
 - Segurança garantida pelo banco de dados (RLS): o corretor enxerga apenas os próprios clientes.
 
-## Exportação e Importação de Leads
+## Exportação, Importação e Perfil / Imobiliária
 
 - **Exportação de leads (CSV):** Funcionalidade para administradores baixarem a lista de leads do funil em formato CSV (UTF-8 com BOM).
 - **Importação de leads (CSV):** Funcionalidade para administradores importarem leads em lote via CSV com validação prévia de dados.
+- **Edição de Perfil e Dados da Imobiliária:** Corretores editam nome, telefone e CRECI em `/imobiliaria`; administradores editam dados institucionais da imobiliária (tabela `agency` com RLS).
 
 ## Sincronização com GitHub
 

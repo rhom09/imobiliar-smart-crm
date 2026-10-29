@@ -1,11 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Building2, Check, Crown, Lock, MapPin, Phone, Trophy, Users, X } from "lucide-react";
+import { Building2, Check, Crown, Edit2, Lock, MapPin, Phone, Trophy, Users, X } from "lucide-react";
+import { useState } from "react";
 import { PageHeader, LoadingBlock } from "@/components/crm/AppShell";
 import { OPEN_STAGES, STAGES, brlCompact, formatPhone } from "@/lib/crm/rules";
-import { AGENCY } from "@/lib/crm/seed";
 import { useCrm } from "@/lib/crm/store";
 import type { Lead, Property } from "@/lib/crm/types";
 import { cn } from "@/lib/utils";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/_authenticated/imobiliaria")({
   head: () => ({
@@ -66,7 +70,27 @@ function AgencyPage() {
     brokers,
     currentBroker,
     isAdmin: realAdmin,
+    me,
+    agency,
+    updateProfile,
+    updateAgency,
   } = useCrm();
+
+  const [editProfileOpen, setEditProfileOpen] = useState(false);
+  const [editAgencyOpen, setEditAgencyOpen] = useState(false);
+
+  const activeUser = brokers.find((b) => b.id === me?.id) || currentBroker || { name: "", phone: "", creci: "" };
+  const [profileName, setProfileName] = useState(activeUser.name);
+  const [profilePhone, setProfilePhone] = useState(activeUser.phone);
+  const [profileCreci, setProfileCreci] = useState(activeUser.creci);
+
+  const [agencyName, setAgencyName] = useState(agency.name);
+  const [agencyCreci, setAgencyCreci] = useState(agency.creci);
+  const [agencyCity, setAgencyCity] = useState(agency.city);
+  const [agencyAddress, setAgencyAddress] = useState(agency.address);
+  const [agencyPhone, setAgencyPhone] = useState(agency.phone);
+  const [agencyOwnerName, setAgencyOwnerName] = useState(agency.ownerName);
+
   if (!ready) return <LoadingBlock />;
 
   const isAdmin = viewer.kind === "admin";
@@ -79,6 +103,30 @@ function AgencyPage() {
     { label: "Pipeline aberto", value: brlCompact(m.pipeline) },
   ];
 
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!me?.id) return;
+    const ok = await updateProfile(me.id, {
+      name: profileName,
+      phone: profilePhone,
+      creci: profileCreci,
+    });
+    if (ok) setEditProfileOpen(false);
+  };
+
+  const handleSaveAgency = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const ok = await updateAgency({
+      name: agencyName,
+      creci: agencyCreci,
+      city: agencyCity,
+      address: agencyAddress,
+      phone: agencyPhone,
+      ownerName: agencyOwnerName,
+    });
+    if (ok) setEditAgencyOpen(false);
+  };
+
   return (
     <div className="pb-10">
       <PageHeader
@@ -89,14 +137,47 @@ function AgencyPage() {
             : "Seus números e o que você pode acessar no CRM."
         }
         actions={
-          realAdmin ? (
-            <Link
-              to="/equipe"
-              className="inline-flex h-10 items-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground"
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setProfileName(currentBroker?.name || "");
+                setProfilePhone(currentBroker?.phone || "");
+                setProfileCreci(currentBroker?.creci || "");
+                setEditProfileOpen(true);
+              }}
+              className="gap-2 rounded-xl"
             >
-              <Users className="size-4" /> Gerenciar equipe
-            </Link>
-          ) : undefined
+              <Edit2 className="size-4" /> Editar meu perfil
+            </Button>
+            {isAdmin && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setAgencyName(agency.name);
+                  setAgencyCreci(agency.creci);
+                  setAgencyCity(agency.city);
+                  setAgencyAddress(agency.address);
+                  setAgencyPhone(agency.phone);
+                  setAgencyOwnerName(agency.ownerName);
+                  setEditAgencyOpen(true);
+                }}
+                className="gap-2 rounded-xl"
+              >
+                <Building2 className="size-4" /> Editar imobiliária
+              </Button>
+            )}
+            {realAdmin && (
+              <Link
+                to="/equipe"
+                className="inline-flex h-10 items-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground"
+              >
+                <Users className="size-4" /> Gerenciar equipe
+              </Link>
+            )}
+          </div>
         }
       />
 
@@ -121,24 +202,24 @@ function AgencyPage() {
                   )}
                 </p>
                 <h2 className="mt-1 font-display text-2xl font-bold text-sidebar-accent-foreground">
-                  {isAdmin ? AGENCY.name : currentBroker?.name}
+                  {isAdmin ? agency.name : currentBroker?.name}
                 </h2>
                 <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-sidebar-foreground/75">
-                  <span>{isAdmin ? AGENCY.creci : currentBroker?.creci}</span>
+                  <span>{isAdmin ? agency.creci : currentBroker?.creci}</span>
                   <span className="flex items-center gap-1">
                     <Phone className="size-3.5" />
-                    {formatPhone(isAdmin ? AGENCY.phone : currentBroker!.phone)}
+                    {formatPhone(isAdmin ? agency.phone : currentBroker!.phone)}
                   </span>
                   {isAdmin && (
                     <span className="flex items-center gap-1">
                       <MapPin className="size-3.5" />
-                      {AGENCY.address}
+                      {agency.address}
                     </span>
                   )}
                 </div>
                 {isAdmin && (
                   <p className="mt-2 text-sm text-sidebar-foreground/75">
-                    Responsável: {AGENCY.ownerName}
+                    Responsável: {agency.ownerName}
                   </p>
                 )}
               </div>
@@ -286,6 +367,132 @@ function AgencyPage() {
           </div>
         </aside>
       </div>
+
+      {/* Edit Profile Dialog */}
+      <Dialog open={editProfileOpen} onOpenChange={setEditProfileOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar meu perfil</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSaveProfile} className="space-y-4 pt-2">
+            <div>
+              <Label htmlFor="profile-name">Nome completo</Label>
+              <Input
+                id="profile-name"
+                value={profileName}
+                onChange={(e) => setProfileName(e.target.value)}
+                required
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="profile-phone">Telefone / WhatsApp</Label>
+              <Input
+                id="profile-phone"
+                value={profilePhone}
+                onChange={(e) => setProfilePhone(e.target.value)}
+                required
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="profile-creci">CRECI</Label>
+              <Input
+                id="profile-creci"
+                value={profileCreci}
+                onChange={(e) => setProfileCreci(e.target.value)}
+                required
+                className="mt-1"
+              />
+            </div>
+            <DialogFooter className="pt-4">
+              <Button type="button" variant="outline" onClick={() => setEditProfileOpen(false)}>
+                Cancelar
+              </Button>
+              <Button type="submit">Salvar alterações</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Agency Dialog */}
+      <Dialog open={editAgencyOpen} onOpenChange={setEditAgencyOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar dados da imobiliária</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSaveAgency} className="space-y-4 pt-2">
+            <div>
+              <Label htmlFor="agency-name">Nome da imobiliária</Label>
+              <Input
+                id="agency-name"
+                value={agencyName}
+                onChange={(e) => setAgencyName(e.target.value)}
+                required
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="agency-creci">CRECI Jurídico</Label>
+              <Input
+                id="agency-creci"
+                value={agencyCreci}
+                onChange={(e) => setAgencyCreci(e.target.value)}
+                required
+                className="mt-1"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label htmlFor="agency-city">Cidade / Estado</Label>
+                <Input
+                  id="agency-city"
+                  value={agencyCity}
+                  onChange={(e) => setAgencyCity(e.target.value)}
+                  required
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="agency-phone">Telefone / WhatsApp</Label>
+                <Input
+                  id="agency-phone"
+                  value={agencyPhone}
+                  onChange={(e) => setAgencyPhone(e.target.value)}
+                  required
+                  className="mt-1"
+                />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="agency-address">Endereço</Label>
+              <Input
+                id="agency-address"
+                value={agencyAddress}
+                onChange={(e) => setAgencyAddress(e.target.value)}
+                required
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="agency-owner">Responsável / Dono</Label>
+              <Input
+                id="agency-owner"
+                value={agencyOwnerName}
+                onChange={(e) => setAgencyOwnerName(e.target.value)}
+                required
+                className="mt-1"
+              />
+            </div>
+            <DialogFooter className="pt-4">
+              <Button type="button" variant="outline" onClick={() => setEditAgencyOpen(false)}>
+                Cancelar
+              </Button>
+              <Button type="submit">Salvar imobiliária</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -308,3 +515,4 @@ function Mark({ ok, active }: { ok: boolean; active: boolean }) {
     </span>
   );
 }
+

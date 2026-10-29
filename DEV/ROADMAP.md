@@ -13,6 +13,7 @@ Estado atual das melhorias planejadas e resumo das funcionalidades entregues.
 - **Notificação / Alerta de Novos Leads:** Badge de contagem no topo do CRM para novos leads vindos da página pública.
 - **Exportação de Leads (CSV):** Botão "Exportar CSV" no Funil para administradores baixarem a listagem filtrada de clientes com codificação UTF-8 (BOM) para o Excel.
 - **Importação de Leads (CSV):** Importação em lote (`ImportLeadsDialog`) com pré-visualização, validação de dados e normalização de telefones, acessível a administradores no Funil.
+- **Edição de Perfil e Dados da Imobiliária:** Corretores editam nome, telefone e CRECI em seu perfil; Donos/Admins editam nome, CRECI, endereço, cidade, telefone e responsável da imobiliária (tabela `agency` persistida com RLS).
 - **Sincronização com GitHub:** todo o código atualizado automaticamente no repositório conectado.
 
 ## Pendências para fechar com chave de ouro
@@ -21,10 +22,6 @@ Estado atual das melhorias planejadas e resumo das funcionalidades entregues.
 - **Hoje:** existe exclusão definitiva (`deleteLead`, `deleteProperty`).
 - **Objetivo:** adicionar arquivamento (`archived_at`) para esconder sem apagar (imóvel cadastrado errado, limpeza de leads de teste).
 
-### 2. Edição de perfil e dados da imobiliária
-- **Objetivo:** Permitir que cada corretor edite telefone, CRECI e foto de perfil, e que o Dono edite dados e logo da imobiliária.
-- **Atenção:** Nova tabela `agency` com RLS, colunas de avatar/logo no Storage.
-
-### 3. Publicação (Deploy / Domínio Próprio)
+### 2. Publicação (Deploy / Domínio Próprio)
 - **Objetivo:** Sistema no ar com domínio próprio (ex.: `crm.suaimobiliaria.com.br`) para uso oficial da equipe.
 - **Atenção:** Atualizar Site URL e Redirect URLs do Auth (Google e redefinição de senha).

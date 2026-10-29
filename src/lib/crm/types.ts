@@ -77,4 +77,5 @@ export type Agency = {
   address: string;
   phone: string;
   ownerName: string;
+  logoUrl?: string;
 };
