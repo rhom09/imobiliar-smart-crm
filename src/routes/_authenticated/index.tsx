@@ -1,13 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { AlertTriangle, CalendarClock, FileSignature, Search, Users } from "lucide-react";
+import { AlertTriangle, CalendarClock, Download, FileSignature, Search, Users } from "lucide-react";
 import { PageHeader, LoadingBlock } from "@/components/crm/AppShell";
 import { KanbanBoard } from "@/components/crm/KanbanBoard";
 import { LeadDrawer } from "@/components/crm/LeadDrawer";
 import { NewLeadDialog } from "@/components/crm/NewLeadDialog";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { OPEN_STAGES, brlCompact, contactUrgency } from "@/lib/crm/rules";
 import { useCrm } from "@/lib/crm/store";
+import { exportLeadsToCSV } from "@/lib/crm/export";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/")({
