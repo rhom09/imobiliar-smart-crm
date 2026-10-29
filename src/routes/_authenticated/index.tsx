@@ -87,7 +87,20 @@ function FunnelPage() {
             ? "Visão geral de todos os corretores. Arraste os cards entre as etapas."
             : "Você está vendo apenas os seus clientes."
         }
-        actions={<NewLeadDialog onCreated={setOpenId} />}
+        actions={
+          <div className="flex gap-2">
+            {viewer.kind === "admin" && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => exportLeadsToCSV(filtered)}
+              >
+                <Download className="mr-2 size-4" /> Exportar CSV
+              </Button>
+            )}
+            <NewLeadDialog onCreated={setOpenId} />
+          </div>
+        }
       />
 
       {!ready ? (

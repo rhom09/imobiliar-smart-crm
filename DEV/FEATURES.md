@@ -48,6 +48,5 @@
 
 - Arquivamento de imóveis e leads (opcional, já que a exclusão definitiva existe).
 - **Notificação / Alerta de novos leads:** Badge de contagem no topo do CRM para novos leads vindos da página pública.
-- Edição de perfil (corretor) e dados da imobiliária (dono).
-- Exportação de leads (CSV/Excel).
+- **Exportação de leads (CSV):** Funcionalidade para administradores baixarem a lista de leads do funil em formato CSV.
 - Deploy com domínio próprio.

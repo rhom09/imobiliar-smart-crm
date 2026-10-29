@@ -12,12 +12,12 @@ This file should stay small. Refresh it after substantive work or run `orquestra
 
 ## Latest Work
 
-- Entry: 2026-10-29 - Confirmação e atualização da documentação sobre Exclusão de Leads e Imóveis
+- Entry: 2026-10-29 - Implementação da Exportação de Leads para CSV
 - Spec: `DEV/SPECS/ACTIVE.md`
-- Changed: `DEV/ROADMAP.md` e `DEV/FEATURES.md` gravados e verificados via `git diff`.
-- Verified: `git diff`
-- Risks: Nenhum
-- Next context: Documentação atualizada e confirmada. Pronto para avançar para o próximo item do roadmap (Notificação de novos leads ou Edição de perfil).
+- Changed: `src/lib/crm/export.ts`, `src/routes/_authenticated/index.tsx`, `DEV/FEATURES.md`, `DEV/ROADMAP.md`
+- Verified: Botão "Exportar CSV" adicionado com sucesso na página do funil.
+- Risks: Nenhum.
+- Next context: Funcionalidade de exportação de leads concluída e documentada. Pronto para novas solicitações.
 
 ## Recent Entries
 

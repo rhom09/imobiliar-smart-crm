@@ -26,11 +26,11 @@ Use `HANDOFF.md` for the current snapshot and `HANDOFFS/WORKLOG_ARCHIVE.md` for 
 - Risks: Nenhum; `bun.lock` preservado
 - Next context: Ambiente pronto para desenvolvimento via `bun run dev` ou testes com `bun run test`
 
-## 2026-10-29 - Confirmação e atualização da documentação sobre Exclusão de Leads e Imóveis
+## 2026-10-29 - Implementação da Exportação de Leads para CSV
 
 - Spec: `DEV/SPECS/ACTIVE.md`
-- Changed: `DEV/ROADMAP.md` e `DEV/FEATURES.md` atualizados explicitamente gravando que a exclusão de leads e imóveis já está 100% pronta e conectada.
-- Why: O usuário solicitou confirmação de que os arquivos foram gravados. Validação realizada com `Write` e conferida via `git diff`.
-- Verified: `git diff` confirmando alterações escritas com sucesso.
+- Changed: `src/lib/crm/export.ts`, `src/routes/_authenticated/index.tsx`, `DEV/FEATURES.md`, `DEV/ROADMAP.md`
+- Why: Permitir que administradores exportem a lista de leads do funil em formato CSV com suporte a UTF-8/BOM para Excel.
+- Verified: Botão "Exportar CSV" adicionado e integrado na interface do Funil (`/`).
 - Risks: Nenhum.
-- Next context: Documentação precisa e sincronizada. Pronto para o próximo item do roadmap.
+- Next context: Funcionalidade entregue e documentada. Pronto para o próximo item do roadmap.
