@@ -28,7 +28,7 @@ import { cn } from "@/lib/utils";
 export type PropertyInput = Omit<Property, "id" | "code" | "createdAt">;
 
 /** Downscale uploads before sending them to storage. */
-function resizeImage(file: File, max = 1600): Promise<Blob> {
+export async function resizeImage(file: File, max = 1600): Promise<Blob> {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(file);
     const image = new Image();
@@ -46,8 +46,8 @@ function resizeImage(file: File, max = 1600): Promise<Blob> {
   });
 }
 
-async function uploadPhoto(file: File): Promise<string> {
-  const blob = await resizeImage(file);
+export async function uploadPhoto(file: File, max = 1600): Promise<string> {
+  const blob = await resizeImage(file, max);
   const path = `${crypto.randomUUID()}.jpg`;
   const { error } = await supabase.storage
     .from(PHOTO_BUCKET)

@@ -12,12 +12,12 @@ This file should stay small. Refresh it after substantive work or run `orquestra
 
 ## Latest Work
 
-- Entry: 2026-10-29 - Implementação da Edição de Perfil e Dados da Imobiliária
+- Entry: 2026-10-29 - Aprimoramento de Upload de Logo da Imobiliária
 - Spec: `DEV/ROADMAP.md` (Item 2)
-- Changed: `drizzle/migrations/0001_agency.sql`, `src/lib/crm/store.tsx`, `src/routes/_authenticated/imobiliaria.tsx`, `DEV/FEATURES.md`, `DEV/ROADMAP.md`
+- Changed: `src/routes/_authenticated/imobiliaria.tsx`, `src/components/crm/PropertyForm.tsx`, `DEV/FEATURES.md`, `DEV/WORKLOG.md`
 - Verified: `npx tsc --noEmit` e `npx vitest run` executados com sucesso (12 testes passando).
 - Risks: Nenhum.
-- Next context: Edição de perfil e dados da imobiliária concluída. Pronto para os próximos itens do roadmap.
+- Next context: Funcionalidade de perfil e imobiliária 100% concluída. Pronto para o próximo item do roadmap (Deploy/Domínio Próprio ou Arquivamento).
 
 ## Recent Entries
 

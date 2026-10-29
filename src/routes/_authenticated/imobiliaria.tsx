@@ -1,6 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Building2, Check, Crown, Edit2, Lock, MapPin, Phone, Trophy, Users, X } from "lucide-react";
-import { useState } from "react";
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useRef, useState } from "react";
+import { Building2, Check, Crown, Edit2, ImagePlus, Lock, MapPin, Phone, Trophy, Users, X } from "lucide-react";
 import { PageHeader, LoadingBlock } from "@/components/crm/AppShell";
 import { OPEN_STAGES, STAGES, brlCompact, formatPhone } from "@/lib/crm/rules";
 import { useCrm } from "@/lib/crm/store";
@@ -10,6 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { uploadPhoto } from "@/components/crm/PropertyForm";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/imobiliaria")({
   head: () => ({
@@ -90,6 +92,9 @@ function AgencyPage() {
   const [agencyAddress, setAgencyAddress] = useState(agency.address);
   const [agencyPhone, setAgencyPhone] = useState(agency.phone);
   const [agencyOwnerName, setAgencyOwnerName] = useState(agency.ownerName);
+  const [agencyLogoUrl, setAgencyLogoUrl] = useState(agency.logoUrl || "");
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const logoInputRef = useRef<HTMLInputElement>(null);
 
   if (!ready) return <LoadingBlock />;
 
@@ -116,14 +121,18 @@ function AgencyPage() {
 
   const handleSaveAgency = async (e: React.FormEvent) => {
     e.preventDefault();
-    const ok = await updateAgency({
+    const payload: Record<string, unknown> = {
       name: agencyName,
       creci: agencyCreci,
       city: agencyCity,
       address: agencyAddress,
       phone: agencyPhone,
       ownerName: agencyOwnerName,
-    });
+    };
+    if (agencyLogoUrl) {
+      payload["logoUrl"] = agencyLogoUrl;
+    }
+    const ok = await updateAgency(payload as any);
     if (ok) setEditAgencyOpen(false);
   };
 
@@ -162,6 +171,7 @@ function AgencyPage() {
                   setAgencyAddress(agency.address);
                   setAgencyPhone(agency.phone);
                   setAgencyOwnerName(agency.ownerName);
+                  setAgencyLogoUrl(agency.logoUrl || "");
                   setEditAgencyOpen(true);
                 }}
                 className="gap-2 rounded-xl"
@@ -188,8 +198,14 @@ function AgencyPage() {
             <div className="absolute -top-16 -right-16 size-56 rounded-full bg-sidebar-primary/15" />
             <div className="absolute -right-4 -bottom-20 size-40 rounded-full bg-sidebar-primary/10" />
             <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center">
-              <div className="grid size-16 place-items-center rounded-2xl bg-sidebar-primary font-display text-2xl font-bold text-sidebar-primary-foreground">
-                {isAdmin ? <Building2 className="size-7" /> : currentBroker?.initials}
+              <div className="grid size-16 place-items-center rounded-2xl bg-sidebar-primary font-display text-2xl font-bold text-sidebar-primary-foreground overflow-hidden">
+                {isAdmin && agency?.logoUrl ? (
+                  <img src={agency.logoUrl} alt={agency.name} className="size-full object-cover" />
+                ) : isAdmin ? (
+                  <Building2 className="size-7" />
+                ) : (
+                  currentBroker?.initials
+                )}
               </div>
               <div className="flex-1">
                 <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-sidebar-primary">
@@ -483,6 +499,47 @@ function AgencyPage() {
                 required
                 className="mt-1"
               />
+            </div>
+            <div>
+              <Label htmlFor="agency-logo">Logo da Imobiliária</Label>
+              <div className="mt-2 flex items-center gap-4">
+                <div className="grid size-16 shrink-0 place-items-center rounded-2xl border bg-muted overflow-hidden">
+                  {agencyLogoUrl ? (
+                    <img src={agencyLogoUrl} alt="Logo" className="size-full object-cover" />
+                  ) : (
+                    <Building2 className="size-8 text-muted-foreground" />
+                  )}
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => logoInputRef.current?.click()}
+                  disabled={uploadingLogo}
+                  className="gap-2"
+                >
+                  <ImagePlus className="size-4" />
+                  {uploadingLogo ? "Enviando..." : "Alterar logo"}
+                </Button>
+                <input
+                  ref={logoInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setUploadingLogo(true);
+                    try {
+                      const url = await uploadPhoto(file, 400);
+                      setAgencyLogoUrl(url);
+                    } catch (err) {
+                      toast.error("Erro ao enviar logo");
+                    } finally {
+                      setUploadingLogo(false);
+                    }
+                  }}
+                />
+              </div>
             </div>
             <DialogFooter className="pt-4">
               <Button type="button" variant="outline" onClick={() => setEditAgencyOpen(false)}>

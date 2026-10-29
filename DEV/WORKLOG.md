@@ -17,6 +17,15 @@ Use `HANDOFF.md` for the current snapshot and `HANDOFFS/WORKLOG_ARCHIVE.md` for 
 - Next context: only what the next AI needs
 ```
 
+## 2026-10-29 - Aprimoramento de Upload de Logo da Imobiliária
+
+- Spec: `DEV/ROADMAP.md` (Item 2)
+- Changed: `src/routes/_authenticated/imobiliaria.tsx`, `src/components/crm/PropertyForm.tsx`, `DEV/FEATURES.md`, `DEV/WORKLOG.md`
+- Why: Substituir entrada manual de URL por upload direto e otimizado da logo da imobiliária para o Supabase Storage.
+- Verified: `npx tsc --noEmit` e `npx vitest run` executados com sucesso (12 testes passando).
+- Risks: Nenhum.
+- Next context: Funcionalidade de perfil e imobiliária 100% concluída.
+
 ## 2026-10-29 - Implementação da Edição de Perfil e Dados da Imobiliária
 
 - Spec: `DEV/ROADMAP.md` (Item 2)

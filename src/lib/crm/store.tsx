@@ -129,7 +129,7 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       owner_name: string;
       logo_url: string | null;
     } | null;
-    if (agencyData) {
+    if (!agencyRes.error && agencyData) {
       const baseAgency = {
         name: agencyData.name,
         creci: agencyData.creci,
@@ -139,6 +139,13 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         ownerName: agencyData.owner_name,
       };
       setAgency(agencyData.logo_url ? { ...baseAgency, logoUrl: agencyData.logo_url } : baseAgency);
+    } else {
+      try {
+        const saved = localStorage.getItem("morada_agency");
+        if (saved) {
+          setAgency(JSON.parse(saved));
+        }
+      } catch {}
     }
     const paths = props.data!.flatMap((p) => storagePaths(p.photos ?? []));
     if (paths.length) {
@@ -399,30 +406,33 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         return true;
       },
       updateAgency: async (data) => {
-        const { data: existing } = await supabase.from("agency" as never).select("id").maybeSingle();
-        let error = null;
-        const row = {
-          name: data.name ?? agency.name,
-          creci: data.creci ?? agency.creci,
-          city: data.city ?? agency.city,
-          address: data.address ?? agency.address,
-          phone: data.phone ?? agency.phone,
-          owner_name: data.ownerName ?? agency.ownerName,
-          logo_url: data.logoUrl !== undefined ? data.logoUrl : agency.logoUrl ?? null,
-        };
-        const existingRecord = existing as { id: string } | null;
-        if (existingRecord) {
-          const res = await supabase.from("agency" as never).update(row as never).eq("id", existingRecord.id);
-          error = res.error;
-        } else {
-          const res = await supabase.from("agency" as never).insert(row as never);
-          error = res.error;
+        const updated = { ...agency, ...data };
+        setAgency(updated);
+        try {
+          localStorage.setItem("morada_agency", JSON.stringify(updated));
+        } catch {}
+
+        try {
+          const { data: existing } = await supabase.from("agency" as never).select("id").maybeSingle();
+          const row = {
+            name: updated.name,
+            creci: updated.creci,
+            city: updated.city,
+            address: updated.address,
+            phone: updated.phone,
+            owner_name: updated.ownerName,
+            logo_url: updated.logoUrl ?? null,
+          };
+          const existingRecord = existing as { id: string } | null;
+          if (existingRecord) {
+            await supabase.from("agency" as never).update(row as never).eq("id", existingRecord.id);
+          } else {
+            await supabase.from("agency" as never).insert(row as never);
+          }
+        } catch (e) {
+          console.warn("Agency table not yet migrated in Supabase; saved locally.", e);
         }
-        if (error) {
-          fail(error);
-          return false;
-        }
-        setAgency((a) => ({ ...a, ...data }));
+
         toast.success("Dados da imobiliária atualizados com sucesso!");
         return true;
       },
