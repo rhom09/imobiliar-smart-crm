@@ -5,6 +5,7 @@ import { PageHeader, LoadingBlock } from "@/components/crm/AppShell";
 import { KanbanBoard } from "@/components/crm/KanbanBoard";
 import { LeadDrawer } from "@/components/crm/LeadDrawer";
 import { NewLeadDialog } from "@/components/crm/NewLeadDialog";
+import { ImportLeadsDialog } from "@/components/crm/ImportLeadsDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { OPEN_STAGES, brlCompact, contactUrgency } from "@/lib/crm/rules";
@@ -90,13 +91,16 @@ function FunnelPage() {
         actions={
           <div className="flex gap-2">
             {viewer.kind === "admin" && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => exportLeadsToCSV(filtered)}
-              >
-                <Download className="mr-2 size-4" /> Exportar CSV
-              </Button>
+              <>
+                <ImportLeadsDialog />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => exportLeadsToCSV(filtered)}
+                >
+                  <Download className="mr-2 size-4" /> Exportar CSV
+                </Button>
+              </>
             )}
             <NewLeadDialog onCreated={setOpenId} />
           </div>

@@ -39,6 +39,11 @@
 - Cadastro de corretores restrito ao Dono/Admin (`createTeamMember`).
 - Segurança garantida pelo banco de dados (RLS): o corretor enxerga apenas os próprios clientes.
 
+## Exportação e Importação de Leads
+
+- **Exportação de leads (CSV):** Funcionalidade para administradores baixarem a lista de leads do funil em formato CSV (UTF-8 com BOM).
+- **Importação de leads (CSV):** Funcionalidade para administradores importarem leads em lote via CSV com validação prévia de dados.
+
 ## Sincronização com GitHub
 
 - Todo o código atualizado automaticamente no repositório conectado.
@@ -47,6 +52,5 @@
 ## Ainda não implementado / Opcional (Ver `ROADMAP.md`)
 
 - Arquivamento de imóveis e leads (opcional, já que a exclusão definitiva existe).
-- **Notificação / Alerta de novos leads:** Badge de contagem no topo do CRM para novos leads vindos da página pública.
-- **Exportação de leads (CSV):** Funcionalidade para administradores baixarem a lista de leads do funil em formato CSV.
+- Edição de perfil (corretor) e dados da imobiliária (dono).
 - Deploy com domínio próprio.

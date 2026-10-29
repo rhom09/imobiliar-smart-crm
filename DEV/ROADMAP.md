@@ -12,7 +12,8 @@ Estado atual das melhorias planejadas e resumo das funcionalidades entregues.
 - **Autenticação e Permissões:** login com e-mail/senha e Google, cadastro de corretores restrito ao Dono/Admin e segurança via banco de dados (RLS).
 - **Notificação / Alerta de Novos Leads:** Badge de contagem no topo do CRM para novos leads vindos da página pública.
 - **Exportação de Leads (CSV):** Botão "Exportar CSV" no Funil para administradores baixarem a listagem filtrada de clientes com codificação UTF-8 (BOM) para o Excel.
-- **Sincronização com GitHub:** todo o código atualizado automaticamente no repositório.
+- **Importação de Leads (CSV):** Importação em lote (`ImportLeadsDialog`) com pré-visualização, validação de dados e normalização de telefones, acessível a administradores no Funil.
+- **Sincronização com GitHub:** todo o código atualizado automaticamente no repositório conectado.
 
 ## Pendências para fechar com chave de ouro
 
