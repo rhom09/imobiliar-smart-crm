@@ -5,7 +5,7 @@ Extraído de `src/styles.css`, `src/routes/__root.tsx`, `src/components/ui/butto
 ## Identidade
 
 - Marca exibida na UI: **Morada** (logo "m" + "morada", subtítulo "CRM imobiliário"). O nome do projeto/repositório é "Imobiliar Smart CRM".
-- Conceito (comentário do próprio `styles.css`): *superfícies de papel quentes, verde-floresta profundo como cor primária, terracota como acento*.
+- Conceito (comentário do próprio `styles.css`): _superfícies de papel quentes, verde-floresta profundo como cor primária, terracota como acento_.
 - Tom visual: caloroso, profissional, mobile-first (o corretor usa na rua). Textos em pt-BR.
 - `theme-color` do navegador: `#1f3b32`.
 
@@ -20,23 +20,23 @@ Extraído de `src/styles.css`, `src/routes/__root.tsx`, `src/components/ui/butto
 
 ### Base (claro → escuro)
 
-| Token | Claro | Escuro | Uso |
-| --- | --- | --- | --- |
-| `background` | `oklch(0.982 0.007 85)` | `oklch(0.19 0.02 165)` | Fundo da página (papel quente) |
-| `foreground` | `oklch(0.23 0.03 165)` | `oklch(0.95 0.01 100)` | Texto principal |
-| `card` / `popover` | `oklch(0.997 0.003 85)` | `oklch(0.23 0.025 165)` | Cards, menus, diálogos |
-| `primary` | `oklch(0.4 0.08 162)` | `oklch(0.75 0.11 160)` | Verde-floresta: ação principal, links, foco |
-| `primary-foreground` | `oklch(0.985 0.01 120)` | `oklch(0.2 0.03 165)` | Texto sobre primary |
-| `secondary` | `oklch(0.948 0.014 120)` | `oklch(0.29 0.03 165)` | Chips neutros, item ativo na nav mobile |
-| `muted` | `oklch(0.955 0.01 85)` | `oklch(0.27 0.02 165)` | Fundos sutis, skeleton |
-| `muted-foreground` | `oklch(0.5 0.02 160)` | `oklch(0.72 0.02 140)` | Texto secundário |
-| `accent` | `oklch(0.93 0.04 55)` | `oklch(0.35 0.06 45)` | Terracota suave: hover, alerta leve |
-| `accent-foreground` | `oklch(0.38 0.1 40)` | `oklch(0.93 0.04 55)` | Texto sobre accent |
-| `destructive` | `oklch(0.58 0.2 27)` | `oklch(0.68 0.19 25)` | Erros, atraso |
-| `border` | `oklch(0.905 0.012 90)` | `oklch(1 0 0 / 10%)` | Bordas (aplicado a `*` por padrão) |
-| `input` | `oklch(0.895 0.014 90)` | `oklch(1 0 0 / 14%)` | Borda de campos |
-| `ring` | `oklch(0.55 0.09 162)` | `oklch(0.65 0.1 160)` | Foco |
-| `column` | `oklch(0.958 0.01 90)` | `oklch(0.215 0.022 165)` | Fundo das colunas do Kanban |
+| Token                | Claro                    | Escuro                   | Uso                                         |
+| -------------------- | ------------------------ | ------------------------ | ------------------------------------------- |
+| `background`         | `oklch(0.982 0.007 85)`  | `oklch(0.19 0.02 165)`   | Fundo da página (papel quente)              |
+| `foreground`         | `oklch(0.23 0.03 165)`   | `oklch(0.95 0.01 100)`   | Texto principal                             |
+| `card` / `popover`   | `oklch(0.997 0.003 85)`  | `oklch(0.23 0.025 165)`  | Cards, menus, diálogos                      |
+| `primary`            | `oklch(0.4 0.08 162)`    | `oklch(0.75 0.11 160)`   | Verde-floresta: ação principal, links, foco |
+| `primary-foreground` | `oklch(0.985 0.01 120)`  | `oklch(0.2 0.03 165)`    | Texto sobre primary                         |
+| `secondary`          | `oklch(0.948 0.014 120)` | `oklch(0.29 0.03 165)`   | Chips neutros, item ativo na nav mobile     |
+| `muted`              | `oklch(0.955 0.01 85)`   | `oklch(0.27 0.02 165)`   | Fundos sutis, skeleton                      |
+| `muted-foreground`   | `oklch(0.5 0.02 160)`    | `oklch(0.72 0.02 140)`   | Texto secundário                            |
+| `accent`             | `oklch(0.93 0.04 55)`    | `oklch(0.35 0.06 45)`    | Terracota suave: hover, alerta leve         |
+| `accent-foreground`  | `oklch(0.38 0.1 40)`     | `oklch(0.93 0.04 55)`    | Texto sobre accent                          |
+| `destructive`        | `oklch(0.58 0.2 27)`     | `oklch(0.68 0.19 25)`    | Erros, atraso                               |
+| `border`             | `oklch(0.905 0.012 90)`  | `oklch(1 0 0 / 10%)`     | Bordas (aplicado a `*` por padrão)          |
+| `input`              | `oklch(0.895 0.014 90)`  | `oklch(1 0 0 / 14%)`     | Borda de campos                             |
+| `ring`               | `oklch(0.55 0.09 162)`   | `oklch(0.65 0.1 160)`    | Foco                                        |
+| `column`             | `oklch(0.958 0.01 90)`   | `oklch(0.215 0.022 165)` | Fundo das colunas do Kanban                 |
 
 ### Sidebar (verde escuro nos dois temas)
 
@@ -44,23 +44,23 @@ Extraído de `src/styles.css`, `src/routes/__root.tsx`, `src/components/ui/butto
 
 ### Semânticas do domínio
 
-| Token | Valor | Uso |
-| --- | --- | --- |
-| `whatsapp` / `whatsapp-foreground` | `oklch(0.62 0.16 152)` / `oklch(0.99 0.01 150)` | Botão de WhatsApp (variante `whatsapp`) |
-| `highlight` / `highlight-foreground` | `oklch(0.8 0.13 75)` / `oklch(0.26 0.05 60)` | Destaque dourado (variante `highlight`) |
+| Token                                | Valor                                           | Uso                                     |
+| ------------------------------------ | ----------------------------------------------- | --------------------------------------- |
+| `whatsapp` / `whatsapp-foreground`   | `oklch(0.62 0.16 152)` / `oklch(0.99 0.01 150)` | Botão de WhatsApp (variante `whatsapp`) |
+| `highlight` / `highlight-foreground` | `oklch(0.8 0.13 75)` / `oklch(0.26 0.05 60)`    | Destaque dourado (variante `highlight`) |
 
 ### Etapas do funil
 
 Classes `bg-stage-*` ligadas em `STAGES` (`src/lib/crm/rules.ts`):
 
-| Etapa | Token | Valor |
-| --- | --- | --- |
-| Novo Lead | `stage-new` | `oklch(0.62 0.1 230)` (azul) |
-| Contato Feito | `stage-contact` | `oklch(0.7 0.13 75)` (dourado) |
-| Visita Agendada | `stage-visit` | `oklch(0.6 0.12 300)` (roxo) |
+| Etapa            | Token            | Valor                             |
+| ---------------- | ---------------- | --------------------------------- |
+| Novo Lead        | `stage-new`      | `oklch(0.62 0.1 230)` (azul)      |
+| Contato Feito    | `stage-contact`  | `oklch(0.7 0.13 75)` (dourado)    |
+| Visita Agendada  | `stage-visit`    | `oklch(0.6 0.12 300)` (roxo)      |
 | Proposta Enviada | `stage-proposal` | `oklch(0.66 0.15 45)` (terracota) |
-| Fechado (Ganho) | `stage-won` | `oklch(0.55 0.12 155)` (verde) |
-| Perdido | `stage-lost` | `oklch(0.58 0.03 260)` (cinza) |
+| Fechado (Ganho)  | `stage-won`      | `oklch(0.55 0.12 155)` (verde)    |
+| Perdido          | `stage-lost`     | `oklch(0.58 0.03 260)` (cinza)    |
 
 Etapa nova = novo token + entrada em `STAGES` + enum no banco (ver `DATABASE.md`).
 
@@ -113,11 +113,11 @@ Gerados pelo shadcn; não editar à mão (exceto o que o projeto já customizou)
 
 **Chip de urgência de contato** (`contactUrgency`):
 
-| Nível | Quando | Classes |
-| --- | --- | --- |
-| `ok` | menos de 3 dias | `bg-secondary text-secondary-foreground` |
-| `warn` | 3 a 6 dias | `bg-accent text-accent-foreground` |
-| `late` | 7 dias ou mais | `bg-destructive/12 text-destructive` |
+| Nível  | Quando          | Classes                                  |
+| ------ | --------------- | ---------------------------------------- |
+| `ok`   | menos de 3 dias | `bg-secondary text-secondary-foreground` |
+| `warn` | 3 a 6 dias      | `bg-accent text-accent-foreground`       |
+| `late` | 7 dias ou mais  | `bg-destructive/12 text-destructive`     |
 
 **Coluna do Kanban:** `rounded-3xl bg-column p-2.5`; largura `w-[84vw] max-w-[320px]` no mobile e `sm:w-[300px]`; carrossel com `snap-x snap-mandatory` no mobile; cabeçalho com bolinha da cor da etapa, título `font-display text-sm font-semibold`, contador em pílula `bg-card` e soma de orçamento `brlCompact`. Ao arrastar por cima: `bg-secondary ring-2 ring-primary/30`.
 

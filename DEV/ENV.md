@@ -4,15 +4,15 @@
 
 Modelo em `.env.example` (nunca coloque valores reais de segredos em docs ou commits).
 
-| Variável | Onde é usada | Segredo? |
-| --- | --- | --- |
-| `VITE_SUPABASE_URL` | cliente (browser) | não |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | cliente (browser) | não (chave pública) |
-| `VITE_SUPABASE_PROJECT_ID` | cliente | não |
-| `SUPABASE_URL` | servidor (server functions) | não |
-| `SUPABASE_PUBLISHABLE_KEY` | servidor | não |
-| `SUPABASE_PROJECT_ID` | servidor | não |
-| `SUPABASE_SERVICE_ROLE_KEY` | servidor, **só** `client.server.ts` | **SIM** — bypassa RLS |
+| Variável                        | Onde é usada                        | Segredo?              |
+| ------------------------------- | ----------------------------------- | --------------------- |
+| `VITE_SUPABASE_URL`             | cliente (browser)                   | não                   |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | cliente (browser)                   | não (chave pública)   |
+| `VITE_SUPABASE_PROJECT_ID`      | cliente                             | não                   |
+| `SUPABASE_URL`                  | servidor (server functions)         | não                   |
+| `SUPABASE_PUBLISHABLE_KEY`      | servidor                            | não                   |
+| `SUPABASE_PROJECT_ID`           | servidor                            | não                   |
+| `SUPABASE_SERVICE_ROLE_KEY`     | servidor, **só** `client.server.ts` | **SIM** — bypassa RLS |
 
 ## Setup local
 

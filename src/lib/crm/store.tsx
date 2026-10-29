@@ -1,9 +1,27 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { visibleLeads } from "./rules";
 import { PHOTO_BUCKET, STORAGE_PREFIX, registerPhotoUrl, storagePaths } from "./images";
-import type { Broker, Interaction, InteractionKind, Lead, Property, PropertyStatus, PropertyType, StageId, Viewer } from "./types";
+import type {
+  Broker,
+  Interaction,
+  InteractionKind,
+  Lead,
+  Property,
+  PropertyStatus,
+  PropertyType,
+  StageId,
+  Viewer,
+} from "./types";
 
 type Me = { id: string; isAdmin: boolean };
 
@@ -24,7 +42,10 @@ type Ctx = {
   brokerById: (id: string) => Broker | undefined;
   setViewer: (v: Viewer) => void;
   moveLead: (id: string, stage: StageId) => void;
-  addInteraction: (leadId: string, i: Omit<Interaction, "id" | "at" | "authorId"> & { at?: string }) => void;
+  addInteraction: (
+    leadId: string,
+    i: Omit<Interaction, "id" | "at" | "authorId"> & { at?: string },
+  ) => void;
   addLead: (l: Omit<Lead, "id" | "createdAt" | "lastContactAt" | "interactions">) => Lead;
   addProperty: (p: Omit<Property, "id" | "code" | "createdAt">) => Property;
   updateProperty: (id: string, p: Partial<Omit<Property, "id" | "code" | "createdAt">>) => void;
@@ -41,11 +62,18 @@ const CrmContext = (globalCtx.__crmContext ??= createContext<Ctx | null>(null));
 const CONTACT_KINDS: Interaction["kind"][] = ["ligacao", "whatsapp", "visita", "nota"];
 
 const initials = (name: string) =>
-  name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]!.toUpperCase()).join("") || "?";
+  name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]!.toUpperCase())
+    .join("") || "?";
 
 function fail(e: unknown) {
   console.error(e);
-  toast.error("Não foi possível salvar", { description: "Verifique sua conexão e tente novamente." });
+  toast.error("Não foi possível salvar", {
+    description: "Verifique sua conexão e tente novamente.",
+  });
 }
 
 export function CrmProvider({ children }: { children: ReactNode }) {
@@ -87,8 +115,11 @@ export function CrmProvider({ children }: { children: ReactNode }) {
     );
     const paths = props.data!.flatMap((p) => storagePaths(p.photos ?? []));
     if (paths.length) {
-      const { data: signed } = await supabase.storage.from(PHOTO_BUCKET).createSignedUrls(paths, 60 * 60 * 24 * 7);
-      for (const s of signed ?? []) if (s.signedUrl && s.path) registerPhotoUrl(STORAGE_PREFIX + s.path, s.signedUrl);
+      const { data: signed } = await supabase.storage
+        .from(PHOTO_BUCKET)
+        .createSignedUrls(paths, 60 * 60 * 24 * 7);
+      for (const s of signed ?? [])
+        if (s.signedUrl && s.path) registerPhotoUrl(STORAGE_PREFIX + s.path, s.signedUrl);
     }
     setProperties(
       props.data!.map((p) => ({
@@ -159,7 +190,13 @@ export function CrmProvider({ children }: { children: ReactNode }) {
   const value = useMemo<Ctx>(() => {
     const authorId = me?.id ?? "";
     const brokers = team.filter((t) => t.role === "corretor");
-    const pushInteraction = (leadId: string, kind: InteractionKind, text: string, at: string, scheduledFor?: string) => {
+    const pushInteraction = (
+      leadId: string,
+      kind: InteractionKind,
+      text: string,
+      at: string,
+      scheduledFor?: string,
+    ) => {
       const id = crypto.randomUUID();
       setLeads((ls) =>
         ls.map((l) =>
@@ -174,10 +211,22 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       );
       void supabase
         .from("interactions")
-        .insert({ id, lead_id: leadId, kind, text, at, scheduled_for: scheduledFor ?? null, author_id: authorId })
+        .insert({
+          id,
+          lead_id: leadId,
+          kind,
+          text,
+          at,
+          scheduled_for: scheduledFor ?? null,
+          author_id: authorId,
+        })
         .then(({ error }) => error && fail(error));
       if (CONTACT_KINDS.includes(kind)) {
-        void supabase.from("leads").update({ last_contact_at: at }).eq("id", leadId).then(({ error }) => error && fail(error));
+        void supabase
+          .from("leads")
+          .update({ last_contact_at: at })
+          .eq("id", leadId)
+          .then(({ error }) => error && fail(error));
       }
     };
 
@@ -191,7 +240,8 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       allLeads: leads,
       leads: visibleLeads(leads, viewer),
       properties,
-      currentBroker: viewer.kind === "broker" ? team.find((b) => b.id === viewer.brokerId) : undefined,
+      currentBroker:
+        viewer.kind === "broker" ? team.find((b) => b.id === viewer.brokerId) : undefined,
       brokerById: (id) => team.find((b) => b.id === id),
       setViewer: (v) => {
         if (me?.isAdmin) setViewer(v); // corretores can never widen their view
@@ -200,13 +250,24 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         const lead = leads.find((l) => l.id === id);
         if (!lead || lead.stage === stage) return;
         setLeads((ls) => ls.map((l) => (l.id === id ? { ...l, stage } : l)));
-        void supabase.from("leads").update({ stage }).eq("id", id).then(({ error }) => error && fail(error));
+        void supabase
+          .from("leads")
+          .update({ stage })
+          .eq("id", id)
+          .then(({ error }) => error && fail(error));
         pushInteraction(id, "etapa", stage, new Date().toISOString());
       },
-      addInteraction: (leadId, i) => pushInteraction(leadId, i.kind, i.text, i.at ?? new Date().toISOString(), i.scheduledFor),
+      addInteraction: (leadId, i) =>
+        pushInteraction(leadId, i.kind, i.text, i.at ?? new Date().toISOString(), i.scheduledFor),
       addLead: (l) => {
         const now = new Date().toISOString();
-        const lead: Lead = { ...l, id: crypto.randomUUID(), createdAt: now, lastContactAt: now, interactions: [] };
+        const lead: Lead = {
+          ...l,
+          id: crypto.randomUUID(),
+          createdAt: now,
+          lastContactAt: now,
+          interactions: [],
+        };
         setLeads((ls) => [lead, ...ls]);
         void supabase
           .from("leads")
@@ -229,7 +290,12 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         return lead;
       },
       addProperty: (p) => {
-        const prop: Property = { ...p, id: crypto.randomUUID(), code: "MOR-…", createdAt: new Date().toISOString() };
+        const prop: Property = {
+          ...p,
+          id: crypto.randomUUID(),
+          code: "MOR-…",
+          createdAt: new Date().toISOString(),
+        };
         setProperties((ps) => [prop, ...ps]);
         void supabase
           .from("properties")
@@ -258,7 +324,9 @@ export function CrmProvider({ children }: { children: ReactNode }) {
           .single()
           .then(({ data, error }) => {
             if (error) return fail(error);
-            setProperties((ps) => ps.map((x) => (x.id === prop.id ? { ...x, code: data.code } : x)));
+            setProperties((ps) =>
+              ps.map((x) => (x.id === prop.id ? { ...x, code: data.code } : x)),
+            );
           });
         return prop;
       },
@@ -267,7 +335,11 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         const row: Record<string, unknown> = {};
         const map: Record<string, string> = { brokerId: "broker_id" };
         for (const [k, v] of Object.entries(p)) row[map[k] ?? k] = k === "brokerId" ? v || null : v;
-        void supabase.from("properties").update(row as never).eq("id", id).then(({ error }) => error && fail(error));
+        void supabase
+          .from("properties")
+          .update(row as never)
+          .eq("id", id)
+          .then(({ error }) => error && fail(error));
       },
       deleteLead: async (id) => {
         const { data, error } = await supabase.from("leads").delete().eq("id", id).select("id");
@@ -276,10 +348,18 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         return true;
       },
       deleteProperty: async (id) => {
-        const { data, error } = await supabase.from("properties").delete().eq("id", id).select("id");
+        const { data, error } = await supabase
+          .from("properties")
+          .delete()
+          .eq("id", id)
+          .select("id");
         if (error || !data?.length) return false;
         setProperties((ps) => ps.filter((p) => p.id !== id));
-        setLeads((ls) => ls.map((l) => (l.interestPropertyId === id ? { ...l, interestPropertyId: undefined } : l)));
+        setLeads((ls) =>
+          ls.map((l) =>
+            l.interestPropertyId === id ? { ...l, interestPropertyId: undefined } : l,
+          ),
+        );
         return true;
       },
       reload,

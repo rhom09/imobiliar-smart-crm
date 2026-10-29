@@ -31,8 +31,18 @@ dist-ssr
 *.sln
 *.sw?
 
+# AI Assistants & Local Config
+.claude/
+.aiassistant/
+.continue/
+.clinerules
+.windsurfrules
+.aider.conf.yml
+
+# Environment variables
+.env
 .env.local
 .env.test
 .env.dev
 .env.prod
-.env
+

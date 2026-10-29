@@ -20,14 +20,21 @@ function Logo({ inverted = false }: { inverted?: boolean }) {
       <span
         className={cn(
           "grid size-9 place-items-center rounded-xl font-display text-lg font-bold",
-          inverted ? "bg-sidebar-primary text-sidebar-primary-foreground" : "bg-primary text-primary-foreground",
+          inverted
+            ? "bg-sidebar-primary text-sidebar-primary-foreground"
+            : "bg-primary text-primary-foreground",
         )}
       >
         m
       </span>
       <span className="leading-tight">
         <span className="block font-display text-[17px] font-bold tracking-tight">morada</span>
-        <span className={cn("block text-[11px]", inverted ? "text-sidebar-foreground/60" : "text-muted-foreground")}>
+        <span
+          className={cn(
+            "block text-[11px]",
+            inverted ? "text-sidebar-foreground/60" : "text-muted-foreground",
+          )}
+        >
           CRM imobiliário
         </span>
       </span>
@@ -79,7 +86,9 @@ export function AppShell({ children }: { children: ReactNode }) {
             {isAdmin ? (
               <RoleSwitcher />
             ) : (
-              <p className="text-sm font-semibold text-sidebar-accent-foreground">{myName ?? "Corretor"}</p>
+              <p className="text-sm font-semibold text-sidebar-accent-foreground">
+                {myName ?? "Corretor"}
+              </p>
             )}
             <p className="mt-3 flex items-start gap-2 text-xs leading-relaxed text-sidebar-foreground/70">
               {viewer.kind === "admin" ? (
@@ -109,7 +118,11 @@ export function AppShell({ children }: { children: ReactNode }) {
         <Logo />
         <div className="flex items-center gap-2">
           {isAdmin && <RoleSwitcher compact />}
-          <button onClick={signOut} aria-label="Sair" className="grid size-9 place-items-center rounded-full border bg-card text-muted-foreground">
+          <button
+            onClick={signOut}
+            aria-label="Sair"
+            className="grid size-9 place-items-center rounded-full border bg-card text-muted-foreground"
+          >
             <LogOut className="size-4" />
           </button>
         </div>
@@ -139,7 +152,15 @@ export function AppShell({ children }: { children: ReactNode }) {
   );
 }
 
-export function PageHeader({ title, subtitle, actions }: { title: string; subtitle?: ReactNode; actions?: ReactNode }) {
+export function PageHeader({
+  title,
+  subtitle,
+  actions,
+}: {
+  title: string;
+  subtitle?: ReactNode;
+  actions?: ReactNode;
+}) {
   return (
     <div className="flex flex-col gap-3 px-4 pt-5 pb-4 sm:flex-row sm:items-end sm:justify-between md:px-8 md:pt-8">
       <div>

@@ -4,7 +4,7 @@ This file should stay small. Refresh it after substantive work or run `orquestra
 
 ## Snapshot
 
-- Updated:
+- Updated: 2026-10-29
 - Read order: `INDEX.md` -> `HANDOFF.md` -> `CONTEXT.md` -> `SPECS/ACTIVE.md`
 - Active spec: `SPECS/ACTIVE.md`
 - Verification source: `VERIFY.md`
@@ -12,12 +12,12 @@ This file should stay small. Refresh it after substantive work or run `orquestra
 
 ## Latest Work
 
-- Entry:
-- Spec:
-- Changed:
-- Verified:
-- Risks:
-- Next context:
+- Entry: 2026-10-29 - Atualização do .gitignore e boas práticas de versionamento
+- Spec: `DEV/SPECS/ACTIVE.md`
+- Changed: `.gitignore` atualizado com pastas e arquivos de IA locais (`.claude/`, `.aiassistant/`, `.continue/`, etc.)
+- Verified: `git status --ignored`
+- Risks: Nenhum
+- Next context: Projeto configurado com `.gitignore` otimizado. Pronto para novas demandas.
 
 ## Recent Entries
 

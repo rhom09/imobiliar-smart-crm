@@ -6,15 +6,15 @@ Objetivo: rodar o projeto sem depender do Lovable (backend, build e hospedagem),
 
 ## 1. Dependências do Lovable hoje
 
-| Item | Onde | O que fazer na migração |
-| --- | --- | --- |
-| Backend (Lovable Cloud = Supabase gerenciado) | banco, auth, `SUPABASE_*` | Criar Supabase próprio e migrar schema, dados e usuários |
-| Config do Vite | `vite.config.ts` usa `@lovable.dev/vite-tanstack-config` | Trocar por config explícita (ver seção 5) |
-| Login social via Lovable | `@lovable.dev/cloud-auth-js`, `src/integrations/lovable/index.ts` | **Verificar se `src/routes/auth.tsx` usa `lovable.auth`.** Se só há e-mail/senha, remover. Se há login social, reconfigurar provedor direto no Supabase |
-| Preview auth / cron auth | `src/integrations/supabase/previewAuthStorage.ts`, `cron-auth.ts` | **Ler antes de decidir.** Podem ser específicos do ambiente Lovable |
-| Error reporting do Lovable | `src/lib/lovable-error-reporting.ts`, `src/lib/error-capture.ts`, `src/lib/error-page.ts` | Avaliar remoção e conferir quem importa esses arquivos (`src/server.ts`, `__root.tsx`) |
-| Metadados do Lovable | `.lovable/`, bloco `LOVABLE:BEGIN/END` do `AGENTS.md` | Remover só ao desconectar de vez |
-| Hospedagem | publicação pelo Lovable | Escolher host (ver seção 6) |
+| Item                                          | Onde                                                                                      | O que fazer na migração                                                                                                                                 |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Backend (Lovable Cloud = Supabase gerenciado) | banco, auth, `SUPABASE_*`                                                                 | Criar Supabase próprio e migrar schema, dados e usuários                                                                                                |
+| Config do Vite                                | `vite.config.ts` usa `@lovable.dev/vite-tanstack-config`                                  | Trocar por config explícita (ver seção 5)                                                                                                               |
+| Login social via Lovable                      | `@lovable.dev/cloud-auth-js`, `src/integrations/lovable/index.ts`                         | **Verificar se `src/routes/auth.tsx` usa `lovable.auth`.** Se só há e-mail/senha, remover. Se há login social, reconfigurar provedor direto no Supabase |
+| Preview auth / cron auth                      | `src/integrations/supabase/previewAuthStorage.ts`, `cron-auth.ts`                         | **Ler antes de decidir.** Podem ser específicos do ambiente Lovable                                                                                     |
+| Error reporting do Lovable                    | `src/lib/lovable-error-reporting.ts`, `src/lib/error-capture.ts`, `src/lib/error-page.ts` | Avaliar remoção e conferir quem importa esses arquivos (`src/server.ts`, `__root.tsx`)                                                                  |
+| Metadados do Lovable                          | `.lovable/`, bloco `LOVABLE:BEGIN/END` do `AGENTS.md`                                     | Remover só ao desconectar de vez                                                                                                                        |
+| Hospedagem                                    | publicação pelo Lovable                                                                   | Escolher host (ver seção 6)                                                                                                                             |
 
 Observação: não há edge functions no repositório (sem `supabase/functions`). A lógica de servidor são server functions do TanStack Start (`createTeamMember`), que vão junto com o app.
 

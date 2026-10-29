@@ -14,9 +14,17 @@ export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
     meta: [
       { title: "Funil de vendas — Morada CRM imobiliário" },
-      { name: "description", content: "Quadro Kanban de oportunidades imobiliárias com arrastar e soltar, WhatsApp rápido e Smart Match de imóveis." },
+      {
+        name: "description",
+        content:
+          "Quadro Kanban de oportunidades imobiliárias com arrastar e soltar, WhatsApp rápido e Smart Match de imóveis.",
+      },
       { property: "og:title", content: "Funil de vendas — Morada CRM imobiliário" },
-      { property: "og:description", content: "Acompanhe leads do primeiro contato ao fechamento e envie imóveis compatíveis pelo WhatsApp." },
+      {
+        property: "og:description",
+        content:
+          "Acompanhe leads do primeiro contato ao fechamento e envie imóveis compatíveis pelo WhatsApp.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -35,17 +43,25 @@ function FunnelPage() {
     return leads.filter(
       (l) =>
         (viewer.kind !== "admin" || broker === "all" || l.ownerId === broker) &&
-        (!term || l.name.toLowerCase().includes(term) || l.neighborhoods.some((n) => n.toLowerCase().includes(term))),
+        (!term ||
+          l.name.toLowerCase().includes(term) ||
+          l.neighborhoods.some((n) => n.toLowerCase().includes(term))),
     );
   }, [leads, q, broker, viewer.kind]);
 
   const open = filtered.filter((l) => OPEN_STAGES.includes(l.stage));
   const kpis = [
     { label: "Leads ativos", value: String(open.length), icon: Users },
-    { label: "Visitas agendadas", value: String(filtered.filter((l) => l.stage === "visita").length), icon: CalendarClock },
+    {
+      label: "Visitas agendadas",
+      value: String(filtered.filter((l) => l.stage === "visita").length),
+      icon: CalendarClock,
+    },
     {
       label: "Em proposta",
-      value: brlCompact(filtered.filter((l) => l.stage === "proposta").reduce((s, l) => s + l.budgetMax, 0)),
+      value: brlCompact(
+        filtered.filter((l) => l.stage === "proposta").reduce((s, l) => s + l.budgetMax, 0),
+      ),
       icon: FileSignature,
     },
     {
@@ -59,7 +75,11 @@ function FunnelPage() {
   return (
     <div>
       <PageHeader
-        title={viewer.kind === "admin" ? "Funil da imobiliária" : `Funil de ${currentBroker?.name.split(" ")[0]}`}
+        title={
+          viewer.kind === "admin"
+            ? "Funil da imobiliária"
+            : `Funil de ${currentBroker?.name.split(" ")[0]}`
+        }
         subtitle={
           viewer.kind === "admin"
             ? "Visão geral de todos os corretores. Arraste os cards entre as etapas."
@@ -102,7 +122,9 @@ function FunnelPage() {
                     onClick={() => setBroker(b.id)}
                     className={cn(
                       "shrink-0 rounded-full border px-3.5 py-2 text-xs font-semibold transition",
-                      broker === b.id ? "border-primary bg-primary text-primary-foreground" : "bg-card hover:border-primary/40",
+                      broker === b.id
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "bg-card hover:border-primary/40",
                     )}
                   >
                     {b.name}

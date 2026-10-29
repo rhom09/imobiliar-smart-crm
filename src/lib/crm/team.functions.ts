@@ -7,7 +7,9 @@ type NewMember = { name: string; email: string; password: string; phone: string;
 export const createTeamMember = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: NewMember) => {
-    const email = String(input.email ?? "").trim().toLowerCase();
+    const email = String(input.email ?? "")
+      .trim()
+      .toLowerCase();
     const name = String(input.name ?? "").trim();
     const password = String(input.password ?? "");
     if (!name || name.length > 120) throw new Error("Informe o nome");
@@ -17,8 +19,12 @@ export const createTeamMember = createServerFn({ method: "POST" })
       name,
       email,
       password,
-      phone: String(input.phone ?? "").replace(/\D/g, "").slice(0, 15),
-      creci: String(input.creci ?? "").trim().slice(0, 40),
+      phone: String(input.phone ?? "")
+        .replace(/\D/g, "")
+        .slice(0, 15),
+      creci: String(input.creci ?? "")
+        .trim()
+        .slice(0, 40),
     };
   })
   .handler(async ({ data, context }) => {
@@ -37,7 +43,9 @@ export const createTeamMember = createServerFn({ method: "POST" })
     });
     if (error) {
       throw new Error(
-        /already/i.test(error.message) ? "Já existe um usuário com este e-mail" : "Não foi possível criar o usuário",
+        /already/i.test(error.message)
+          ? "Já existe um usuário com este e-mail"
+          : "Não foi possível criar o usuário",
       );
     }
     return { id: created.user.id };

@@ -8,18 +8,18 @@ App **TanStack Start** (React 19 + Vite) com backend no **Lovable Cloud** (Supab
 
 Roteamento por arquivo. `src/routeTree.gen.ts` é gerado automaticamente.
 
-| Arquivo | URL | Observação |
-| --- | --- | --- |
-| `__root.tsx` | — | Shell global; preservar `<Outlet />` |
-| `auth.tsx` | `/auth` | Login (sem cadastro público) |
-| `reset-password.tsx` | `/reset-password` | Redefinição de senha |
-| `_authenticated/route.tsx` | — | Layout da área logada: guarda de auth, `CrmProvider` e `AppShell` |
-| `_authenticated/index.tsx` | `/` | Tela inicial da área logada |
-| `_authenticated/imoveis.index.tsx` | `/imoveis` | Catálogo de imóveis |
-| `_authenticated/imoveis.novo.tsx` | `/imoveis/novo` | Cadastro de imóvel |
-| `_authenticated/imoveis.$id.tsx` | `/imoveis/:id` | Detalhe do imóvel |
-| `_authenticated/equipe.tsx` | `/equipe` | Gestão da equipe |
-| `_authenticated/imobiliaria.tsx` | `/imobiliaria` | Perfil da imobiliária |
+| Arquivo                            | URL               | Observação                                                        |
+| ---------------------------------- | ----------------- | ----------------------------------------------------------------- |
+| `__root.tsx`                       | —                 | Shell global; preservar `<Outlet />`                              |
+| `auth.tsx`                         | `/auth`           | Login (sem cadastro público)                                      |
+| `reset-password.tsx`               | `/reset-password` | Redefinição de senha                                              |
+| `_authenticated/route.tsx`         | —                 | Layout da área logada: guarda de auth, `CrmProvider` e `AppShell` |
+| `_authenticated/index.tsx`         | `/`               | Tela inicial da área logada                                       |
+| `_authenticated/imoveis.index.tsx` | `/imoveis`        | Catálogo de imóveis                                               |
+| `_authenticated/imoveis.novo.tsx`  | `/imoveis/novo`   | Cadastro de imóvel                                                |
+| `_authenticated/imoveis.$id.tsx`   | `/imoveis/:id`    | Detalhe do imóvel                                                 |
+| `_authenticated/equipe.tsx`        | `/equipe`         | Gestão da equipe                                                  |
+| `_authenticated/imobiliaria.tsx`   | `/imobiliaria`    | Perfil da imobiliária                                             |
 
 > Descrições das telas inferidas pelos nomes de arquivo; confirme no código ao alterar.
 

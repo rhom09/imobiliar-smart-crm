@@ -26,9 +26,17 @@ export function PropertyCard({ p }: { p: Property }) {
           loading="lazy"
           width={1280}
           height={864}
-          className={cn("size-full object-cover transition duration-500 group-hover:scale-[1.04]", p.status === "vendido" && "grayscale-[60%]")}
+          className={cn(
+            "size-full object-cover transition duration-500 group-hover:scale-[1.04]",
+            p.status === "vendido" && "grayscale-[60%]",
+          )}
         />
-        <span className={cn("absolute top-3 left-3 rounded-full px-2.5 py-1 text-[11px] font-bold shadow-sm", status.className)}>
+        <span
+          className={cn(
+            "absolute top-3 left-3 rounded-full px-2.5 py-1 text-[11px] font-bold shadow-sm",
+            status.className,
+          )}
+        >
           {status.label}
         </span>
         <span className="absolute top-3 right-3 rounded-full bg-card/95 px-2.5 py-1 text-[11px] font-semibold text-muted-foreground shadow-sm">
@@ -42,9 +50,18 @@ export function PropertyCard({ p }: { p: Property }) {
         <h3 className="mt-1 line-clamp-1 text-base font-semibold">{p.title}</h3>
         <p className="mt-2 font-display text-xl font-bold text-primary">{brl(p.price)}</p>
         <div className="mt-3 flex items-center gap-4 border-t pt-3 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1"><Maximize2 className="size-3.5" />{p.area} m²</span>
-          <span className="flex items-center gap-1"><BedDouble className="size-3.5" />{p.bedrooms} qts</span>
-          <span className="flex items-center gap-1"><Car className="size-3.5" />{p.parking} vagas</span>
+          <span className="flex items-center gap-1">
+            <Maximize2 className="size-3.5" />
+            {p.area} m²
+          </span>
+          <span className="flex items-center gap-1">
+            <BedDouble className="size-3.5" />
+            {p.bedrooms} qts
+          </span>
+          <span className="flex items-center gap-1">
+            <Car className="size-3.5" />
+            {p.parking} vagas
+          </span>
         </div>
       </div>
     </Link>

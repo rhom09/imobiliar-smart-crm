@@ -46,7 +46,9 @@ export function LeadCard({
       onClick={onOpen}
       className={cn(
         "group relative cursor-grab select-none rounded-2xl border bg-card p-3.5 shadow-card transition-all active:cursor-grabbing",
-        dragging ? "rotate-[1.5deg] shadow-lift ring-2 ring-primary/30" : "hover:-translate-y-0.5 hover:border-primary/25",
+        dragging
+          ? "rotate-[1.5deg] shadow-lift ring-2 ring-primary/30"
+          : "hover:-translate-y-0.5 hover:border-primary/25",
       )}
     >
       <div className="flex items-start justify-between gap-2">
@@ -92,7 +94,12 @@ export function LeadCard({
 
       <div className="mt-3 flex items-center justify-between gap-2">
         <div className="flex min-w-0 items-center gap-1.5">
-          <span className={cn("flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold", URGENCY[urgency])}>
+          <span
+            className={cn(
+              "flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold",
+              URGENCY[urgency],
+            )}
+          >
             <Clock className="size-3" />
             {timeAgo(lead.lastContactAt)}
           </span>
@@ -119,7 +126,10 @@ export function LeadCard({
             aria-label={`Enviar WhatsApp para ${lead.name}`}
             onClick={(e) => {
               e.stopPropagation();
-              addInteraction(lead.id, { kind: "whatsapp", text: "Mensagem enviada pelo atalho do funil." });
+              addInteraction(lead.id, {
+                kind: "whatsapp",
+                text: "Mensagem enviada pelo atalho do funil.",
+              });
             }}
           >
             <WhatsAppIcon className="size-4" />

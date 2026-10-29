@@ -30,7 +30,9 @@ function EditPropertyPage() {
     return (
       <div className="p-10 text-center">
         <p className="font-semibold">Imóvel não encontrado</p>
-        <Button asChild variant="link"><Link to="/imoveis">Voltar ao catálogo</Link></Button>
+        <Button asChild variant="link">
+          <Link to="/imoveis">Voltar ao catálogo</Link>
+        </Button>
       </div>
     );
   }
@@ -38,7 +40,9 @@ function EditPropertyPage() {
     <div className="pb-10">
       <div className="px-4 pt-4 md:px-8 md:pt-6">
         <Button asChild variant="ghost" size="sm" className="-ml-2">
-          <Link to="/imoveis/$id" params={{ id }}><ArrowLeft /> Voltar à ficha</Link>
+          <Link to="/imoveis/$id" params={{ id }}>
+            <ArrowLeft /> Voltar à ficha
+          </Link>
         </Button>
       </div>
       <PageHeader title="Editar imóvel" subtitle={`${p.code} • ${p.title}`} />

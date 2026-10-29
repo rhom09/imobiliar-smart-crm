@@ -47,7 +47,9 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">Esta página não carregou</h1>
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">
+          Esta página não carregou
+        </h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Algo deu errado. Tente recarregar ou volte ao início.
         </p>
@@ -79,9 +81,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { title: "Morada — CRM imobiliário" },
-      { name: "description", content: "CRM imobiliário para imobiliárias e corretores: funil de vendas, Smart Match e catálogo de imóveis." },
+      {
+        name: "description",
+        content:
+          "CRM imobiliário para imobiliárias e corretores: funil de vendas, Smart Match e catálogo de imóveis.",
+      },
       { property: "og:title", content: "Morada — CRM imobiliário" },
-      { property: "og:description", content: "Funil de vendas, Smart Match e catálogo de imóveis para corretores." },
+      {
+        property: "og:description",
+        content: "Funil de vendas, Smart Match e catálogo de imóveis para corretores.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "theme-color", content: "#1f3b32" },

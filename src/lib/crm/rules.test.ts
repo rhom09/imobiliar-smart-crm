@@ -19,7 +19,13 @@ describe("permissões por papel", () => {
 });
 
 describe("smart match", () => {
-  const base: Lead = { ...leads[0]!, propertyType: "Apartamento", budgetMin: 1_100_000, budgetMax: 1_500_000, neighborhoods: ["Pinheiros"] };
+  const base: Lead = {
+    ...leads[0]!,
+    propertyType: "Apartamento",
+    budgetMin: 1_100_000,
+    budgetMax: 1_500_000,
+    neighborhoods: ["Pinheiros"],
+  };
 
   it("prioriza imóvel com tipo, orçamento e bairro compatíveis", () => {
     const top = smartMatch(base, properties)[0]!;
@@ -28,21 +34,33 @@ describe("smart match", () => {
   });
 
   it("ignora imóveis vendidos", () => {
-    const studioLead: Lead = { ...base, propertyType: "Studio", budgetMin: 550_000, budgetMax: 650_000, neighborhoods: ["Itaim Bibi"] };
+    const studioLead: Lead = {
+      ...base,
+      propertyType: "Studio",
+      budgetMin: 550_000,
+      budgetMax: 650_000,
+      neighborhoods: ["Itaim Bibi"],
+    };
     expect(smartMatch(studioLead, properties).some((m) => m.property.id === "p10")).toBe(false);
   });
 
   it("aceita até 10% acima do orçamento máximo, não mais", () => {
     const lead: Lead = { ...base, budgetMin: 1_000_000, budgetMax: 1_350_000 }; // p1 = 1.48mi (9.6% acima)
-    expect(smartMatch(lead, properties).find((m) => m.property.id === "p1")?.reasons.budget).toBe(true);
+    expect(smartMatch(lead, properties).find((m) => m.property.id === "p1")?.reasons.budget).toBe(
+      true,
+    );
     const tight: Lead = { ...base, budgetMin: 1_000_000, budgetMax: 1_300_000 }; // 13.8% acima
-    expect(smartMatch(tight, properties).find((m) => m.property.id === "p1")?.reasons.budget).toBeFalsy();
+    expect(
+      smartMatch(tight, properties).find((m) => m.property.id === "p1")?.reasons.budget,
+    ).toBeFalsy();
   });
 });
 
 describe("whatsapp e urgência", () => {
   it("gera link wa.me com DDI 55 e texto codificado", () => {
-    expect(waLink("(11) 99111-0001", "Olá João")).toBe("https://wa.me/5511991110001?text=Ol%C3%A1%20Jo%C3%A3o");
+    expect(waLink("(11) 99111-0001", "Olá João")).toBe(
+      "https://wa.me/5511991110001?text=Ol%C3%A1%20Jo%C3%A3o",
+    );
   });
 
   it("marca contato atrasado a partir de 7 dias", () => {

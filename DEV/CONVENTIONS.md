@@ -7,15 +7,15 @@
 
 ## Onde colocar código novo
 
-| O que | Onde |
-| --- | --- |
-| Nova tela | `src/routes/` (arquivo = rota). Dentro de `_authenticated/` se exigir login |
-| Componente de domínio | `src/components/crm/` |
-| Primitivo de UI | `src/components/ui/` via CLI do shadcn (`components.json`), não à mão |
-| Regra de negócio / cálculo | `src/lib/crm/rules.ts` + teste em `rules.test.ts` |
-| Tipos do domínio | `src/lib/crm/types.ts` |
-| Acesso a dados / estado | `src/lib/crm/store.tsx` |
-| Ação que exige privilégio | Server function (`*.functions.ts`) com `requireSupabaseAuth` |
+| O que                      | Onde                                                                        |
+| -------------------------- | --------------------------------------------------------------------------- |
+| Nova tela                  | `src/routes/` (arquivo = rota). Dentro de `_authenticated/` se exigir login |
+| Componente de domínio      | `src/components/crm/`                                                       |
+| Primitivo de UI            | `src/components/ui/` via CLI do shadcn (`components.json`), não à mão       |
+| Regra de negócio / cálculo | `src/lib/crm/rules.ts` + teste em `rules.test.ts`                           |
+| Tipos do domínio           | `src/lib/crm/types.ts`                                                      |
+| Acesso a dados / estado    | `src/lib/crm/store.tsx`                                                     |
+| Ação que exige privilégio  | Server function (`*.functions.ts`) com `requireSupabaseAuth`                |
 
 ## Regras
 

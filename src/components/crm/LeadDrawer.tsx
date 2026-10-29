@@ -24,7 +24,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { WhatsAppIcon } from "./WhatsAppIcon";
 import { ConfirmDelete } from "./ConfirmDelete";
 import { timeAgo } from "./LeadCard";
@@ -74,7 +80,11 @@ function LeadDetails({ lead }: { lead: Lead }) {
   const interest = properties.find((p) => p.id === lead.interestPropertyId);
   const matches = smartMatch(lead, properties);
   const stage = STAGES.find((s) => s.id === lead.stage)!;
-  const initials = lead.name.split(" ").map((p) => p[0]).slice(0, 2).join("");
+  const initials = lead.name
+    .split(" ")
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join("");
 
   return (
     <div className="flex min-h-full flex-col">
@@ -113,13 +123,20 @@ function LeadDetails({ lead }: { lead: Lead }) {
               href={waLink(lead.phone, contextualMessage(lead, owner, interest))}
               target="_blank"
               rel="noreferrer"
-              onClick={() => addInteraction(lead.id, { kind: "whatsapp", text: "Mensagem contextual enviada." })}
+              onClick={() =>
+                addInteraction(lead.id, { kind: "whatsapp", text: "Mensagem contextual enviada." })
+              }
             >
               <WhatsAppIcon className="size-4" /> WhatsApp
             </a>
           </Button>
           <Button asChild variant="outline" className="h-11 rounded-xl bg-card">
-            <a href={`tel:+${lead.phone}`} onClick={() => addInteraction(lead.id, { kind: "ligacao", text: "Ligação iniciada pelo CRM." })}>
+            <a
+              href={`tel:+${lead.phone}`}
+              onClick={() =>
+                addInteraction(lead.id, { kind: "ligacao", text: "Ligação iniciada pelo CRM." })
+              }
+            >
               <Phone /> Ligar
             </a>
           </Button>
@@ -137,19 +154,24 @@ function LeadDetails({ lead }: { lead: Lead }) {
             else toast.error("Não foi possível excluir este cliente");
           }}
           trigger={
-            <Button variant="ghost" size="sm" className="mt-3 w-full text-destructive hover:text-destructive">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="mt-3 w-full text-destructive hover:text-destructive"
+            >
               <Trash2 /> Excluir cliente
             </Button>
           }
         />
       </div>
 
-
       <Tabs defaultValue="match" className="flex-1 px-5 pt-4 pb-8">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="match" className="gap-1.5">
             <Sparkles className="size-3.5" /> Smart Match
-            <span className="rounded-full bg-highlight px-1.5 text-[10px] font-bold text-highlight-foreground">{matches.length}</span>
+            <span className="rounded-full bg-highlight px-1.5 text-[10px] font-bold text-highlight-foreground">
+              {matches.length}
+            </span>
           </TabsTrigger>
           <TabsTrigger value="history">Histórico</TabsTrigger>
           <TabsTrigger value="profile">Contato</TabsTrigger>
@@ -162,7 +184,11 @@ function LeadDetails({ lead }: { lead: Lead }) {
           </Section>
           <Section title="Perfil de busca">
             <InfoRow icon={Home} label="Tipo" value={lead.propertyType} />
-            <InfoRow icon={Wallet} label="Orçamento" value={`${brl(lead.budgetMin)} a ${brl(lead.budgetMax)}`} />
+            <InfoRow
+              icon={Wallet}
+              label="Orçamento"
+              value={`${brl(lead.budgetMin)} a ${brl(lead.budgetMax)}`}
+            />
             <InfoRow icon={BedDouble} label="Quartos" value={`${lead.bedrooms} ou mais`} />
             <InfoRow icon={MapPin} label="Bairros" value={lead.neighborhoods.join(", ")} />
           </Section>
@@ -180,7 +206,8 @@ function LeadDetails({ lead }: { lead: Lead }) {
         <TabsContent value="match" className="mt-5 space-y-3">
           <p className="text-xs text-muted-foreground">
             Cruzamento automático por <strong className="text-foreground">orçamento</strong>,{" "}
-            <strong className="text-foreground">tipo</strong> e <strong className="text-foreground">bairro</strong>.
+            <strong className="text-foreground">tipo</strong> e{" "}
+            <strong className="text-foreground">bairro</strong>.
           </p>
           {matches.length === 0 && (
             <div className="rounded-2xl border border-dashed p-6 text-center text-sm text-muted-foreground">
@@ -199,13 +226,23 @@ function LeadDetails({ lead }: { lead: Lead }) {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h3 className="mb-2 text-xs font-semibold uppercase tracking-[0.1em] text-muted-foreground">{title}</h3>
+      <h3 className="mb-2 text-xs font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+        {title}
+      </h3>
       <div className="divide-y rounded-2xl border bg-card">{children}</div>
     </div>
   );
 }
 
-function InfoRow({ icon: Icon, label, value }: { icon: typeof Phone; label: string; value: string }) {
+function InfoRow({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: typeof Phone;
+  label: string;
+  value: string;
+}) {
   return (
     <div className="flex items-center gap-3 px-4 py-3 text-sm">
       <Icon className="size-4 shrink-0 text-muted-foreground" />
@@ -220,8 +257,19 @@ function PropertyMini({ propertyId }: { propertyId: string }) {
   const p = properties.find((x) => x.id === propertyId);
   if (!p) return null;
   return (
-    <Link to="/imoveis/$id" params={{ id: p.id }} className="flex items-center gap-3 p-3 transition-colors hover:bg-muted/60">
-      <img src={img(p.photos[0])} alt={p.title} loading="lazy" width={1280} height={864} className="size-16 rounded-xl object-cover" />
+    <Link
+      to="/imoveis/$id"
+      params={{ id: p.id }}
+      className="flex items-center gap-3 p-3 transition-colors hover:bg-muted/60"
+    >
+      <img
+        src={img(p.photos[0])}
+        alt={p.title}
+        loading="lazy"
+        width={1280}
+        height={864}
+        className="size-16 rounded-xl object-cover"
+      />
       <div className="min-w-0">
         <p className="truncate text-sm font-semibold">{p.title}</p>
         <p className="text-xs text-muted-foreground">
@@ -248,7 +296,14 @@ function MatchCard({ lead, match }: { lead: Lead; match: ReturnType<typeof smart
     <div className="overflow-hidden rounded-2xl border bg-card shadow-card">
       <div className="flex gap-3 p-3">
         <Link to="/imoveis/$id" params={{ id: p.id }} className="shrink-0">
-          <img src={img(p.photos[0])} alt={p.title} loading="lazy" width={1280} height={864} className="size-20 rounded-xl object-cover" />
+          <img
+            src={img(p.photos[0])}
+            alt={p.title}
+            loading="lazy"
+            width={1280}
+            height={864}
+            className="size-20 rounded-xl object-cover"
+          />
         </Link>
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
@@ -256,7 +311,9 @@ function MatchCard({ lead, match }: { lead: Lead; match: ReturnType<typeof smart
             <span
               className={cn(
                 "shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold",
-                match.score === 100 ? "bg-highlight text-highlight-foreground" : "bg-secondary text-secondary-foreground",
+                match.score === 100
+                  ? "bg-highlight text-highlight-foreground"
+                  : "bg-secondary text-secondary-foreground",
               )}
             >
               {match.score}%
@@ -272,14 +329,18 @@ function MatchCard({ lead, match }: { lead: Lead; match: ReturnType<typeof smart
                 key={c.label}
                 className={cn(
                   "rounded-md px-1.5 py-0.5 text-[10px] font-semibold",
-                  c.ok ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground line-through",
+                  c.ok
+                    ? "bg-primary/10 text-primary"
+                    : "bg-muted text-muted-foreground line-through",
                 )}
               >
                 {c.label}
               </span>
             ))}
             {p.status === "reservado" && (
-              <span className="rounded-md bg-accent px-1.5 py-0.5 text-[10px] font-semibold text-accent-foreground">Reservado</span>
+              <span className="rounded-md bg-accent px-1.5 py-0.5 text-[10px] font-semibold text-accent-foreground">
+                Reservado
+              </span>
             )}
           </div>
         </div>
@@ -288,7 +349,11 @@ function MatchCard({ lead, match }: { lead: Lead; match: ReturnType<typeof smart
         <button
           className="flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold transition-colors hover:bg-muted"
           onClick={async () => {
-            await shareLink({ title: p.title, text: `${p.title} • ${p.neighborhood} • ${brl(p.price)}`, url });
+            await shareLink({
+              title: p.title,
+              text: `${p.title} • ${p.neighborhood} • ${brl(p.price)}`,
+              url,
+            });
             setCopied(true);
             setTimeout(() => setCopied(false), 1500);
           }}
@@ -296,10 +361,18 @@ function MatchCard({ lead, match }: { lead: Lead; match: ReturnType<typeof smart
           {copied ? <Check className="size-3.5" /> : <Share2 className="size-3.5" />} Compartilhar
         </button>
         <a
-          href={waLink(lead.phone, `Oi, ${lead.name.split(" ")[0]}! Separei este imóvel para você:\n\n${propertySheet(p, url)}`)}
+          href={waLink(
+            lead.phone,
+            `Oi, ${lead.name.split(" ")[0]}! Separei este imóvel para você:\n\n${propertySheet(p, url)}`,
+          )}
           target="_blank"
           rel="noreferrer"
-          onClick={() => addInteraction(lead.id, { kind: "whatsapp", text: `Ficha enviada: ${p.code} — ${p.title}` })}
+          onClick={() =>
+            addInteraction(lead.id, {
+              kind: "whatsapp",
+              text: `Ficha enviada: ${p.code} — ${p.title}`,
+            })
+          }
           className="flex items-center justify-center gap-1.5 border-l py-2.5 text-xs font-semibold text-whatsapp transition-colors hover:bg-muted"
         >
           <WhatsAppIcon className="size-3.5" /> Enviar ficha
@@ -316,7 +389,9 @@ function HistoryTab({ lead }: { lead: Lead }) {
   const [text, setText] = useState("");
   const [when, setWhen] = useState("");
   const [propId, setPropId] = useState(lead.interestPropertyId ?? "");
-  const upcoming = lead.interactions.filter((i) => i.scheduledFor && new Date(i.scheduledFor) > new Date());
+  const upcoming = lead.interactions.filter(
+    (i) => i.scheduledFor && new Date(i.scheduledFor) > new Date(),
+  );
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -350,7 +425,9 @@ function HistoryTab({ lead }: { lead: Lead }) {
               <CalendarClock className="size-5 text-stage-visit" />
               <div className="text-sm">
                 <p className="font-semibold">
-                  {format(new Date(u.scheduledFor!), "EEEE, dd 'de' MMM 'às' HH:mm", { locale: ptBR })}
+                  {format(new Date(u.scheduledFor!), "EEEE, dd 'de' MMM 'às' HH:mm", {
+                    locale: ptBR,
+                  })}
                 </p>
                 <p className="text-xs text-muted-foreground">{u.text}</p>
               </div>
@@ -388,7 +465,12 @@ function HistoryTab({ lead }: { lead: Lead }) {
           </Select>
         ) : (
           <div className="grid gap-2 sm:grid-cols-2">
-            <Input type="datetime-local" value={when} onChange={(e) => setWhen(e.target.value)} aria-label="Data e horário" />
+            <Input
+              type="datetime-local"
+              value={when}
+              onChange={(e) => setWhen(e.target.value)}
+              aria-label="Data e horário"
+            />
             <Select value={propId} onValueChange={setPropId}>
               <SelectTrigger className="h-9">
                 <SelectValue placeholder="Imóvel" />
@@ -419,7 +501,8 @@ function HistoryTab({ lead }: { lead: Lead }) {
       <ol className="relative space-y-4 pl-6 before:absolute before:top-1 before:bottom-1 before:left-[9px] before:w-px before:bg-border">
         {lead.interactions.map((i) => {
           const meta = KIND_META[i.kind];
-          const author = i.authorId === "admin" ? "Admin" : brokerById(i.authorId)?.name.split(" ")[0];
+          const author =
+            i.authorId === "admin" ? "Admin" : brokerById(i.authorId)?.name.split(" ")[0];
           return (
             <li key={i.id} className="relative">
               <span className="absolute top-0.5 -left-6 grid size-[19px] place-items-center rounded-full border bg-card">
@@ -441,9 +524,10 @@ function HistoryTab({ lead }: { lead: Lead }) {
             </li>
           );
         })}
-        {lead.interactions.length === 0 && <li className="text-sm text-muted-foreground">Sem interações ainda.</li>}
+        {lead.interactions.length === 0 && (
+          <li className="text-sm text-muted-foreground">Sem interações ainda.</li>
+        )}
       </ol>
     </div>
   );
 }
-

@@ -1,6 +1,7 @@
 export type StageId = "novo" | "contato" | "visita" | "proposta" | "ganho" | "perdido";
 
-export type PropertyType = "Apartamento" | "Casa" | "Cobertura" | "Studio" | "Sobrado" | "Comercial";
+export type PropertyType =
+  "Apartamento" | "Casa" | "Cobertura" | "Studio" | "Sobrado" | "Comercial";
 
 export type Broker = {
   id: string;

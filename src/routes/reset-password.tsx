@@ -35,7 +35,9 @@ function ResetPasswordPage() {
     const { error } = await supabase.auth.updateUser({ password });
     setBusy(false);
     if (error) {
-      toast.error("Link inválido ou expirado", { description: "Peça um novo link na tela de login." });
+      toast.error("Link inválido ou expirado", {
+        description: "Peça um novo link na tela de login.",
+      });
       return;
     }
     toast.success("Senha atualizada");
@@ -48,7 +50,14 @@ function ResetPasswordPage() {
         <h1 className="text-2xl font-bold">Criar nova senha</h1>
         <div className="space-y-1.5">
           <Label htmlFor="pw">Nova senha</Label>
-          <Input id="pw" type="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} className="h-11" />
+          <Input
+            id="pw"
+            type="password"
+            autoComplete="new-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="h-11"
+          />
         </div>
         <Button type="submit" size="lg" className="w-full rounded-xl" disabled={busy}>
           {busy ? "Salvando…" : "Salvar senha"}

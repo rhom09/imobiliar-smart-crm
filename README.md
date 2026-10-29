@@ -3,6 +3,7 @@
 Crie um CRM imobiliário moderno com arquitetura SaaS para vendas de imóveis.
 
 Principais funcionalidades e telas:
+
 1. Quadro Kanban de Oportunidades (Funil de Vendas):
    - Etapas: Novo Lead, Contato Feito, Visita Agendada, Proposta Enviada, Fechado (Ganho), Perdido.
    - Cards com arrastar e soltar (drag-and-drop), contendo nome do cliente, imóvel/orçamento, tempo desde o último contato e botão rápido de WhatsApp (abrindo wa.me com mensagem contextual).

@@ -2,7 +2,11 @@ import { toast } from "sonner";
 
 /** Abre a folha nativa de compartilhamento; copia o link só quando o aparelho não suporta. */
 export async function shareLink(data: { title: string; text?: string; url: string }) {
-  const payload: ShareData = { title: data.title, url: data.url, ...(data.text ? { text: data.text } : {}) };
+  const payload: ShareData = {
+    title: data.title,
+    url: data.url,
+    ...(data.text ? { text: data.text } : {}),
+  };
   if (typeof navigator !== "undefined" && navigator.share) {
     const ok = !navigator.canShare || navigator.canShare(payload);
     const final = ok ? payload : { url: data.url };

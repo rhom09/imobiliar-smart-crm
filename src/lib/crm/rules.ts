@@ -66,7 +66,8 @@ export function smartMatch(lead: Lead, properties: Property[]): MatchResult[] {
     .filter((p) => p.status !== "vendido")
     .map((p) => {
       const type = p.type === lead.propertyType;
-      const budget = p.price <= lead.budgetMax * (1 + BUDGET_TOLERANCE) && p.price >= lead.budgetMin * 0.8;
+      const budget =
+        p.price <= lead.budgetMax * (1 + BUDGET_TOLERANCE) && p.price >= lead.budgetMin * 0.8;
       const neighborhood = lead.neighborhoods.includes(p.neighborhood);
       const score = (type ? 40 : 0) + (budget ? 40 : 0) + (neighborhood ? 20 : 0);
       return { property: p, score, reasons: { type, budget, neighborhood } };
@@ -80,10 +81,15 @@ export function smartMatch(lead: Lead, properties: Property[]): MatchResult[] {
 }
 
 export const brl = (n: number) =>
-  new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(n);
+  new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    maximumFractionDigits: 0,
+  }).format(n);
 
 export const brlCompact = (n: number) => {
-  if (n >= 1_000_000) return `R$ ${(n / 1_000_000).toLocaleString("pt-BR", { maximumFractionDigits: 2 })} mi`;
+  if (n >= 1_000_000)
+    return `R$ ${(n / 1_000_000).toLocaleString("pt-BR", { maximumFractionDigits: 2 })} mi`;
   if (n >= 1_000) return `R$ ${Math.round(n / 1_000).toLocaleString("pt-BR")} mil`;
   return brl(n);
 };
@@ -108,7 +114,9 @@ export function waLink(phone: string, text: string) {
 export function contextualMessage(lead: Lead, broker: Broker | undefined, property?: Property) {
   const first = lead.name.split(" ")[0];
   const me = broker ? `${broker.name.split(" ")[0]}, da Morada Imóveis` : "da Morada Imóveis";
-  const imovel = property ? `o ${property.title} em ${property.neighborhood}` : `${article(lead.propertyType)} ${lead.propertyType.toLowerCase()} em ${lead.neighborhoods[0] ?? "São Paulo"}`;
+  const imovel = property
+    ? `o ${property.title} em ${property.neighborhood}`
+    : `${article(lead.propertyType)} ${lead.propertyType.toLowerCase()} em ${lead.neighborhoods[0] ?? "São Paulo"}`;
   switch (lead.stage) {
     case "novo":
       return `Olá, ${first}! Aqui é ${me}. Vi seu interesse em ${imovel} e separei algumas opções dentro de ${brlCompact(lead.budgetMax)}. Posso te enviar?`;

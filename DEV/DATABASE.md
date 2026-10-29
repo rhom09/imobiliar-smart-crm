@@ -11,18 +11,23 @@ Postgres (Supabase gerenciado pelo Lovable Cloud). Fonte: `drizzle/migrations/00
 ## Tabelas
 
 ### `profiles`
+
 `id` (PK, FK → `auth.users`, cascade), `name`, `email`, `phone`, `creci`, `created_at`.
 
 ### `user_roles`
+
 `id`, `user_id` (FK → `auth.users`, cascade), `role` (`app_role`). `UNIQUE (user_id, role)`.
 
 ### `properties`
+
 `id`, `code` (único, padrão `'MOR-' || nextval('property_code_seq')`, sequência inicia em 1100), `title`, `type`, `price`, `neighborhood`, `city` (padrão "São Paulo"), `address`, `bedrooms`, `suites`, `bathrooms`, `parking`, `area`, `condo`, `iptu`, `description`, `features text[]`, `photos text[]`, `broker_id`, `status` (`disponivel` | `reservado` | `vendido`), `created_at`.
 
 ### `leads`
+
 `id`, `name`, `phone`, `email`, `owner_id` (corretor dono), `stage` (`novo` | `contato` | `visita` | `proposta` | `ganho` | `perdido`), `property_type`, `budget_min`, `budget_max`, `bedrooms`, `neighborhoods text[]`, `interest_property_id` (FK → `properties`, `ON DELETE SET NULL`), `source`, `created_at`, `last_contact_at`.
 
 ### `interactions`
+
 `id`, `lead_id` (FK → `leads`, cascade), `kind` (`nota` | `ligacao` | `whatsapp` | `visita` | `etapa`), `text`, `at`, `scheduled_for` (visitas), `author_id` (padrão `auth.uid()`). Índice em `lead_id`.
 
 ## Funções e triggers
@@ -33,13 +38,13 @@ Postgres (Supabase gerenciado pelo Lovable Cloud). Fonte: `drizzle/migrations/00
 
 ## Políticas RLS (resumo)
 
-| Tabela | SELECT | INSERT | UPDATE | DELETE |
-| --- | --- | --- | --- | --- |
-| `profiles` | todos autenticados | — | próprio ou admin | — |
-| `user_roles` | todos autenticados | — | — | — |
-| `properties` | todos autenticados | todos autenticados | `broker_id = uid` ou `broker_id` nulo ou admin | só admin |
-| `leads` | dono ou admin | dono ou admin | dono ou admin | dono ou admin |
-| `interactions` | se `can_access_lead` | se `can_access_lead` e `author_id = uid` | — | — |
+| Tabela         | SELECT               | INSERT                                   | UPDATE                                         | DELETE        |
+| -------------- | -------------------- | ---------------------------------------- | ---------------------------------------------- | ------------- |
+| `profiles`     | todos autenticados   | —                                        | próprio ou admin                               | —             |
+| `user_roles`   | todos autenticados   | —                                        | —                                              | —             |
+| `properties`   | todos autenticados   | todos autenticados                       | `broker_id = uid` ou `broker_id` nulo ou admin | só admin      |
+| `leads`        | dono ou admin        | dono ou admin                            | dono ou admin                                  | dono ou admin |
+| `interactions` | se `can_access_lead` | se `can_access_lead` e `author_id = uid` | —                                              | —             |
 
 Todas as tabelas têm RLS habilitado. Papéis só são escritos pelo trigger e pelo service role.
 

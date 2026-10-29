@@ -30,7 +30,9 @@ export function registerPhotoUrl(key: string, url: string) {
 }
 
 export function storagePaths(photos: string[]) {
-  return photos.filter((s) => s.startsWith(STORAGE_PREFIX)).map((s) => s.slice(STORAGE_PREFIX.length));
+  return photos
+    .filter((s) => s.startsWith(STORAGE_PREFIX))
+    .map((s) => s.slice(STORAGE_PREFIX.length));
 }
 
 export function img(src: string | undefined) {

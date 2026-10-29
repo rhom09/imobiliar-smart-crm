@@ -1,11 +1,25 @@
 import { Crown, UserRound } from "lucide-react";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useCrm } from "@/lib/crm/store";
 import { AGENCY } from "@/lib/crm/seed";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
-export function RoleSwitcher({ compact = false, className }: { compact?: boolean; className?: string }) {
+export function RoleSwitcher({
+  compact = false,
+  className,
+}: {
+  compact?: boolean;
+  className?: string;
+}) {
   const { viewer, setViewer, brokers, me, brokerById } = useCrm();
   const myName = (me && brokerById(me.id)?.name) || AGENCY.ownerName;
   const value = viewer.kind === "admin" ? "admin" : viewer.brokerId;
@@ -22,11 +36,15 @@ export function RoleSwitcher({ compact = false, className }: { compact?: boolean
         onValueChange={(v) => {
           if (v === "admin") {
             setViewer({ kind: "admin" });
-            toast.success("Visão do Dono/Admin", { description: "Você vê todos os leads da imobiliária." });
+            toast.success("Visão do Dono/Admin", {
+              description: "Você vê todos os leads da imobiliária.",
+            });
           } else {
             setViewer({ kind: "broker", brokerId: v });
             const b = brokers.find((x) => x.id === v);
-            toast.success(`Visão de ${b?.name}`, { description: "Apenas os clientes deste corretor ficam visíveis." });
+            toast.success(`Visão de ${b?.name}`, {
+              description: "Apenas os clientes deste corretor ficam visíveis.",
+            });
           }
         }}
       >

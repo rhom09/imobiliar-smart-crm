@@ -26,3 +26,11 @@ Use `HANDOFF.md` for the current snapshot and `HANDOFFS/WORKLOG_ARCHIVE.md` for 
 - Risks: Nenhum; `bun.lock` preservado
 - Next context: Ambiente pronto para desenvolvimento via `bun run dev` ou testes com `bun run test`
 
+## 2026-10-29 - Atualização do .gitignore e boas práticas de versionamento
+
+- Spec: `DEV/SPECS/ACTIVE.md`
+- Changed: `.gitignore` (adicionado `.claude/`, `.aiassistant/`, `.continue/`, `.clinerules`, `.windsurfrules`, `.aider.conf.yml`)
+- Why: Evitar que arquivos de configuração local de assistentes de IA e ferramentas de desenvolvimento sejam versionados no repositório principal, mantendo apenas o código-fonte, documentação do projeto (`DEV/`) e assets essenciais.
+- Verified: `git status` e `git status --ignored` confirmando exclusão correta dos arquivos locais.
+- Risks: Nenhum
+- Next context: Repositório limpo e organizado conforme boas práticas do Orquestrador Maestro.

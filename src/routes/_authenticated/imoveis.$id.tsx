@@ -32,9 +32,15 @@ export const Route = createFileRoute("/_authenticated/imoveis/$id")({
   head: () => ({
     meta: [
       { title: "Ficha do imóvel — Morada CRM" },
-      { name: "description", content: "Galeria de fotos, especificações completas e compartilhamento do imóvel." },
+      {
+        name: "description",
+        content: "Galeria de fotos, especificações completas e compartilhamento do imóvel.",
+      },
       { property: "og:title", content: "Ficha do imóvel — Morada CRM" },
-      { property: "og:description", content: "Veja fotos, metragem, quartos, vagas e valores deste imóvel." },
+      {
+        property: "og:description",
+        content: "Veja fotos, metragem, quartos, vagas e valores deste imóvel.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -44,7 +50,8 @@ export const Route = createFileRoute("/_authenticated/imoveis/$id")({
 
 function PropertyPage() {
   const { id } = Route.useParams();
-  const { ready, properties, brokerById, leads, updateProperty, deleteProperty, isAdmin } = useCrm();
+  const { ready, properties, brokerById, leads, updateProperty, deleteProperty, isAdmin } =
+    useCrm();
   const navigate = useNavigate();
   const [photo, setPhoto] = useState(0);
   const [openLead, setOpenLead] = useState<string | null>(null);
@@ -56,7 +63,9 @@ function PropertyPage() {
     return (
       <div className="p-10 text-center">
         <p className="font-semibold">Imóvel não encontrado</p>
-        <Button asChild variant="link"><Link to="/imoveis">Voltar ao catálogo</Link></Button>
+        <Button asChild variant="link">
+          <Link to="/imoveis">Voltar ao catálogo</Link>
+        </Button>
       </div>
     );
   }
@@ -73,7 +82,11 @@ function PropertyPage() {
     .sort((a, b) => b.match.score - a.match.score);
 
   async function share() {
-    await shareLink({ title: p!.title, text: `${p!.title} • ${p!.neighborhood} • ${brl(p!.price)}`, url });
+    await shareLink({
+      title: p!.title,
+      text: `${p!.title} • ${p!.neighborhood} • ${brl(p!.price)}`,
+      url,
+    });
   }
   async function copy() {
     try {
@@ -98,7 +111,9 @@ function PropertyPage() {
     <div className="pb-8">
       <div className="flex items-center justify-between px-4 pt-4 md:px-8 md:pt-6">
         <Button asChild variant="ghost" size="sm" className="-ml-2">
-          <Link to="/imoveis"><ArrowLeft /> Catálogo</Link>
+          <Link to="/imoveis">
+            <ArrowLeft /> Catálogo
+          </Link>
         </Button>
         <div className="flex gap-2">
           {isAdmin && (
@@ -112,14 +127,21 @@ function PropertyPage() {
                 } else toast.error("Não foi possível excluir este imóvel");
               }}
               trigger={
-                <Button variant="outline" size="sm" className="rounded-full bg-card text-destructive" aria-label="Excluir imóvel">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full bg-card text-destructive"
+                  aria-label="Excluir imóvel"
+                >
                   <Trash2 /> <span className="hidden sm:inline">Excluir</span>
                 </Button>
               }
             />
           )}
           <Button asChild variant="outline" size="sm" className="rounded-full bg-card">
-            <Link to="/imoveis/$id/editar" params={{ id: p.id }} aria-label="Editar imóvel"><Pencil /> <span className="hidden sm:inline">Editar</span></Link>
+            <Link to="/imoveis/$id/editar" params={{ id: p.id }} aria-label="Editar imóvel">
+              <Pencil /> <span className="hidden sm:inline">Editar</span>
+            </Link>
           </Button>
           <Button variant="outline" size="sm" className="rounded-full bg-card" onClick={copy}>
             {copied ? <Check /> : <Link2 />} <span className="hidden sm:inline">Copiar link</span>
@@ -154,8 +176,19 @@ function PropertyPage() {
       <div className="mt-4 px-4 md:px-8">
         <div className="grid gap-2 md:grid-cols-[1fr_180px]">
           <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-muted md:aspect-[16/9]">
-            <img src={img(p.photos[photo])} alt={`${p.title} — foto ${photo + 1}`} width={1280} height={864} className="size-full object-cover" />
-            <span className={cn("absolute top-4 left-4 rounded-full px-3 py-1 text-xs font-bold", STATUS_META[p.status].className)}>
+            <img
+              src={img(p.photos[photo])}
+              alt={`${p.title} — foto ${photo + 1}`}
+              width={1280}
+              height={864}
+              className="size-full object-cover"
+            />
+            <span
+              className={cn(
+                "absolute top-4 left-4 rounded-full px-3 py-1 text-xs font-bold",
+                STATUS_META[p.status].className,
+              )}
+            >
               {STATUS_META[p.status].label}
             </span>
             <span className="absolute right-4 bottom-4 rounded-full bg-foreground/70 px-3 py-1 text-xs font-semibold text-background">
@@ -172,7 +205,14 @@ function PropertyPage() {
                   i === photo ? "ring-2 ring-primary" : "opacity-70 hover:opacity-100",
                 )}
               >
-                <img src={img(ph)} alt="" loading="lazy" width={1280} height={864} className="size-full object-cover" />
+                <img
+                  src={img(ph)}
+                  alt=""
+                  loading="lazy"
+                  width={1280}
+                  height={864}
+                  className="size-full object-cover"
+                />
               </button>
             ))}
           </div>
@@ -186,7 +226,9 @@ function PropertyPage() {
               <MapPin className="size-4" /> {p.address} — {p.neighborhood}, {p.city}
             </p>
             <h1 className="mt-1.5 text-2xl font-bold md:text-4xl">{p.title}</h1>
-            <p className="mt-1 text-sm text-muted-foreground">{p.type} · Código {p.code}</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {p.type} · Código {p.code}
+            </p>
           </div>
 
           <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
@@ -209,7 +251,10 @@ function PropertyPage() {
               <h2 className="text-lg font-semibold">Diferenciais</h2>
               <div className="mt-3 flex flex-wrap gap-2">
                 {p.features.map((f) => (
-                  <span key={f} className="flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1.5 text-sm font-medium text-secondary-foreground">
+                  <span
+                    key={f}
+                    className="flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1.5 text-sm font-medium text-secondary-foreground"
+                  >
                     <Check className="size-3.5" /> {f}
                   </span>
                 ))}
@@ -223,21 +268,38 @@ function PropertyPage() {
             <p className="text-sm text-muted-foreground">Valor de venda</p>
             <p className="font-display text-3xl font-bold text-primary">{brl(p.price)}</p>
             <dl className="mt-4 space-y-2 border-t pt-4 text-sm">
-              <div className="flex justify-between"><dt className="text-muted-foreground">Condomínio</dt><dd className="font-medium">{p.condo ? brl(p.condo) : "—"}</dd></div>
-              <div className="flex justify-between"><dt className="text-muted-foreground">IPTU (mês)</dt><dd className="font-medium">{brl(p.iptu)}</dd></div>
-              <div className="flex justify-between"><dt className="text-muted-foreground">Preço / m²</dt><dd className="font-medium">{brl(Math.round(p.price / p.area))}</dd></div>
+              <div className="flex justify-between">
+                <dt className="text-muted-foreground">Condomínio</dt>
+                <dd className="font-medium">{p.condo ? brl(p.condo) : "—"}</dd>
+              </div>
+              <div className="flex justify-between">
+                <dt className="text-muted-foreground">IPTU (mês)</dt>
+                <dd className="font-medium">{brl(p.iptu)}</dd>
+              </div>
+              <div className="flex justify-between">
+                <dt className="text-muted-foreground">Preço / m²</dt>
+                <dd className="font-medium">{brl(Math.round(p.price / p.area))}</dd>
+              </div>
             </dl>
             <Button asChild variant="whatsapp" size="lg" className="mt-5 w-full rounded-xl">
-              <a href={`https://wa.me/?text=${encodeURIComponent(sheet)}`} target="_blank" rel="noreferrer">
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent(sheet)}`}
+                target="_blank"
+                rel="noreferrer"
+              >
                 <WhatsAppIcon className="size-4" /> Enviar ficha no WhatsApp
               </a>
             </Button>
             {broker && (
               <div className="mt-4 flex items-center gap-3 rounded-2xl bg-muted p-3">
-                <span className="grid size-10 place-items-center rounded-full bg-primary text-sm font-bold text-primary-foreground">{broker.initials}</span>
+                <span className="grid size-10 place-items-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                  {broker.initials}
+                </span>
                 <div className="text-sm">
                   <p className="font-semibold">{broker.name}</p>
-                  <p className="text-xs text-muted-foreground">{broker.creci} · {formatPhone(broker.phone)}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {broker.creci} · {formatPhone(broker.phone)}
+                  </p>
                 </div>
               </div>
             )}
@@ -247,17 +309,36 @@ function PropertyPage() {
             <h2 className="flex items-center gap-2 text-base font-semibold">
               <Sparkles className="size-4 text-highlight-foreground" /> Leads compatíveis
             </h2>
-            <p className="mt-1 text-xs text-muted-foreground">Clientes do seu funil que combinam com este imóvel.</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Clientes do seu funil que combinam com este imóvel.
+            </p>
             <div className="mt-3 space-y-2">
-              {interested.length === 0 && <p className="text-sm text-muted-foreground">Nenhum lead compatível visível para você.</p>}
+              {interested.length === 0 && (
+                <p className="text-sm text-muted-foreground">
+                  Nenhum lead compatível visível para você.
+                </p>
+              )}
               {interested.slice(0, 6).map(({ lead, match }) => (
                 <div key={lead.id} className="flex items-center gap-2 rounded-2xl border p-2.5">
                   <button onClick={() => setOpenLead(lead.id)} className="min-w-0 flex-1 text-left">
                     <p className="truncate text-sm font-semibold">{lead.name}</p>
                     <p className="text-xs text-muted-foreground">{match.score}% compatível</p>
                   </button>
-                  <Button asChild size="icon" variant="whatsapp" className="size-8 rounded-full" aria-label={`Enviar para ${lead.name}`}>
-                    <a href={waLink(lead.phone, `Oi, ${lead.name.split(" ")[0]}! Separei este imóvel para você:\n\n${sheet}`)} target="_blank" rel="noreferrer">
+                  <Button
+                    asChild
+                    size="icon"
+                    variant="whatsapp"
+                    className="size-8 rounded-full"
+                    aria-label={`Enviar para ${lead.name}`}
+                  >
+                    <a
+                      href={waLink(
+                        lead.phone,
+                        `Oi, ${lead.name.split(" ")[0]}! Separei este imóvel para você:\n\n${sheet}`,
+                      )}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       <WhatsAppIcon className="size-4" />
                     </a>
                   </Button>
