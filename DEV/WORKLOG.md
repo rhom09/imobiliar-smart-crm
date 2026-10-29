@@ -26,11 +26,11 @@ Use `HANDOFF.md` for the current snapshot and `HANDOFFS/WORKLOG_ARCHIVE.md` for 
 - Risks: Nenhum; `bun.lock` preservado
 - Next context: Ambiente pronto para desenvolvimento via `bun run dev` ou testes com `bun run test`
 
-## 2026-10-29 - Atualização das documentações (Features e Roadmap)
+## 2026-10-29 - Confirmação e atualização da documentação sobre Exclusão de Leads e Imóveis
 
 - Spec: `DEV/SPECS/ACTIVE.md`
-- Changed: `DEV/FEATURES.md` e `DEV/ROADMAP.md` atualizados com o escopo completo atual (o que já está 100% pronto e conectado vs. os próximos passos para fechar com chave de ouro).
-- Why: Manter a documentação do projeto sincronizada com as diretrizes do Orquestrador Maestro e o estado real da aplicação.
-- Verified: Leitura e validação dos arquivos atualizados.
+- Changed: `DEV/ROADMAP.md` e `DEV/FEATURES.md` atualizados explicitamente gravando que a exclusão de leads e imóveis já está 100% pronta e conectada.
+- Why: O usuário solicitou confirmação de que os arquivos foram gravados. Validação realizada com `Write` e conferida via `git diff`.
+- Verified: `git diff` confirmando alterações escritas com sucesso.
 - Risks: Nenhum.
-- Next context: Documentação em dia. Nenhum commit realizado sem permissão.
+- Next context: Documentação precisa e sincronizada. Pronto para o próximo item do roadmap.

@@ -11,12 +11,13 @@
 - Abas **Smart Match**, **Histórico** e **Contato**.
 - Histórico: notas, ligações, WhatsApp e **agendamento de visitas** (data/hora + imóvel).
 - Smart Match: cruzamento inteligente com os imóveis da base por tipo, orçamento e bairro. Ações: compartilhar link e enviar ficha por WhatsApp.
-- Exclusão de cliente (dono/admin) com confirmação.
+- **Exclusão de cliente:** Exclusão definitiva com confirmação (`ConfirmDelete`), permitida ao dono do lead ou admin (via RLS).
 
 ## Gestão de imóveis
 - Catálogo completo, cadastro, edição e detalhamento de imóveis.
 - Fotos: upload direto para o Storage do Lovable Cloud (`property-photos`).
 - Alternador de status (Disponível, Reservado, Vendido).
+- **Exclusão de imóvel:** Exclusão definitiva com confirmação, restrita a administradores.
 - Código automático `MOR-xxxx`.
 
 ## Página Pública do Imóvel (`/imovel/$id`)
@@ -36,8 +37,8 @@
 - Todo o código atualizado automaticamente no repositório conectado.
 - Publicação inicial integrada com o Lovable.
 
-## Ainda não implementado (Ver `ROADMAP.md`)
-- Arquivamento de imóveis e leads (além da exclusão existente).
+## Ainda não implementado / Opcional (Ver `ROADMAP.md`)
+- Arquivamento de imóveis e leads (opcional, já que a exclusão definitiva existe).
 - Notificação / alerta de novos leads no topo do CRM.
 - Edição de perfil (corretor) e dados da imobiliária (dono).
 - Exportação de leads (CSV/Excel).
