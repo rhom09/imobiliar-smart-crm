@@ -44,10 +44,11 @@ function Logo({ inverted = false }: { inverted?: boolean }) {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { viewer, currentBroker, isAdmin, me, brokerById } = useCrm();
+  const { viewer, currentBroker, isAdmin, me, brokerById, leads } = useCrm();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const myName = me ? brokerById(me.id)?.name : undefined;
+  const newLeadsCount = leads.filter((l) => l.stage === "novo").length;
   async function signOut() {
     await queryClient.cancelQueries();
     queryClient.clear();
@@ -64,21 +65,31 @@ export function AppShell({ children }: { children: ReactNode }) {
           <Logo inverted />
         </div>
         <nav className="flex flex-col gap-1 px-3">
-          {NAV.map(({ to, label, icon: Icon }) => (
-            <Link
-              key={to}
-              to={to}
-              className={cn(
-                "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
-                isActive(to)
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                  : "text-sidebar-foreground/75 hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground",
-              )}
-            >
-              <Icon className={cn("size-[18px]", isActive(to) && "text-sidebar-primary")} />
-              {label}
-            </Link>
-          ))}
+          {NAV.map(({ to, label, icon: Icon }) => {
+            const count = to === "/" ? newLeadsCount : 0;
+            return (
+              <Link
+                key={to}
+                to={to}
+                className={cn(
+                  "flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+                  isActive(to)
+                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                    : "text-sidebar-foreground/75 hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground",
+                )}
+              >
+                <span className="flex items-center gap-3">
+                  <Icon className={cn("size-[18px]", isActive(to) && "text-sidebar-primary")} />
+                  {label}
+                </span>
+                {count > 0 && (
+                  <span className="grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1.5 text-[11px] font-bold text-primary-foreground">
+                    {count}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="mt-auto space-y-4 p-4">
@@ -115,7 +126,14 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Mobile header */}
       <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b bg-background/90 px-4 py-3 backdrop-blur md:hidden">
-        <Logo />
+        <div className="flex items-center gap-2.5">
+          <Logo />
+          {newLeadsCount > 0 && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-bold text-primary">
+              {newLeadsCount} novo{newLeadsCount > 1 ? "s" : ""}
+            </span>
+          )}
+        </div>
         <div className="flex items-center gap-2">
           {isAdmin && <RoleSwitcher compact />}
           <button
@@ -132,21 +150,31 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Mobile bottom nav */}
       <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-3 border-t bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden">
-        {NAV.map(({ to, label, icon: Icon }) => (
-          <Link
-            key={to}
-            to={to}
-            className={cn(
-              "flex flex-col items-center gap-1 py-2.5 text-[11px] font-semibold transition-colors",
-              isActive(to) ? "text-primary" : "text-muted-foreground",
-            )}
-          >
-            <span className={cn("rounded-full px-4 py-1", isActive(to) && "bg-secondary")}>
-              <Icon className="size-5" />
-            </span>
-            {label}
-          </Link>
-        ))}
+        {NAV.map(({ to, label, icon: Icon }) => {
+          const count = to === "/" ? newLeadsCount : 0;
+          return (
+            <Link
+              key={to}
+              to={to}
+              className={cn(
+                "relative flex flex-col items-center gap-1 py-2.5 text-[11px] font-semibold transition-colors",
+                isActive(to) ? "text-primary" : "text-muted-foreground",
+              )}
+            >
+              <span
+                className={cn("relative rounded-full px-4 py-1", isActive(to) && "bg-secondary")}
+              >
+                <Icon className="size-5" />
+                {count > 0 && (
+                  <span className="absolute -top-1 -right-1 grid h-4 min-w-4 place-items-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
+                    {count}
+                  </span>
+                )}
+              </span>
+              {label}
+            </Link>
+          );
+        })}
       </nav>
     </div>
   );
