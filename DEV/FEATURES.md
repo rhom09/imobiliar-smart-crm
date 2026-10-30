@@ -35,9 +35,10 @@
 
 ## Autenticação e Permissões
 
-- Login com e-mail/senha e Google (`/auth`), recuperação de senha (`/reset-password`).
+- Login com e-mail/senha e **Google (via SDK nativo do Supabase)**, recuperação de senha (`/reset-password`).
 - Cadastro de corretores restrito ao Dono/Admin (`createTeamMember`).
 - Segurança garantida pelo banco de dados (RLS): o corretor enxerga apenas os próprios clientes.
+- **Desacoplamento completo do Lovable:** Sistema 100% independente, sem dependências de pacotes de preview ou cloud-auth proprietários.
 
 ## Exportação, Importação e Perfil / Imobiliária
 

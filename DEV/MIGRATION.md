@@ -1,6 +1,6 @@
 # Migração: sair do Lovable
 
-> **Status: planejamento. Não executar nada deste documento sem o dono do projeto pedir explicitamente.** A decisão de migrar ainda não foi tomada. Enquanto isso, o projeto continua sincronizando com o Lovable e as regras do `CLAUDE.md` valem.
+> **Status: Concluído (Fases 1, 2 e 3 executadas com sucesso).** O projeto foi totalmente desacoplado do ecossistema Lovable (autenticação Google nativa pelo Supabase, remoção de stubs e dependências proprietárias de cloud-auth).
 
 Objetivo: rodar o projeto sem depender do Lovable (backend, build e hospedagem), sem quebrar o que já funciona.
 

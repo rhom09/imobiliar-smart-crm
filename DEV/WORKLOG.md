@@ -17,14 +17,15 @@ Use `HANDOFF.md` for the current snapshot and `HANDOFFS/WORKLOG_ARCHIVE.md` for 
 - Next context: only what the next AI needs
 ```
 
-## 2026-10-29 - Aprimoramento de Upload de Logo da Imobiliária
+## 2026-10-30 - Migração Fase 2 e 3: Desacoplamento do Ecossistema Lovable
 
-- Spec: `DEV/ROADMAP.md` (Item 2)
-- Changed: `src/routes/_authenticated/imobiliaria.tsx`, `src/components/crm/PropertyForm.tsx`, `DEV/FEATURES.md`, `DEV/WORKLOG.md`
-- Why: Substituir entrada manual de URL por upload direto e otimizado da logo da imobiliária para o Supabase Storage.
-- Verified: `npx tsc --noEmit` e `npx vitest run` executados com sucesso (12 testes passando).
-- Risks: Nenhum.
-- Next context: Funcionalidade de perfil e imobiliária 100% concluída.
+- Spec: `DEV/MIGRATION.md`
+- Changed: `src/routes/auth.tsx`, `src/integrations/supabase/client.ts`, `src/routes/__root.tsx`, `src/integrations/lovable/` (removido/desativado)
+- Why: Retirar dependências do `@lovable.dev/cloud-auth-js` e `@lovable.dev/vite-tanstack-config`, migrando o login Google para o SDK nativo do Supabase e limpando stubs de telemetria Lovable.
+- Verified: `bun run build` e `bun run test` executados com sucesso (12/12 testes passando).
+- Risks: Nenhum; dependências proprietary removidas com build e SSR validados.
+- Next context: Projeto pronto para deploy na Vercel (Fase 5) conectado ao Supabase próprio.
+
 
 ## 2026-10-29 - Implementação da Edição de Perfil e Dados da Imobiliária
 
