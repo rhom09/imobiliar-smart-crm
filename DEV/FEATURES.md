@@ -1,6 +1,6 @@
 # Funcionalidades
 
-> Estado atual das funcionalidades 100% prontas e conectadas no repositório. Planejamento de melhorias: `ROADMAP.md`.
+> Estado atual das funcionalidades 100% prontas e conectadas no repositório. Planejamento de melhorias futuras: `ROADMAP.md`.
 
 ## Funil Kanban de oportunidades
 
@@ -18,7 +18,7 @@
 ## Gestão de imóveis
 
 - Catálogo completo, cadastro, edição e detalhamento de imóveis.
-- Fotos: upload direto para o Storage do Lovable Cloud (`property-photos`).
+- Fotos: upload direto para o Supabase Storage (`property-photos`).
 - Alternador de status (Disponível, Reservado, Vendido).
 - **Exclusão de imóvel:** Exclusão definitiva com confirmação, restrita a administradores.
 - Código automático `MOR-xxxx`.
@@ -46,13 +46,6 @@
 - **Importação de leads (CSV):** Funcionalidade para administradores importarem leads em lote via CSV com validação prévia de dados.
 - **Edição de Perfil e Dados da Imobiliária com Upload de Logo:** Corretores editam nome, telefone e CRECI em `/imobiliaria`; administradores editam dados institucionais e fazem upload direto da logo da imobiliária para o Supabase Storage (tabela `agency` com RLS).
 
-## Sincronização com GitHub
+## Hospedagem e Produção
 
-- Todo o código atualizado automaticamente no repositório conectado.
-- Publicação inicial integrada com o Lovable.
-
-## Ainda não implementado / Opcional (Ver `ROADMAP.md`)
-
-- Arquivamento de imóveis e leads (opcional, já que a exclusão definitiva existe).
-- Edição de perfil (corretor) e dados da imobiliária (dono).
-- Deploy com domínio próprio.
+- **Deploy na Vercel:** Sistema publicado em produção com domínio próprio na Vercel e integração com o Supabase nativo.
