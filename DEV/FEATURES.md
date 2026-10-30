@@ -46,6 +46,11 @@
 - **Importação de leads (CSV):** Funcionalidade para administradores importarem leads em lote via CSV com validação prévia de dados.
 - **Edição de Perfil e Dados da Imobiliária com Upload de Logo:** Corretores editam nome, telefone e CRECI em `/imobiliaria`; administradores editam dados institucionais e fazem upload direto da logo da imobiliária para o Supabase Storage (tabela `agency` com RLS).
 
+## Notificações em Tempo Real (Supabase Realtime)
+
+- Assinatura automática via canais do Supabase Realtime para tabelas `leads` e `properties`.
+- Alertas visuais instantâneos via `sonner` toasts (ex: novo lead cadastrado pela página pública ou novo imóvel adicionado) com sincronização e revalidação de estado em tempo real.
+
 ## Hospedagem e Produção
 
 - **Deploy na Vercel:** Sistema publicado em produção com domínio próprio na Vercel e integração com o Supabase nativo.

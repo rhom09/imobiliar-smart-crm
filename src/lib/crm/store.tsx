@@ -221,6 +221,54 @@ export function CrmProvider({ children }: { children: ReactNode }) {
     void reload();
   }, [reload]);
 
+  // Realtime notifications & updates via Supabase Realtime
+  useEffect(() => {
+    if (!me) return;
+    const channel = supabase
+      .channel("crm-realtime")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "leads" },
+        (payload) => {
+          const newLead = payload.new as { name?: string; source?: string };
+          toast.success("Novo lead recebido!", {
+            description: `${newLead.name || "Novo cliente"} cadastrado no funil.`,
+          });
+          void reload();
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "leads" },
+        () => {
+          void reload();
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "properties" },
+        (payload) => {
+          const newProp = payload.new as { code?: string; title?: string };
+          toast.info("Novo imóvel cadastrado", {
+            description: `${newProp.code || ""} - ${newProp.title || "Imóvel"}`,
+          });
+          void reload();
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "properties" },
+        () => {
+          void reload();
+        },
+      )
+      .subscribe();
+
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [me, reload]);
+
   const value = useMemo<Ctx>(() => {
     const authorId = me?.id ?? "";
     const brokers = team.filter((t) => t.role === "corretor");

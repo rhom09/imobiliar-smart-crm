@@ -14,6 +14,7 @@ Estado atual das melhorias planejadas e resumo das funcionalidades entregues.
 - **Exportação de Leads (CSV):** Botão "Exportar CSV" no Funil para administradores baixarem a listagem filtrada de clientes com codificação UTF-8 (BOM) para o Excel.
 - **Importação de Leads (CSV):** Importação em lote (`ImportLeadsDialog`) com pré-visualização, validação de dados e normalização de telefones, acessível a administradores no Funil.
 - **Edição de Perfil e Dados da Imobiliária:** Corretores editam nome, telefone e CRECI em seu perfil; Donos/Admins editam nome, CRECI, endereço, cidade, telefone, responsável da imobiliária e upload direto da logo da imobiliária (tabela `agency` persistida com RLS).
+- **Notificações em Tempo Real (Supabase Realtime):** Concluído. Assinatura automática em tempo real para novas inserções e atualizações em `leads` e `properties`, com alertas em toast (`sonner`) e revalidação instantânea do estado.
 - **Desacoplamento Completo e Deploy (Fases 1 a 5):** Concluído. Sistema 100% independente do Lovable, rodando em produção na Vercel com Supabase próprio, OAuth nativo e Storage configurado.
 
 ## Próximas Melhorias Planejadas
@@ -22,14 +23,11 @@ Estado atual das melhorias planejadas e resumo das funcionalidades entregues.
 - Painel gerencial dedicado para acompanhar a saúde do funil de vendas.
 - Gráficos de conversão por etapa, volume de vendas no mês e produtividade por corretor (utilizando `recharts`).
 
-### 2. Notificações em Tempo Real (Supabase Realtime)
-- Atualização instantânea da interface e badge de novos leads vindos da página pública sem necessitar de recarregamento manual.
-
-### 3. Templates de Mensagem de WhatsApp Personalizáveis
+### 2. Templates de Mensagem de WhatsApp Personalizáveis
 - Tela de configuração para administradores e corretores adaptarem os textos padrão de abordagem por etapa do funil.
 
-### 4. Arquivamento e Lixeira (Soft Delete)
+### 3. Arquivamento e Lixeira (Soft Delete)
 - Alternativa à exclusão definitiva, permitindo mover leads ou imóveis para uma área de arquivados/lixeira com opção de restauração.
 
-### 5. Captação Automática de Leads via Webhook
+### 4. Captação Automática de Leads via Webhook
 - Integração de server functions para receber leads de portais imobiliários (OLX, Zap, VivaReal) e campanhas do Meta Ads diretamente no funil.
