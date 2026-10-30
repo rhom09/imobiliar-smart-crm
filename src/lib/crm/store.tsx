@@ -38,6 +38,7 @@ type Ctx = {
   /** Everyone in the agency, admins included. */
   team: (Broker & { email: string; role: "admin" | "corretor" })[];
   agency: Agency;
+  whatsappTemplates: Record<StageId, string>;
   leads: Lead[]; // filtered by viewer (database already filters for corretores)
   allLeads: Lead[];
   properties: Property[];
@@ -54,6 +55,7 @@ type Ctx = {
   updateProperty: (id: string, p: Partial<Omit<Property, "id" | "code" | "createdAt">>) => void;
   updateProfile: (id: string, data: { name?: string; phone?: string; creci?: string }) => Promise<boolean>;
   updateAgency: (data: Partial<Agency>) => Promise<boolean>;
+  updateTemplate: (stage: StageId, text: string) => Promise<boolean>;
   /** Resolve false when the database refused (e.g. no permission). */
   deleteLead: (id: string) => Promise<boolean>;
   deleteProperty: (id: string) => Promise<boolean>;
@@ -89,17 +91,26 @@ export function CrmProvider({ children }: { children: ReactNode }) {
   const [properties, setProperties] = useState<Property[]>([]);
   const [ready, setReady] = useState(false);
   const [viewer, setViewer] = useState<Viewer>({ kind: "admin" });
+  const [whatsappTemplates, setWhatsappTemplates] = useState<Record<StageId, string>>({
+    novo: "Olá, recebemos seu interesse no imóvel...",
+    contato: "Olá, tudo bem? Acompanhando seu interesse...",
+    visita: "Confirmando nossa visita...",
+    proposta: "Olá, segue a proposta...",
+    ganho: "Parabéns pela aquisição!",
+    perdido: "Obrigado pelo contato.",
+  });
 
   const reload = useCallback(async () => {
     const { data: u } = await supabase.auth.getUser();
     if (!u.user) return;
-    const [profiles, roles, props, leadRows, inter, agencyRes] = await Promise.all([
+    const [profiles, roles, props, leadRows, inter, agencyRes, templatesRes] = await Promise.all([
       supabase.from("profiles").select("*").order("created_at"),
       supabase.from("user_roles").select("user_id, role"),
       supabase.from("properties").select("*").order("created_at", { ascending: false }),
       supabase.from("leads").select("*").order("created_at", { ascending: false }),
       supabase.from("interactions").select("*").order("at", { ascending: false }),
       supabase.from("agency" as never).select("*").maybeSingle(),
+      supabase.from("whatsapp_templates" as never).select("*"),
     ]);
     const err = profiles.error || roles.error || props.error || leadRows.error || inter.error;
     if (err) {
@@ -146,6 +157,16 @@ export function CrmProvider({ children }: { children: ReactNode }) {
           setAgency(JSON.parse(saved));
         }
       } catch {}
+    }
+
+    if (templatesRes.data) {
+      const templates: Record<StageId, string> = { ...whatsappTemplates };
+      for (const t of (templatesRes.data as unknown as Array<{ stage_id?: StageId; template_text?: string }>)) {
+        if (t.stage_id && t.template_text) {
+          templates[t.stage_id] = t.template_text;
+        }
+      }
+      setWhatsappTemplates(templates);
     }
     const paths = props.data!.flatMap((p) => storagePaths(p.photos ?? []));
     if (paths.length) {
@@ -505,9 +526,22 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         );
         return true;
       },
+      updateTemplate: async (stage, text) => {
+        const { error } = await supabase
+          .from("whatsapp_templates" as never)
+          .upsert({ stage_id: stage, template_text: text } as never, { onConflict: "stage_id" });
+        if (error) {
+          fail(error);
+          return false;
+        }
+        setWhatsappTemplates((prev) => ({ ...prev, [stage]: text }));
+        toast.success("Template atualizado!");
+        return true;
+      },
       reload,
+      whatsappTemplates,
     };
-  }, [ready, me, team, agency, leads, properties, viewer, reload]);
+  }, [ready, me, team, agency, whatsappTemplates, leads, properties, viewer, reload]);
 
   return <CrmContext.Provider value={value}>{children}</CrmContext.Provider>;
 }

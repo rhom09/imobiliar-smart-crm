@@ -17,6 +17,15 @@ Use `HANDOFF.md` for the current snapshot and `HANDOFFS/WORKLOG_ARCHIVE.md` for 
 - Next context: only what the next AI needs
 ```
 
+## 2026-10-30 - Implementação da UI de Templates de WhatsApp na Página da Imobiliária
+
+- Spec: `DEV/ROADMAP.md` (Item 2)
+- Changed: `src/routes/_authenticated/imobiliaria.tsx`
+- Why: Adicionar botão de ação e modal completo para que administradores possam visualizar e editar os templates de mensagem de WhatsApp por etapa do funil.
+- Verified: `bun run build` e `bun run test` executados com sucesso (12/12 testes passando).
+- Risks: Nenhum.
+- Next context: Funcionalidade de templates de WhatsApp 100% integrada e testada.
+
 ## 2026-10-30 - Migração Fase 2 e 3: Desacoplamento do Ecossistema Lovable
 
 - Spec: `DEV/MIGRATION.md`

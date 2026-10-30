@@ -4,7 +4,7 @@ import { Building2, Check, Crown, Edit2, ImagePlus, Lock, MapPin, Phone, Trophy,
 import { PageHeader, LoadingBlock } from "@/components/crm/AppShell";
 import { OPEN_STAGES, STAGES, brlCompact, formatPhone } from "@/lib/crm/rules";
 import { useCrm } from "@/lib/crm/store";
-import type { Lead, Property } from "@/lib/crm/types";
+import type { Lead, Property, StageId } from "@/lib/crm/types";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -80,8 +80,9 @@ function AgencyPage() {
 
   const [editProfileOpen, setEditProfileOpen] = useState(false);
   const [editAgencyOpen, setEditAgencyOpen] = useState(false);
+  const [editTemplatesOpen, setEditTemplatesOpen] = useState(false);
 
-  const activeUser = brokers.find((b) => b.id === me?.id) || currentBroker || { name: "", phone: "", creci: "" };
+  const [activeUser] = useState(() => brokers.find((b) => b.id === me?.id) || currentBroker || { name: "", phone: "", creci: "" });
   const [profileName, setProfileName] = useState(activeUser.name);
   const [profilePhone, setProfilePhone] = useState(activeUser.phone);
   const [profileCreci, setProfileCreci] = useState(activeUser.creci);
@@ -96,9 +97,19 @@ function AgencyPage() {
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const logoInputRef = useRef<HTMLInputElement>(null);
 
+  const { whatsappTemplates, updateTemplate } = useCrm();
+  const [templateDrafts, setTemplateDrafts] = useState(whatsappTemplates);
+
   if (!ready) return <LoadingBlock />;
 
   const isAdmin = viewer.kind === "admin";
+
+  const handleSaveTemplates = async () => {
+    for (const [stageId, text] of Object.entries(templateDrafts)) {
+      await updateTemplate(stageId as StageId, text);
+    }
+    setEditTemplatesOpen(false);
+  };
   const m = metrics(leads, properties);
   const kpis = [
     { label: isAdmin ? "Leads totais" : "Meus leads", value: String(m.total) },
@@ -161,23 +172,36 @@ function AgencyPage() {
               <Edit2 className="size-4" /> Editar meu perfil
             </Button>
             {isAdmin && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setAgencyName(agency.name);
-                  setAgencyCreci(agency.creci);
-                  setAgencyCity(agency.city);
-                  setAgencyAddress(agency.address);
-                  setAgencyPhone(agency.phone);
-                  setAgencyOwnerName(agency.ownerName);
-                  setAgencyLogoUrl(agency.logoUrl || "");
-                  setEditAgencyOpen(true);
-                }}
-                className="gap-2 rounded-xl"
-              >
-                <Building2 className="size-4" /> Editar imobiliária
-              </Button>
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setTemplateDrafts(whatsappTemplates);
+                    setEditTemplatesOpen(true);
+                  }}
+                  className="gap-2 rounded-xl"
+                >
+                  Templates WhatsApp
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setAgencyName(agency.name);
+                    setAgencyCreci(agency.creci);
+                    setAgencyCity(agency.city);
+                    setAgencyAddress(agency.address);
+                    setAgencyPhone(agency.phone);
+                    setAgencyOwnerName(agency.ownerName);
+                    setAgencyLogoUrl(agency.logoUrl || "");
+                    setEditAgencyOpen(true);
+                  }}
+                  className="gap-2 rounded-xl"
+                >
+                  <Building2 className="size-4" /> Editar imobiliária
+                </Button>
+              </>
             )}
             {realAdmin && (
               <Link
@@ -548,6 +572,45 @@ function AgencyPage() {
               <Button type="submit">Salvar imobiliária</Button>
             </DialogFooter>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit WhatsApp Templates Dialog */}
+      <Dialog open={editTemplatesOpen} onOpenChange={setEditTemplatesOpen}>
+        <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Templates de Mensagem de WhatsApp</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 pt-2">
+            <p className="text-xs text-muted-foreground">
+              Personalize as mensagens rápidas enviadas aos clientes em cada etapa do funil. Você pode usar variáveis como o nome do lead.
+            </p>
+            {STAGES.map((s) => (
+              <div key={s.id} className="space-y-1.5">
+                <Label htmlFor={`template-${s.id}`} className="flex items-center gap-2">
+                  <span className={cn("size-2 rounded-full", s.color)} />
+                  Etapa: {s.label}
+                </Label>
+                <textarea
+                  id={`template-${s.id}`}
+                  value={templateDrafts[s.id as StageId] || ""}
+                  onChange={(e) =>
+                    setTemplateDrafts((prev) => ({ ...prev, [s.id as StageId]: e.target.value }))
+                  }
+                  rows={3}
+                  className="w-full rounded-xl border bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                />
+              </div>
+            ))}
+            <DialogFooter className="pt-4">
+              <Button type="button" variant="outline" onClick={() => setEditTemplatesOpen(false)}>
+                Cancelar
+              </Button>
+              <Button type="button" onClick={handleSaveTemplates}>
+                Salvar templates
+              </Button>
+            </DialogFooter>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
