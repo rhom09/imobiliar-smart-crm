@@ -26,6 +26,15 @@ Use `HANDOFF.md` for the current snapshot and `HANDOFFS/WORKLOG_ARCHIVE.md` for 
 - Risks: Nenhum; dependências proprietary removidas com build e SSR validados.
 - Next context: Projeto pronto para deploy na Vercel (Fase 5) conectado ao Supabase próprio.
 
+## 2026-10-30 - Configuração de RLS de Storage e Preparação para Deploy na Vercel
+
+- Spec: `DEV/MIGRATION.md` (Fases 4 e 5)
+- Changed: Supabase Storage RLS policies (`property-photos` e agency logo bucket), documentação de deploy e ambiente (`DEV/ROADMAP.md`, `DEV/MIGRATION.md`).
+- Why: Resolver erro 403 AccessDenied em uploads de fotos/logos configurando políticas RLS de INSERT/SELECT/UPDATE/DELETE no Supabase e documentar o processo de deploy na Vercel com domínio próprio.
+- Verified: Uploads testados e funcionando no CRM; build de produção validado (`bun run build`).
+- Risks: Nenhum.
+- Next context: Deploy final na Vercel e configuração de DNS/domínio próprio.
+
 
 ## 2026-10-29 - Implementação da Edição de Perfil e Dados da Imobiliária
 
