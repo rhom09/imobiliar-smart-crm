@@ -463,7 +463,10 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         for (const [k, v] of Object.entries(data)) {
           row[map[k] ?? k] = v === undefined ? null : v;
         }
-        const { error } = await supabase.from("leads").update(row as never).eq("id", id);
+        const { error } = await supabase
+          .from("leads")
+          .update(row as never)
+          .eq("id", id);
         if (error) {
           fail(error);
           return false;

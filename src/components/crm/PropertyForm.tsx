@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo } from "react";
 import { Check, ImagePlus, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CITIES, NEIGHBORHOODS, PROPERTY_TYPES } from "@/lib/crm/rules";
+import { CITIES, PROPERTY_TYPES, normalizeText, suggestNeighborhoods } from "@/lib/crm/rules";
 import {
   PHOTO_BUCKET,
   SAMPLE_PHOTO_KEYS,
@@ -67,7 +67,7 @@ export function PropertyForm({
   submitLabel: string;
   onSave: (p: PropertyInput) => void;
 }) {
-  const { team: brokers, viewer, me } = useCrm();
+  const { team: brokers, viewer, me, properties } = useCrm();
   const str = (n: number | undefined, d = "") => (n === undefined ? d : String(n));
   const fileRef = useRef<HTMLInputElement>(null);
   const [photos, setPhotos] = useState<string[]>(initial?.photos ?? []);
@@ -77,7 +77,7 @@ export function PropertyForm({
     type: (initial?.type ?? "Apartamento") as PropertyType,
     price: str(initial?.price),
     city: initial?.city ?? CITIES[0]!,
-    neighborhood: initial?.neighborhood ?? NEIGHBORHOODS[0]!,
+    neighborhood: initial?.neighborhood ?? "",
     address: initial?.address ?? "",
     bedrooms: str(initial?.bedrooms, "2"),
     suites: str(initial?.suites, "1"),
@@ -91,6 +91,20 @@ export function PropertyForm({
     status: (initial?.status ?? "disponivel") as PropertyStatus,
     brokerId: initial?.brokerId ?? (viewer.kind === "broker" ? viewer.brokerId : (me?.id ?? "")),
   });
+  const neighborhoods = useMemo(
+    () => suggestNeighborhoods(f.city, properties),
+    [f.city, properties],
+  );
+  const [hoodOpen, setHoodOpen] = useState(false);
+  const [hoodQuery, setHoodQuery] = useState<string | null>(null);
+
+  const filteredNeighborhoods = useMemo(() => {
+    if (hoodQuery === null) return neighborhoods;
+    const term = normalizeText(hoodQuery);
+    if (!term) return neighborhoods;
+    return neighborhoods.filter((n) => normalizeText(n).includes(term));
+  }, [neighborhoods, hoodQuery]);
+
   const set =
     (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setF((x) => ({ ...x, [k]: e.target.value }));
@@ -120,6 +134,10 @@ export function PropertyForm({
       toast.error("Preencha título, preço e área");
       return;
     }
+    if (!f.neighborhood.trim()) {
+      toast.error("Informe o bairro do imóvel");
+      return;
+    }
     if (uploading) {
       toast.error("Aguarde o envio das fotos terminar");
       return;
@@ -132,7 +150,7 @@ export function PropertyForm({
       title: f.title.trim(),
       type: f.type,
       price: num(f.price),
-      neighborhood: f.neighborhood.trim() || "Centro",
+      neighborhood: f.neighborhood.trim(),
       city: f.city.trim() || "São Paulo",
       address: f.address.trim() || "Endereço sob consulta",
       bedrooms: num(f.bedrooms),
@@ -212,7 +230,15 @@ export function PropertyForm({
             <Field label="Cidade">
               <Select
                 value={f.city}
-                onValueChange={(v) => setF((x) => ({ ...x, city: v }))}
+                onValueChange={(v) => {
+                  const oldHoods = suggestNeighborhoods(f.city, properties);
+                  setF((x) => ({
+                    ...x,
+                    city: v,
+                    neighborhood: oldHoods.includes(x.neighborhood) ? "" : x.neighborhood,
+                  }));
+                  setHoodQuery(null);
+                }}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -227,18 +253,44 @@ export function PropertyForm({
               </Select>
             </Field>
             <Field label="Bairro" id="nb">
-              <Input
-                id="nb"
-                list="neighborhoods-list"
-                value={f.neighborhood}
-                onChange={set("neighborhood")}
-                placeholder="Selecione ou digite o bairro"
-              />
-              <datalist id="neighborhoods-list">
-                {NEIGHBORHOODS.map((n) => (
-                  <option key={n} value={n} />
-                ))}
-              </datalist>
+              <div className="relative">
+                <Input
+                  id="nb"
+                  value={f.neighborhood}
+                  onChange={(e) => {
+                    setF((x) => ({ ...x, neighborhood: e.target.value }));
+                    setHoodQuery(e.target.value);
+                    setHoodOpen(true);
+                  }}
+                  onFocus={() => {
+                    setHoodQuery(null);
+                    setHoodOpen(true);
+                  }}
+                  onBlur={() => {
+                    setTimeout(() => setHoodOpen(false), 200);
+                  }}
+                  placeholder="Selecione ou digite o bairro"
+                />
+                {hoodOpen && filteredNeighborhoods.length > 0 && (
+                  <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-xl border bg-popover p-1 text-popover-foreground shadow-md">
+                    {filteredNeighborhoods.map((n) => (
+                      <button
+                        key={n}
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => {
+                          setF((x) => ({ ...x, neighborhood: n }));
+                          setHoodOpen(false);
+                          setHoodQuery(null);
+                        }}
+                        className="w-full rounded-lg px-3 py-2 text-left text-sm transition hover:bg-accent hover:text-accent-foreground"
+                      >
+                        {n}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </Field>
             <Field label="Endereço" id="ad">
               <Input

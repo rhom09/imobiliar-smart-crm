@@ -31,6 +31,33 @@ export const NEIGHBORHOODS = [
   "Algodoal",
 ];
 
+/**
+ * Suggest neighborhoods for a given city based on existing properties,
+ * with fallback default neighborhoods. Sorted with "Centro" first, then alphabetical.
+ */
+export function suggestNeighborhoods(city: string, properties: Property[]): string[] {
+  const set = new Set<string>();
+  properties.forEach((p) => {
+    if (normalizeText(p.city) === normalizeText(city)) {
+      if (p.neighborhood) set.add(p.neighborhood);
+    }
+  });
+  if (set.size === 0) {
+    ["Centro", "Vila Nova", "São Dimas", "Estância", "Porto", "Algodoal"].forEach((n) =>
+      set.add(n),
+    );
+  }
+  const list = Array.from(set);
+  list.sort((a, b) => {
+    const normA = normalizeText(a);
+    const normB = normalizeText(b);
+    if (normA === "centro") return -1;
+    if (normB === "centro") return 1;
+    return a.localeCompare(b, "pt-BR");
+  });
+  return list;
+}
+
 export const PROPERTY_TYPES = [
   "Apartamento",
   "Casa",

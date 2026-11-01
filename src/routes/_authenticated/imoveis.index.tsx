@@ -88,12 +88,7 @@ function CatalogPage() {
   }, [properties, q, city, type, price, beds, hood, showSold]);
 
   const active =
-    city !== "all" ||
-    type !== "all" ||
-    price !== "all" ||
-    beds > 0 ||
-    hood !== "all" ||
-    q;
+    city !== "all" || type !== "all" || price !== "all" || beds > 0 || hood !== "all" || q;
 
   const clear = () => {
     setQ("");
@@ -108,9 +103,7 @@ function CatalogPage() {
     <div>
       <PageHeader
         title="Catálogo de imóveis"
-        subtitle={
-          ready ? `${list.length} de ${properties.length} imóveis` : "Carregando…"
-        }
+        subtitle={ready ? `${list.length} de ${properties.length} imóveis` : "Carregando…"}
         actions={
           <Button asChild className="rounded-full">
             <Link to="/imoveis/novo">
@@ -176,9 +169,7 @@ function CatalogPage() {
                   onClick={() => setBeds(n)}
                   className={cn(
                     "rounded-full px-2.5 py-1 text-xs font-semibold transition",
-                    beds === n
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground",
+                    beds === n ? "bg-primary text-primary-foreground" : "text-muted-foreground",
                   )}
                 >
                   {n === 0 ? "Qts" : `${n}+`}
