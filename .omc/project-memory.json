@@ -215,8 +215,8 @@
   "hotPaths": [
     {
       "path": "src/lib/crm/import.ts",
-      "accessCount": 24,
-      "lastAccessed": 1793499437714,
+      "accessCount": 25,
+      "lastAccessed": 1793499545739,
       "type": "file"
     },
     {
@@ -227,8 +227,8 @@
     },
     {
       "path": "src/lib/crm/store.tsx",
-      "accessCount": 19,
-      "lastAccessed": 1793499459422,
+      "accessCount": 20,
+      "lastAccessed": 1793499538032,
       "type": "file"
     },
     {
