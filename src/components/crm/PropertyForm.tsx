@@ -97,7 +97,7 @@ export function PropertyForm({
 
   const cityNeighborhoods = useMemo(
     () => suggestNeighborhoods(f.city, properties),
-    [f.city, properties]
+    [f.city, properties],
   );
 
   const filteredNeighborhoods = useMemo(() => {
@@ -242,10 +242,7 @@ export function PropertyForm({
           </div>
           <div className="grid gap-4 sm:grid-cols-3">
             <Field label="Cidade">
-              <Select
-                value={f.city}
-                onValueChange={handleCityChange}
-              >
+              <Select value={f.city} onValueChange={handleCityChange}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>

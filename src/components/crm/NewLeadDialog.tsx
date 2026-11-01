@@ -197,10 +197,7 @@ export function NewLeadDialog({ onCreated }: { onCreated?: (id: string) => void 
                     type="button"
                     key={c}
                     onClick={() =>
-                      set(
-                        "cities",
-                        on ? form.cities.filter((x) => x !== c) : [...form.cities, c],
-                      )
+                      set("cities", on ? form.cities.filter((x) => x !== c) : [...form.cities, c])
                     }
                     className={cn(
                       "rounded-full border px-3 py-1 text-xs font-medium transition",
@@ -284,7 +281,9 @@ export function NewLeadDialog({ onCreated }: { onCreated?: (id: string) => void 
                       onClick={() =>
                         set(
                           "neighborhoods",
-                          on ? form.neighborhoods.filter((x) => x !== n) : [...form.neighborhoods, n],
+                          on
+                            ? form.neighborhoods.filter((x) => x !== n)
+                            : [...form.neighborhoods, n],
                         )
                       }
                       className={cn(

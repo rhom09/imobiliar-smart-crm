@@ -8,17 +8,13 @@
         "name": "JavaScript/TypeScript",
         "version": null,
         "confidence": "high",
-        "markers": [
-          "package.json"
-        ]
+        "markers": ["package.json"]
       },
       {
         "name": "TypeScript",
         "version": null,
         "confidence": "high",
-        "markers": [
-          "tsconfig.json"
-        ]
+        "markers": ["tsconfig.json"]
       }
     ],
     "frameworks": [
@@ -71,11 +67,7 @@
   "structure": {
     "isMonorepo": false,
     "workspaces": [],
-    "mainDirectories": [
-      "docs",
-      "public",
-      "src"
-    ],
+    "mainDirectories": ["docs", "public", "src"],
     "gitBranches": {
       "defaultBranch": "main",
       "branchingStrategy": null
@@ -88,13 +80,7 @@
       "purpose": null,
       "fileCount": 16,
       "lastAccessed": 1793456422958,
-      "keyFiles": [
-        "ARCHITECTURE.md",
-        "CONTEXT.md",
-        "CONVENTIONS.md",
-        "DATABASE.md",
-        "DECISIONS.md"
-      ]
+      "keyFiles": ["ARCHITECTURE.md", "CONTEXT.md", "CONVENTIONS.md", "DATABASE.md", "DECISIONS.md"]
     },
     "docs": {
       "path": "docs",
@@ -108,41 +94,28 @@
       "purpose": null,
       "fileCount": 1,
       "lastAccessed": 1793456422967,
-      "keyFiles": [
-        "schema.ts"
-      ]
+      "keyFiles": ["schema.ts"]
     },
     "public": {
       "path": "public",
       "purpose": "Public files",
       "fileCount": 2,
       "lastAccessed": 1793456422970,
-      "keyFiles": [
-        "favicon.ico",
-        "robots.txt"
-      ]
+      "keyFiles": ["favicon.ico", "robots.txt"]
     },
     "src": {
       "path": "src",
       "purpose": "Source code",
       "fileCount": 5,
       "lastAccessed": 1793456422971,
-      "keyFiles": [
-        "routeTree.gen.ts",
-        "router.tsx",
-        "server.ts",
-        "start.ts",
-        "styles.css"
-      ]
+      "keyFiles": ["routeTree.gen.ts", "router.tsx", "server.ts", "start.ts", "styles.css"]
     },
     "supabase": {
       "path": "supabase",
       "purpose": null,
       "fileCount": 1,
       "lastAccessed": 1793456422972,
-      "keyFiles": [
-        "config.toml"
-      ]
+      "keyFiles": ["config.toml"]
     },
     "DEV/API": {
       "path": "DEV/API",
@@ -156,22 +129,14 @@
       "purpose": "Database migrations",
       "fileCount": 5,
       "lastAccessed": 1793456422973,
-      "keyFiles": [
-        "0000_crm_core.sql",
-        "0001_agency.sql",
-        "0002_whatsapp_templates.sql"
-      ]
+      "keyFiles": ["0000_crm_core.sql", "0001_agency.sql", "0002_whatsapp_templates.sql"]
     },
     "src/assets": {
       "path": "src/assets",
       "purpose": "Static assets",
       "fileCount": 8,
       "lastAccessed": 1793456422973,
-      "keyFiles": [
-        "prop-bath-1.jpg",
-        "prop-bedroom-1.jpg",
-        "prop-building-1.jpg"
-      ]
+      "keyFiles": ["prop-bath-1.jpg", "prop-bedroom-1.jpg", "prop-building-1.jpg"]
     },
     "src/components": {
       "path": "src/components",
@@ -185,31 +150,21 @@
       "purpose": "Library code",
       "fileCount": 3,
       "lastAccessed": 1793456422974,
-      "keyFiles": [
-        "error-capture.ts",
-        "error-page.ts",
-        "utils.ts"
-      ]
+      "keyFiles": ["error-capture.ts", "error-page.ts", "utils.ts"]
     },
     "src/routes": {
       "path": "src/routes",
       "purpose": "Route handlers",
       "fileCount": 5,
       "lastAccessed": 1793456422974,
-      "keyFiles": [
-        "README.md",
-        "__root.tsx",
-        "auth.tsx"
-      ]
+      "keyFiles": ["README.md", "__root.tsx", "auth.tsx"]
     },
     "supabase/migrations": {
       "path": "supabase/migrations",
       "purpose": "Database migrations",
       "fileCount": 1,
       "lastAccessed": 1793456422974,
-      "keyFiles": [
-        "20261026172216_4f3b0ba8-cfd4-40c6-83f1-500d35260a31.sql"
-      ]
+      "keyFiles": ["20261026172216_4f3b0ba8-cfd4-40c6-83f1-500d35260a31.sql"]
     }
   },
   "hotPaths": [
