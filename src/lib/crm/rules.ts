@@ -204,9 +204,19 @@ export function contactUrgency(iso: string, now = Date.now()): "ok" | "warn" | "
 export function suggestNeighborhoods(city: string, properties: Property[]): string[] {
   const set = new Set<string>();
   const defaultNeighborhoods: Record<string, string[]> = {
-    "São Paulo": ["Centro", "Pinheiros", "Brooklin", "Itaim Bibi", "Vila Madalena", "Moema", "Jardins", "Perdizes", "Vila Mariana"],
+    "São Paulo": [
+      "Centro",
+      "Pinheiros",
+      "Brooklin",
+      "Itaim Bibi",
+      "Vila Madalena",
+      "Moema",
+      "Jardins",
+      "Perdizes",
+      "Vila Mariana",
+    ],
     "São Pedro": ["Centro", "Estância", "Recanto das Aguas", "Jardim Italcam"],
-    "Piracicaba": ["Centro", "São Dimas", "Vila Nova", "Algodoal", "Porto"],
+    Piracicaba: ["Centro", "São Dimas", "Vila Nova", "Algodoal", "Porto"],
   };
 
   const defaults = defaultNeighborhoods[city] || ["Centro"];
