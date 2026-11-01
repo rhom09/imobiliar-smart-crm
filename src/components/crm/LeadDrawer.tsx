@@ -79,7 +79,8 @@ export function LeadDrawer({ leadId, onClose }: { leadId: string | null; onClose
 }
 
 function LeadDetails({ lead }: { lead: Lead }) {
-  const { brokerById, properties, moveLead, addInteraction, viewer, deleteLead, updateLead } = useCrm();
+  const { brokerById, properties, moveLead, addInteraction, viewer, deleteLead, updateLead } =
+    useCrm();
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({
     name: lead.name,
@@ -287,7 +288,9 @@ function LeadDetails({ lead }: { lead: Lead }) {
                   <Label>Tipo de imóvel</Label>
                   <Select
                     value={form.propertyType}
-                    onValueChange={(v) => setForm((f) => ({ ...f, propertyType: v as PropertyType }))}
+                    onValueChange={(v) =>
+                      setForm((f) => ({ ...f, propertyType: v as PropertyType }))
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />

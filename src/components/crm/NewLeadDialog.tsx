@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -19,13 +19,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CITIES, NEIGHBORHOODS, PROPERTY_TYPES, normalizePhone } from "@/lib/crm/rules";
+import { CITIES, PROPERTY_TYPES, normalizePhone } from "@/lib/crm/rules";
+import { suggestNeighborhoods } from "@/lib/crm/locations";
 import { useCrm } from "@/lib/crm/store";
 import type { PropertyType } from "@/lib/crm/types";
 import { cn } from "@/lib/utils";
 
 export function NewLeadDialog({ onCreated }: { onCreated?: (id: string) => void }) {
-  const { viewer, team: brokers, addLead, me } = useCrm();
+  const { viewer, team: brokers, addLead, me, properties } = useCrm();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
     name: "",
@@ -41,6 +42,15 @@ export function NewLeadDialog({ onCreated }: { onCreated?: (id: string) => void 
     ownerId: me?.id ?? "",
   });
   const [customNeighborhood, setCustomNeighborhood] = useState("");
+
+  // Sugestões dinâmicas baseadas nas cidades selecionadas
+  const suggestedNeighborhoods = useMemo(() => {
+    let allSuggested: string[] = [];
+    form.cities.forEach((city) => {
+      allSuggested = [...new Set([...allSuggested, ...suggestNeighborhoods(city as any, properties)])];
+    });
+    return allSuggested.sort((a, b) => a.localeCompare(b, "pt-BR"));
+  }, [form.cities, properties]);
 
   const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
@@ -197,10 +207,7 @@ export function NewLeadDialog({ onCreated }: { onCreated?: (id: string) => void 
                     type="button"
                     key={c}
                     onClick={() =>
-                      set(
-                        "cities",
-                        on ? form.cities.filter((x) => x !== c) : [...form.cities, c],
-                      )
+                      set("cities", on ? form.cities.filter((x) => x !== c) : [...form.cities, c])
                     }
                     className={cn(
                       "rounded-full border px-3 py-1 text-xs font-medium transition",
@@ -275,7 +282,7 @@ export function NewLeadDialog({ onCreated }: { onCreated?: (id: string) => void 
             <div className="mt-1">
               <p className="text-[11px] text-muted-foreground mb-1">Sugestões de bairros:</p>
               <div className="flex flex-wrap gap-1.5">
-                {NEIGHBORHOODS.map((n) => {
+                {suggestedNeighborhoods.map((n) => {
                   const on = form.neighborhoods.includes(n);
                   return (
                     <button
@@ -284,7 +291,9 @@ export function NewLeadDialog({ onCreated }: { onCreated?: (id: string) => void 
                       onClick={() =>
                         set(
                           "neighborhoods",
-                          on ? form.neighborhoods.filter((x) => x !== n) : [...form.neighborhoods, n],
+                          on
+                            ? form.neighborhoods.filter((x) => x !== n)
+                            : [...form.neighborhoods, n],
                         )
                       }
                       className={cn(

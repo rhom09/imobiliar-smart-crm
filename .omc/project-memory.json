@@ -214,15 +214,33 @@
   },
   "hotPaths": [
     {
-      "path": "DEV/DATABASE.md",
-      "accessCount": 7,
-      "lastAccessed": 1793467387514,
+      "path": "src/components/crm/NewLeadDialog.tsx",
+      "accessCount": 12,
+      "lastAccessed": 1793496915160,
+      "type": "file"
+    },
+    {
+      "path": "src/components/crm/PropertyForm.tsx",
+      "accessCount": 10,
+      "lastAccessed": 1793498753098,
+      "type": "file"
+    },
+    {
+      "path": "src/routes/_authenticated/imoveis.index.tsx",
+      "accessCount": 9,
+      "lastAccessed": 1793497746933,
       "type": "file"
     },
     {
       "path": "src/lib/crm/import.ts",
-      "accessCount": 6,
-      "lastAccessed": 1793457211408,
+      "accessCount": 8,
+      "lastAccessed": 1793494376424,
+      "type": "file"
+    },
+    {
+      "path": "DEV/DATABASE.md",
+      "accessCount": 7,
+      "lastAccessed": 1793467387514,
       "type": "file"
     },
     {
@@ -232,39 +250,105 @@
       "type": "file"
     },
     {
+      "path": "src/lib/crm/rules.ts",
+      "accessCount": 6,
+      "lastAccessed": 1793498753883,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/crm/store.tsx",
+      "accessCount": 5,
+      "lastAccessed": 1793497004992,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/crm/locations.ts",
+      "accessCount": 5,
+      "lastAccessed": 1793498228856,
+      "type": "file"
+    },
+    {
       "path": "src/routes/_authenticated/index.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1793457040033,
-      "type": "file"
-    },
-    {
-      "path": "src/components/crm/PropertyForm.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1793456829135,
-      "type": "file"
-    },
-    {
-      "path": "src/routes/_authenticated/imoveis.index.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1793456865456,
+      "accessCount": 4,
+      "lastAccessed": 1793494352937,
       "type": "file"
     },
     {
       "path": "src/lib/crm/public.functions.ts",
-      "accessCount": 2,
-      "lastAccessed": 1793457146828,
+      "accessCount": 4,
+      "lastAccessed": 1793496957646,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/crm/seed.ts",
+      "accessCount": 4,
+      "lastAccessed": 1793497010503,
       "type": "file"
     },
     {
       "path": "src/lib/crm/export.ts",
-      "accessCount": 2,
-      "lastAccessed": 1793457162456,
+      "accessCount": 3,
+      "lastAccessed": 1793494363520,
       "type": "file"
     },
     {
-      "path": "src/components/crm/NewLeadDialog.tsx",
+      "path": "DEV/WORKLOG.md",
+      "accessCount": 3,
+      "lastAccessed": 1793494554989,
+      "type": "file"
+    },
+    {
+      "path": "drizzle/migrations/0002_lead_cities.sql",
+      "accessCount": 3,
+      "lastAccessed": 1793495242946,
+      "type": "file"
+    },
+    {
+      "path": "DEV/SPECS/REGIONAL_MIGRATION.md",
+      "accessCount": 2,
+      "lastAccessed": 1793494525455,
+      "type": "file"
+    },
+    {
+      "path": "src/routes/_authenticated/imobiliaria.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1793496958307,
+      "type": "file"
+    },
+    {
+      "path": "src/components/crm/LeadDrawer.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1793498786190,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/crm/rules.test.ts",
       "accessCount": 1,
-      "lastAccessed": 1793456748387,
+      "lastAccessed": 1793494368402,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/crm/types.ts",
+      "accessCount": 1,
+      "lastAccessed": 1793496955318,
+      "type": "file"
+    },
+    {
+      "path": "DEV/ENV.md",
+      "accessCount": 1,
+      "lastAccessed": 1793497034139,
+      "type": "file"
+    },
+    {
+      "path": "src/routes/_authenticated/imoveis.novo.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1793497428940,
+      "type": "file"
+    },
+    {
+      "path": "src/routes/_authenticated/imoveis.$id.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1793497443121,
       "type": "file"
     }
   ],

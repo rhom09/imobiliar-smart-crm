@@ -17,6 +17,15 @@ Use `HANDOFF.md` for the current snapshot and `HANDOFFS/WORKLOG_ARCHIVE.md` for 
 - Next context: only what the next AI needs
 ```
 
+## 2026-11-01 - Adaptação Regional Completa (São Pedro-SP e Região)
+
+- Spec: `DEV/SPECS/REGIONAL_MIGRATION.md`
+- Changed: `src/lib/crm/locations.ts`, `src/lib/crm/rules.ts`, `src/lib/crm/types.ts`, `src/lib/crm/store.tsx`, `src/lib/crm/import.ts`, `src/components/crm/NewLeadDialog.tsx`, `src/components/crm/PropertyForm.tsx`, `src/routes/_authenticated/imoveis.index.tsx`, `src/routes/_authenticated/index.tsx`, `drizzle/migrations/0002_lead_cities.sql`
+- Why: Adaptar o CRM para uso regional em São Pedro-SP e arredores (Águas de São Pedro, Santa Maria da Serra, Charqueada, Piracicaba, Torrinha), incluindo seleção de múltiplas cidades e bairros nos leads, novos tipos de imóvel (Terreno, Chácara, Sítio), preços regionais e normalização de texto.
+- Verified: `bun run test` (12 testes passando), `bun run lint` (sem erros de lint) e `bun run build` (build completo bem-sucedido).
+- Risks: Nenhum (migration SQL gerada em `0002_lead_cities.sql` para aplicação manual no Supabase).
+- Next context: Projeto regionalizado e pronto para uso/deploy.
+
 ## 2026-10-31 - Atualização do NewLeadDialog: Cidades Multi-select, Sugestões de Bairro e Bairro Opcional
 
 - Spec: `DEV/SPECS/REGIONAL_MIGRATION.md`

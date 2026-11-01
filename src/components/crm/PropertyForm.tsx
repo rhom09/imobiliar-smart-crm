@@ -210,10 +210,7 @@ export function PropertyForm({
           </div>
           <div className="grid gap-4 sm:grid-cols-3">
             <Field label="Cidade">
-              <Select
-                value={f.city}
-                onValueChange={(v) => setF((x) => ({ ...x, city: v }))}
-              >
+              <Select value={f.city} onValueChange={(v) => setF((x) => ({ ...x, city: v }))}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
