@@ -12,7 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CITIES, NEIGHBORHOODS, PROPERTY_TYPES } from "@/lib/crm/rules";
+import { CITIES, PROPERTY_TYPES } from "@/lib/crm/rules";
+import { City, NEIGHBORHOODS_BY_CITY, suggestNeighborhoods } from "@/lib/crm/locations";
 import { useCrm } from "@/lib/crm/store";
 import { cn } from "@/lib/utils";
 
@@ -56,16 +57,19 @@ function CatalogPage() {
   const [showSold, setShowSold] = useState(false);
 
   const availableNeighborhoods = useMemo(() => {
+    if (city !== "all") {
+      return suggestNeighborhoods(city as City, properties);
+    }
     const set = new Set<string>();
     properties.forEach((p) => {
-      if (city === "all" || p.city === city) {
-        if (p.neighborhood) set.add(p.neighborhood);
-      }
+      if (p.neighborhood) set.add(p.neighborhood);
     });
     if (set.size === 0) {
-      NEIGHBORHOODS.forEach((n) => set.add(n));
+      Object.values(NEIGHBORHOODS_BY_CITY).forEach((hoods) => {
+        hoods.forEach((n) => set.add(n));
+      });
     }
-    return Array.from(set).sort();
+    return Array.from(set).sort((a, b) => a.localeCompare(b, "pt-BR"));
   }, [properties, city]);
 
   const list = useMemo(() => {

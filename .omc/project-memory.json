@@ -233,20 +233,20 @@
     },
     {
       "path": "src/routes/_authenticated/index.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1793457040033,
-      "type": "file"
-    },
-    {
-      "path": "src/components/crm/PropertyForm.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1793456829135,
+      "accessCount": 4,
+      "lastAccessed": 1793497625357,
       "type": "file"
     },
     {
       "path": "src/routes/_authenticated/imoveis.index.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1793456865456,
+      "accessCount": 4,
+      "lastAccessed": 1793497657506,
+      "type": "file"
+    },
+    {
+      "path": "src/components/crm/PropertyForm.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1793497618381,
       "type": "file"
     },
     {
@@ -265,6 +265,42 @@
       "path": "src/components/crm/NewLeadDialog.tsx",
       "accessCount": 1,
       "lastAccessed": 1793456748387,
+      "type": "file"
+    },
+    {
+      "path": "src/components/crm/LeadDrawer.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1793497607475,
+      "type": "file"
+    },
+    {
+      "path": "tsconfig.json",
+      "accessCount": 1,
+      "lastAccessed": 1793497702698,
+      "type": "file"
+    },
+    {
+      "path": "vitest.config.ts",
+      "accessCount": 1,
+      "lastAccessed": 1793497706759,
+      "type": "file"
+    },
+    {
+      "path": "DEV/SPECS/REGIONAL_MIGRATION.md",
+      "accessCount": 1,
+      "lastAccessed": 1793497779167,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/crm/rules.ts",
+      "accessCount": 1,
+      "lastAccessed": 1793497783899,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/crm/locations.ts",
+      "accessCount": 1,
+      "lastAccessed": 1793497791986,
       "type": "file"
     }
   ],
