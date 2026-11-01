@@ -15,6 +15,7 @@
 | `DATABASE/`       | Data model, migrations, and data notes          |
 | `TESTING.md`      | Verification strategy and commands              |
 | `RUNBOOKS/`       | Operational procedures                          |
+| `DEPLOYMENT_VERCEL.md` | Guia completo de deploy na Vercel e Supabase/Auth |
 | `TASKS/`          | Active plans and task artifacts                 |
 | `RESEARCH/`       | Research and references                         |
 | `HANDOFFS/`       | Archived handoffs and compacted worklog history |

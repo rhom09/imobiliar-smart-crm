@@ -16,7 +16,7 @@ import {
 import { PageHeader, LoadingBlock } from "@/components/crm/AppShell";
 import { OPEN_STAGES, STAGES, brlCompact, formatPhone } from "@/lib/crm/rules";
 import { useCrm } from "@/lib/crm/store";
-import type { Lead, Property, StageId } from "@/lib/crm/types";
+import type { Agency, Lead, Property, StageId } from "@/lib/crm/types";
 import { cn } from "@/lib/utils";
 import {
   Dialog,
@@ -102,7 +102,7 @@ function AgencyPage() {
 
   const [activeUser] = useState(
     () =>
-      brokers.find((b) => b.id === me?.id) || currentBroker || { name: "", phone: "", creci: "" },
+      brokers.find((b) => b.id === me?.id) || currentBroker || { name: "", phone: "", creci: "", initials: "" },
   );
   const [profileName, setProfileName] = useState(activeUser.name);
   const [profilePhone, setProfilePhone] = useState(activeUser.phone);

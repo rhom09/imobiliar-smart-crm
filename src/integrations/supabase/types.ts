@@ -51,6 +51,7 @@ export type Database = {
           bedrooms: number;
           budget_max: number;
           budget_min: number;
+          cities: string[];
           created_at: string;
           email: string;
           id: string;
@@ -68,6 +69,7 @@ export type Database = {
           bedrooms?: number;
           budget_max?: number;
           budget_min?: number;
+          cities?: string[];
           created_at?: string;
           email?: string;
           id?: string;
@@ -85,6 +87,7 @@ export type Database = {
           bedrooms?: number;
           budget_max?: number;
           budget_min?: number;
+          cities?: string[];
           created_at?: string;
           email?: string;
           id?: string;

@@ -214,21 +214,39 @@
   },
   "hotPaths": [
     {
+      "path": "src/components/crm/PropertyForm.tsx",
+      "accessCount": 19,
+      "lastAccessed": 1793512194729,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/crm/seed.ts",
+      "accessCount": 13,
+      "lastAccessed": 1793512424658,
+      "type": "file"
+    },
+    {
       "path": "src/components/crm/NewLeadDialog.tsx",
       "accessCount": 12,
       "lastAccessed": 1793496915160,
       "type": "file"
     },
     {
-      "path": "src/components/crm/PropertyForm.tsx",
-      "accessCount": 10,
-      "lastAccessed": 1793498753098,
+      "path": "src/components/crm/LeadDrawer.tsx",
+      "accessCount": 12,
+      "lastAccessed": 1793512244754,
       "type": "file"
     },
     {
       "path": "src/routes/_authenticated/imoveis.index.tsx",
       "accessCount": 9,
       "lastAccessed": 1793497746933,
+      "type": "file"
+    },
+    {
+      "path": "src/routes/_authenticated/imobiliaria.tsx",
+      "accessCount": 9,
+      "lastAccessed": 1793512312075,
       "type": "file"
     },
     {
@@ -256,15 +274,21 @@
       "type": "file"
     },
     {
-      "path": "src/lib/crm/store.tsx",
-      "accessCount": 5,
-      "lastAccessed": 1793497004992,
+      "path": "src/lib/crm/locations.ts",
+      "accessCount": 6,
+      "lastAccessed": 1793500035957,
       "type": "file"
     },
     {
-      "path": "src/lib/crm/locations.ts",
+      "path": "DEV/WORKLOG.md",
+      "accessCount": 6,
+      "lastAccessed": 1793500967948,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/crm/store.tsx",
       "accessCount": 5,
-      "lastAccessed": 1793498228856,
+      "lastAccessed": 1793497004992,
       "type": "file"
     },
     {
@@ -280,9 +304,9 @@
       "type": "file"
     },
     {
-      "path": "src/lib/crm/seed.ts",
+      "path": "src/lib/crm/types.ts",
       "accessCount": 4,
-      "lastAccessed": 1793497010503,
+      "lastAccessed": 1793512214541,
       "type": "file"
     },
     {
@@ -292,15 +316,15 @@
       "type": "file"
     },
     {
-      "path": "DEV/WORKLOG.md",
-      "accessCount": 3,
-      "lastAccessed": 1793494554989,
-      "type": "file"
-    },
-    {
       "path": "drizzle/migrations/0002_lead_cities.sql",
       "accessCount": 3,
       "lastAccessed": 1793495242946,
+      "type": "file"
+    },
+    {
+      "path": "DEV/INDEX.md",
+      "accessCount": 3,
+      "lastAccessed": 1793500985211,
       "type": "file"
     },
     {
@@ -310,33 +334,15 @@
       "type": "file"
     },
     {
-      "path": "src/routes/_authenticated/imobiliaria.tsx",
+      "path": "DEV/ENV.md",
       "accessCount": 2,
-      "lastAccessed": 1793496958307,
-      "type": "file"
-    },
-    {
-      "path": "src/components/crm/LeadDrawer.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1793498786190,
+      "lastAccessed": 1793500865695,
       "type": "file"
     },
     {
       "path": "src/lib/crm/rules.test.ts",
       "accessCount": 1,
       "lastAccessed": 1793494368402,
-      "type": "file"
-    },
-    {
-      "path": "src/lib/crm/types.ts",
-      "accessCount": 1,
-      "lastAccessed": 1793496955318,
-      "type": "file"
-    },
-    {
-      "path": "DEV/ENV.md",
-      "accessCount": 1,
-      "lastAccessed": 1793497034139,
       "type": "file"
     },
     {
@@ -349,6 +355,30 @@
       "path": "src/routes/_authenticated/imoveis.$id.tsx",
       "accessCount": 1,
       "lastAccessed": 1793497443121,
+      "type": "file"
+    },
+    {
+      "path": "AGENTS.md",
+      "accessCount": 1,
+      "lastAccessed": 1793499985695,
+      "type": "file"
+    },
+    {
+      "path": ".env",
+      "accessCount": 1,
+      "lastAccessed": 1793500906675,
+      "type": "file"
+    },
+    {
+      "path": "package.json",
+      "accessCount": 1,
+      "lastAccessed": 1793500920240,
+      "type": "file"
+    },
+    {
+      "path": "DEV/DEPLOYMENT_VERCEL.md",
+      "accessCount": 1,
+      "lastAccessed": 1793500932858,
       "type": "file"
     }
   ],

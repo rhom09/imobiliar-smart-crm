@@ -17,6 +17,24 @@ Use `HANDOFF.md` for the current snapshot and `HANDOFFS/WORKLOG_ARCHIVE.md` for 
 - Next context: only what the next AI needs
 ```
 
+## 2026-11-01 - Guia de Deploy na Vercel e Configuração de Domínio / Supabase Auth
+
+- Spec: `DEV/DEPLOYMENT_VERCEL.md`
+- Changed: `DEV/DEPLOYMENT_VERCEL.md`, `DEV/INDEX.md`, `DEV/WORKLOG.md`
+- Why: Documentar o guia completo de publicação na Vercel com domínio próprio e variáveis de ambiente do Supabase/Auth.
+- Verified: Documentação criada e indexada conforme o contrato do Orquestrador Maestro.
+- Risks: Nenhum.
+- Next context: Projeto pronto para deploy em produção na Vercel.
+
+## 2026-11-01 - Fix de Tipagem Supabase: Coluna `cities` em `leads`
+
+- Spec: `src/integrations/supabase/types.ts`
+- Changed: `src/integrations/supabase/types.ts`
+- Why: Corrigir erro de tipagem TS `Type 'string[]' is not assignable to type 'never'` no `store.tsx:394` e `public.functions.ts:149` adicionando o campo `cities` nas definições de `Row`, `Insert` e `Update` da tabela `leads`.
+- Verified: `npx tsc --noEmit` (erros de tipagem em `store.tsx` e `public.functions.ts` eliminados).
+- Risks: Nenhum.
+- Next context: Tipagens do Supabase agora refletem a coluna `cities` adicionada pela migração `0002_lead_cities.sql`.
+
 ## 2026-11-01 - Adaptação Regional Completa (São Pedro-SP e Região)
 
 - Spec: `DEV/SPECS/REGIONAL_MIGRATION.md`

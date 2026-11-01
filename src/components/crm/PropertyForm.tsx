@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo } from "react";
 import { Check, ImagePlus, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CITIES, NEIGHBORHOODS, PROPERTY_TYPES } from "@/lib/crm/rules";
+import { CITIES, PROPERTY_TYPES } from "@/lib/crm/rules";
+import { suggestNeighborhoods } from "@/lib/crm/locations";
 import {
   PHOTO_BUCKET,
   SAMPLE_PHOTO_KEYS,
@@ -67,7 +68,7 @@ export function PropertyForm({
   submitLabel: string;
   onSave: (p: PropertyInput) => void;
 }) {
-  const { team: brokers, viewer, me } = useCrm();
+  const { team: brokers, viewer, me, properties } = useCrm();
   const str = (n: number | undefined, d = "") => (n === undefined ? d : String(n));
   const fileRef = useRef<HTMLInputElement>(null);
   const [photos, setPhotos] = useState<string[]>(initial?.photos ?? []);
@@ -77,7 +78,7 @@ export function PropertyForm({
     type: (initial?.type ?? "Apartamento") as PropertyType,
     price: str(initial?.price),
     city: initial?.city ?? CITIES[0]!,
-    neighborhood: initial?.neighborhood ?? NEIGHBORHOODS[0]!,
+    neighborhood: initial?.neighborhood ?? "",
     address: initial?.address ?? "",
     bedrooms: str(initial?.bedrooms, "2"),
     suites: str(initial?.suites, "1"),
@@ -91,6 +92,10 @@ export function PropertyForm({
     status: (initial?.status ?? "disponivel") as PropertyStatus,
     brokerId: initial?.brokerId ?? (viewer.kind === "broker" ? viewer.brokerId : (me?.id ?? "")),
   });
+
+  const availableNeighborhoods = useMemo(() => {
+    return suggestNeighborhoods(f.city as any, properties);
+  }, [f.city, properties]);
   const set =
     (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setF((x) => ({ ...x, [k]: e.target.value }));
@@ -210,7 +215,17 @@ export function PropertyForm({
           </div>
           <div className="grid gap-4 sm:grid-cols-3">
             <Field label="Cidade">
-              <Select value={f.city} onValueChange={(v) => setF((x) => ({ ...x, city: v }))}>
+              <Select
+                value={f.city}
+                onValueChange={(v) => {
+                  const hoods = suggestNeighborhoods(v as any, properties);
+                  setF((x) => ({
+                    ...x,
+                    city: v,
+                    neighborhood: hoods.includes(x.neighborhood) ? x.neighborhood : (hoods[0] ?? ""),
+                  }));
+                }}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -232,7 +247,7 @@ export function PropertyForm({
                 placeholder="Selecione ou digite o bairro"
               />
               <datalist id="neighborhoods-list">
-                {NEIGHBORHOODS.map((n) => (
+                {availableNeighborhoods.map((n) => (
                   <option key={n} value={n} />
                 ))}
               </datalist>

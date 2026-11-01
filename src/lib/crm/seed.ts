@@ -1,4 +1,4 @@
-import type { Agency, Broker, Interaction, Lead, Property, PropertyType, StageId } from "./types";
+import { Agency, Broker, Interaction, Lead, Property, PropertyType, StageId } from "./types";
 
 export const AGENCY: Agency = {
   name: "Morada Imóveis",
@@ -279,6 +279,7 @@ type LeadSeed = {
   max: number;
   beds: number;
   hoods: string[];
+  cities: string[];
   interest?: string;
   source: string;
   createdDays: number;
@@ -299,6 +300,7 @@ const LEADS: LeadSeed[] = [
     max: 1_500_000,
     beds: 3,
     hoods: ["Pinheiros", "Vila Madalena"],
+    cities: ["São Paulo"],
     interest: "p1",
     source: "Portal ZAP",
     createdDays: 0.2,
@@ -316,6 +318,7 @@ const LEADS: LeadSeed[] = [
     max: 4_500_000,
     beds: 4,
     hoods: ["Brooklin", "Moema"],
+    cities: ["São Paulo"],
     source: "Instagram",
     createdDays: 1,
     lastHours: 26,
@@ -332,6 +335,7 @@ const LEADS: LeadSeed[] = [
     max: 6_500_000,
     beds: 4,
     hoods: ["Itaim Bibi", "Jardins"],
+    cities: ["São Paulo"],
     interest: "p3",
     source: "Indicação",
     createdDays: 2,
@@ -349,6 +353,7 @@ const LEADS: LeadSeed[] = [
     max: 650_000,
     beds: 1,
     hoods: ["Vila Madalena", "Itaim Bibi"],
+    cities: ["São Paulo"],
     interest: "p4",
     source: "Site",
     createdDays: 6,
@@ -369,6 +374,7 @@ const LEADS: LeadSeed[] = [
     max: 1_250_000,
     beds: 3,
     hoods: ["Moema", "Vila Mariana"],
+    cities: ["São Paulo"],
     interest: "p5",
     source: "Portal VivaReal",
     createdDays: 9,
@@ -389,6 +395,7 @@ const LEADS: LeadSeed[] = [
     max: 2_600_000,
     beds: 3,
     hoods: ["Jardins", "Pinheiros"],
+    cities: ["São Paulo"],
     source: "Site",
     createdDays: 14,
     lastHours: 200,
@@ -405,6 +412,7 @@ const LEADS: LeadSeed[] = [
     max: 750_000,
     beds: 2,
     hoods: ["Perdizes", "Pinheiros"],
+    cities: ["São Paulo"],
     interest: "p7",
     source: "Instagram",
     createdDays: 10,
@@ -426,6 +434,7 @@ const LEADS: LeadSeed[] = [
     max: 1_900_000,
     beds: 3,
     hoods: ["Vila Mariana"],
+    cities: ["São Paulo"],
     interest: "p8",
     source: "Placa no imóvel",
     createdDays: 12,
@@ -447,6 +456,7 @@ const LEADS: LeadSeed[] = [
     max: 2_300_000,
     beds: 3,
     hoods: ["Moema", "Brooklin"],
+    cities: ["São Paulo"],
     interest: "p9",
     source: "Indicação",
     createdDays: 18,
@@ -468,6 +478,7 @@ const LEADS: LeadSeed[] = [
     max: 1_550_000,
     beds: 3,
     hoods: ["Pinheiros"],
+    cities: ["São Paulo"],
     interest: "p1",
     source: "Portal ZAP",
     createdDays: 25,
@@ -488,6 +499,7 @@ const LEADS: LeadSeed[] = [
     max: 2_400_000,
     beds: 3,
     hoods: ["Jardins"],
+    cities: ["São Paulo"],
     interest: "p6",
     source: "Site",
     createdDays: 30,
@@ -505,6 +517,7 @@ const LEADS: LeadSeed[] = [
     max: 4_300_000,
     beds: 4,
     hoods: ["Brooklin"],
+    cities: ["São Paulo"],
     interest: "p2",
     source: "Indicação",
     createdDays: 21,
@@ -522,6 +535,7 @@ const LEADS: LeadSeed[] = [
     max: 650_000,
     beds: 1,
     hoods: ["Itaim Bibi"],
+    cities: ["São Paulo"],
     interest: "p10",
     source: "Instagram",
     createdDays: 60,
@@ -539,6 +553,7 @@ const LEADS: LeadSeed[] = [
     max: 1_000_000,
     beds: 2,
     hoods: ["Vila Mariana"],
+    cities: ["São Paulo"],
     source: "Site",
     createdDays: 75,
     lastHours: 600,
@@ -555,6 +570,7 @@ const LEADS: LeadSeed[] = [
     max: 3_500_000,
     beds: 3,
     hoods: ["Perdizes"],
+    cities: ["São Paulo"],
     source: "Portal VivaReal",
     createdDays: 40,
     lastHours: 500,
@@ -571,6 +587,7 @@ const LEADS: LeadSeed[] = [
     max: 2_200_000,
     beds: 3,
     hoods: ["Moema"],
+    cities: ["São Paulo"],
     source: "Indicação",
     createdDays: 5,
     lastHours: 8,
@@ -606,13 +623,14 @@ export function buildSeed(now = Date.now()) {
       email: `${(s.name.split(" ")[0] ?? "")
         .toLowerCase()
         .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")}@email.com`,
+        .replace(/[̀-ͯ]/g, "")}@email.com`,
       ownerId: s.ownerId,
       stage: s.stage,
       propertyType: s.type,
       budgetMin: s.min,
       budgetMax: s.max,
       bedrooms: s.beds,
+      cities: s.cities,
       neighborhoods: s.hoods,
       interestPropertyId: s.interest,
       source: s.source,
