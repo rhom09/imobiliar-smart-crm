@@ -16,7 +16,7 @@ import {
   Home,
   Trash2,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
@@ -36,7 +36,6 @@ import { ConfirmDelete } from "./ConfirmDelete";
 import { timeAgo } from "./LeadCard";
 import { Label } from "@/components/ui/label";
 import {
-  NEIGHBORHOODS,
   PROPERTY_TYPES,
   STAGES,
   brl,
@@ -48,6 +47,7 @@ import {
   stageLabel,
   waLink,
 } from "@/lib/crm/rules";
+import { suggestNeighborhoods } from "@/lib/crm/locations";
 import { useCrm } from "@/lib/crm/store";
 import { img } from "@/lib/crm/images";
 import { shareLink } from "@/lib/crm/share";
@@ -79,7 +79,8 @@ export function LeadDrawer({ leadId, onClose }: { leadId: string | null; onClose
 }
 
 function LeadDetails({ lead }: { lead: Lead }) {
-  const { brokerById, properties, moveLead, addInteraction, viewer, deleteLead, updateLead } = useCrm();
+  const { brokerById, properties, moveLead, addInteraction, viewer, deleteLead, updateLead } =
+    useCrm();
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({
     name: lead.name,
@@ -98,8 +99,21 @@ function LeadDetails({ lead }: { lead: Lead }) {
   const initials = lead.name
     .split(" ")
     .map((p) => p[0])
+    .filter(Boolean)
     .slice(0, 2)
     .join("");
+
+  const suggestedNeighborhoods = useMemo(() => {
+    let allSuggested: string[] = [];
+    const cities = lead.cities ?? ["São Pedro"];
+    cities.forEach((city) => {
+      allSuggested = [...new Set([...allSuggested, ...suggestNeighborhoods(city as any, properties)])];
+    });
+    if (allSuggested.length === 0) {
+      allSuggested = suggestNeighborhoods("São Pedro", properties);
+    }
+    return allSuggested.sort((a, b) => a.localeCompare(b, "pt-BR"));
+  }, [lead.cities, properties]);
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
@@ -287,7 +301,9 @@ function LeadDetails({ lead }: { lead: Lead }) {
                   <Label>Tipo de imóvel</Label>
                   <Select
                     value={form.propertyType}
-                    onValueChange={(v) => setForm((f) => ({ ...f, propertyType: v as PropertyType }))}
+                    onValueChange={(v) =>
+                      setForm((f) => ({ ...f, propertyType: v as PropertyType }))
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -343,7 +359,7 @@ function LeadDetails({ lead }: { lead: Lead }) {
               <div className="grid gap-1.5">
                 <Label>Bairros de interesse</Label>
                 <div className="flex flex-wrap gap-1.5">
-                  {NEIGHBORHOODS.map((n) => {
+                  {suggestedNeighborhoods.map((n) => {
                     const on = form.neighborhoods.includes(n);
                     return (
                       <button

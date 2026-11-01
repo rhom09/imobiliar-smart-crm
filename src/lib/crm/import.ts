@@ -130,7 +130,14 @@ export function parseLeadCSV(csvText: string, defaultOwnerId: string): ImportLea
           .split(/[;,]/)
           .map((n) => n.trim())
           .filter(Boolean)
-      : ["Pinheiros"];
+      : ["Centro"];
+
+    const cities = citiesStr
+      ? citiesStr
+          .split(/[;,]/)
+          .map((c) => c.trim())
+          .filter(Boolean)
+      : ["São Pedro"];
 
     const stage: StageId = VALID_STAGES.includes(stageStr) ? stageStr : "novo";
 
@@ -149,6 +156,7 @@ export function parseLeadCSV(csvText: string, defaultOwnerId: string): ImportLea
       budgetMin: budgetMin || 300_000,
       budgetMax: budgetMax || (budgetMin ? budgetMin * 1.3 : 800_000),
       bedrooms: validBedrooms,
+      cities,
       neighborhoods,
       source: sourceStr || "Importação CSV",
     });

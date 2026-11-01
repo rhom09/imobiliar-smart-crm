@@ -12,7 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CITIES, NEIGHBORHOODS, PROPERTY_TYPES } from "@/lib/crm/rules";
+import { CITIES, PROPERTY_TYPES } from "@/lib/crm/rules";
+import { NEIGHBORHOODS_BY_CITY } from "@/lib/crm/locations";
 import { useCrm } from "@/lib/crm/store";
 import { cn } from "@/lib/utils";
 
@@ -56,15 +57,13 @@ function CatalogPage() {
   const [showSold, setShowSold] = useState(false);
 
   const availableNeighborhoods = useMemo(() => {
+    if (city !== "all") {
+      return NEIGHBORHOODS_BY_CITY[city as keyof typeof NEIGHBORHOODS_BY_CITY] || [];
+    }
     const set = new Set<string>();
     properties.forEach((p) => {
-      if (city === "all" || p.city === city) {
-        if (p.neighborhood) set.add(p.neighborhood);
-      }
+      if (p.neighborhood) set.add(p.neighborhood);
     });
-    if (set.size === 0) {
-      NEIGHBORHOODS.forEach((n) => set.add(n));
-    }
     return Array.from(set).sort();
   }, [properties, city]);
 
@@ -88,12 +87,7 @@ function CatalogPage() {
   }, [properties, q, city, type, price, beds, hood, showSold]);
 
   const active =
-    city !== "all" ||
-    type !== "all" ||
-    price !== "all" ||
-    beds > 0 ||
-    hood !== "all" ||
-    q;
+    city !== "all" || type !== "all" || price !== "all" || beds > 0 || hood !== "all" || q;
 
   const clear = () => {
     setQ("");
@@ -108,9 +102,7 @@ function CatalogPage() {
     <div>
       <PageHeader
         title="Catálogo de imóveis"
-        subtitle={
-          ready ? `${list.length} de ${properties.length} imóveis` : "Carregando…"
-        }
+        subtitle={ready ? `${list.length} de ${properties.length} imóveis` : "Carregando…"}
         actions={
           <Button asChild className="rounded-full">
             <Link to="/imoveis/novo">
@@ -176,9 +168,7 @@ function CatalogPage() {
                   onClick={() => setBeds(n)}
                   className={cn(
                     "rounded-full px-2.5 py-1 text-xs font-semibold transition",
-                    beds === n
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground",
+                    beds === n ? "bg-primary text-primary-foreground" : "text-muted-foreground",
                   )}
                 >
                   {n === 0 ? "Qts" : `${n}+`}
