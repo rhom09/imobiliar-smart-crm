@@ -214,21 +214,51 @@
   },
   "hotPaths": [
     {
+      "path": "src/lib/crm/import.ts",
+      "accessCount": 22,
+      "lastAccessed": 1793499351294,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/crm/public.functions.ts",
+      "accessCount": 17,
+      "lastAccessed": 1793499364084,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/crm/store.tsx",
+      "accessCount": 17,
+      "lastAccessed": 1793499373988,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/crm/seed.ts",
+      "accessCount": 15,
+      "lastAccessed": 1793499369449,
+      "type": "file"
+    },
+    {
+      "path": "src/routes/_authenticated/imobiliaria.tsx",
+      "accessCount": 8,
+      "lastAccessed": 1793499170684,
+      "type": "file"
+    },
+    {
       "path": "DEV/DATABASE.md",
       "accessCount": 7,
       "lastAccessed": 1793467387514,
       "type": "file"
     },
     {
-      "path": "src/lib/crm/import.ts",
-      "accessCount": 6,
-      "lastAccessed": 1793457211408,
-      "type": "file"
-    },
-    {
       "path": "DEV/FEATURES.md",
       "accessCount": 6,
       "lastAccessed": 1793467347233,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/crm/types.ts",
+      "accessCount": 6,
+      "lastAccessed": 1793499207332,
       "type": "file"
     },
     {
@@ -247,12 +277,6 @@
       "path": "src/routes/_authenticated/imoveis.index.tsx",
       "accessCount": 2,
       "lastAccessed": 1793456865456,
-      "type": "file"
-    },
-    {
-      "path": "src/lib/crm/public.functions.ts",
-      "accessCount": 2,
-      "lastAccessed": 1793457146828,
       "type": "file"
     },
     {
