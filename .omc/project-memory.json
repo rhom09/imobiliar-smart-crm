@@ -214,6 +214,12 @@
   },
   "hotPaths": [
     {
+      "path": "src/components/crm/PropertyForm.tsx",
+      "accessCount": 13,
+      "lastAccessed": 1793499114964,
+      "type": "file"
+    },
+    {
       "path": "DEV/DATABASE.md",
       "accessCount": 7,
       "lastAccessed": 1793467387514,
@@ -238,12 +244,6 @@
       "type": "file"
     },
     {
-      "path": "src/components/crm/PropertyForm.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1793456829135,
-      "type": "file"
-    },
-    {
       "path": "src/routes/_authenticated/imoveis.index.tsx",
       "accessCount": 2,
       "lastAccessed": 1793456865456,
@@ -265,6 +265,12 @@
       "path": "src/components/crm/NewLeadDialog.tsx",
       "accessCount": 1,
       "lastAccessed": 1793456748387,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/crm/rules.ts",
+      "accessCount": 1,
+      "lastAccessed": 1793499002182,
       "type": "file"
     }
   ],

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo } from "react";
 import { Check, ImagePlus, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CITIES, NEIGHBORHOODS, PROPERTY_TYPES } from "@/lib/crm/rules";
+import { CITIES, PROPERTY_TYPES, suggestNeighborhoods, normalizeText } from "@/lib/crm/rules";
 import {
   PHOTO_BUCKET,
   SAMPLE_PHOTO_KEYS,
@@ -67,17 +67,20 @@ export function PropertyForm({
   submitLabel: string;
   onSave: (p: PropertyInput) => void;
 }) {
-  const { team: brokers, viewer, me } = useCrm();
+  const { team: brokers, viewer, me, properties } = useCrm();
   const str = (n: number | undefined, d = "") => (n === undefined ? d : String(n));
   const fileRef = useRef<HTMLInputElement>(null);
   const [photos, setPhotos] = useState<string[]>(initial?.photos ?? []);
   const [uploading, setUploading] = useState(0);
+  const [neighborhoodOpen, setNeighborhoodOpen] = useState(false);
+  const [neighborhoodQuery, setNeighborhoodQuery] = useState("");
+
   const [f, setF] = useState({
     title: initial?.title ?? "",
     type: (initial?.type ?? "Apartamento") as PropertyType,
     price: str(initial?.price),
     city: initial?.city ?? CITIES[0]!,
-    neighborhood: initial?.neighborhood ?? NEIGHBORHOODS[0]!,
+    neighborhood: initial?.neighborhood ?? "",
     address: initial?.address ?? "",
     bedrooms: str(initial?.bedrooms, "2"),
     suites: str(initial?.suites, "1"),
@@ -91,6 +94,31 @@ export function PropertyForm({
     status: (initial?.status ?? "disponivel") as PropertyStatus,
     brokerId: initial?.brokerId ?? (viewer.kind === "broker" ? viewer.brokerId : (me?.id ?? "")),
   });
+
+  const cityNeighborhoods = useMemo(
+    () => suggestNeighborhoods(f.city, properties),
+    [f.city, properties]
+  );
+
+  const filteredNeighborhoods = useMemo(() => {
+    if (!neighborhoodQuery.trim()) return cityNeighborhoods;
+    const term = normalizeText(neighborhoodQuery);
+    return cityNeighborhoods.filter((n) => normalizeText(n).includes(term));
+  }, [cityNeighborhoods, neighborhoodQuery]);
+
+  const handleCityChange = (newCity: string) => {
+    setF((x) => {
+      const oldNeighborhoods = suggestNeighborhoods(x.city, properties);
+      const shouldClear = oldNeighborhoods.includes(x.neighborhood);
+      return {
+        ...x,
+        city: newCity,
+        neighborhood: shouldClear ? "" : x.neighborhood,
+      };
+    });
+    setNeighborhoodQuery("");
+  };
+
   const set =
     (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setF((x) => ({ ...x, [k]: e.target.value }));
@@ -120,6 +148,10 @@ export function PropertyForm({
       toast.error("Preencha título, preço e área");
       return;
     }
+    if (!f.neighborhood.trim()) {
+      toast.error("Informe o bairro do imóvel");
+      return;
+    }
     if (uploading) {
       toast.error("Aguarde o envio das fotos terminar");
       return;
@@ -132,7 +164,7 @@ export function PropertyForm({
       title: f.title.trim(),
       type: f.type,
       price: num(f.price),
-      neighborhood: f.neighborhood.trim() || "Centro",
+      neighborhood: f.neighborhood.trim(),
       city: f.city.trim() || "São Paulo",
       address: f.address.trim() || "Endereço sob consulta",
       bedrooms: num(f.bedrooms),
@@ -212,7 +244,7 @@ export function PropertyForm({
             <Field label="Cidade">
               <Select
                 value={f.city}
-                onValueChange={(v) => setF((x) => ({ ...x, city: v }))}
+                onValueChange={handleCityChange}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -227,18 +259,50 @@ export function PropertyForm({
               </Select>
             </Field>
             <Field label="Bairro" id="nb">
-              <Input
-                id="nb"
-                list="neighborhoods-list"
-                value={f.neighborhood}
-                onChange={set("neighborhood")}
-                placeholder="Selecione ou digite o bairro"
-              />
-              <datalist id="neighborhoods-list">
-                {NEIGHBORHOODS.map((n) => (
-                  <option key={n} value={n} />
-                ))}
-              </datalist>
+              <div className="relative">
+                <Input
+                  id="nb"
+                  value={f.neighborhood}
+                  onChange={(e) => {
+                    setF((x) => ({ ...x, neighborhood: e.target.value }));
+                    setNeighborhoodQuery(e.target.value);
+                    setNeighborhoodOpen(true);
+                  }}
+                  onFocus={() => {
+                    setNeighborhoodQuery("");
+                    setNeighborhoodOpen(true);
+                  }}
+                  onBlur={() => {
+                    setTimeout(() => setNeighborhoodOpen(false), 200);
+                  }}
+                  placeholder="Selecione ou digite o bairro"
+                />
+                {neighborhoodOpen && (
+                  <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-xl border bg-popover p-1 text-popover-foreground shadow-md">
+                    {filteredNeighborhoods.length > 0 ? (
+                      filteredNeighborhoods.map((n) => (
+                        <button
+                          type="button"
+                          key={n}
+                          className="flex w-full items-center rounded-lg px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground text-left"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => {
+                            setF((x) => ({ ...x, neighborhood: n }));
+                            setNeighborhoodQuery("");
+                            setNeighborhoodOpen(false);
+                          }}
+                        >
+                          {n}
+                        </button>
+                      ))
+                    ) : (
+                      <div className="px-3 py-2 text-sm text-muted-foreground">
+                        Usar "{f.neighborhood}" como novo bairro
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </Field>
             <Field label="Endereço" id="ad">
               <Input

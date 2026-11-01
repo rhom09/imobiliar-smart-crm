@@ -51,10 +51,17 @@
       "started_at": "2026-10-31T11:26:49.320Z",
       "parent_mode": "none",
       "status": "running"
+    },
+    {
+      "agent_id": "ac1372c8e9ab99205",
+      "agent_type": "workflow-subagent",
+      "started_at": "2026-11-01T02:03:13.293Z",
+      "parent_mode": "none",
+      "status": "running"
     }
   ],
-  "total_spawned": 5,
+  "total_spawned": 6,
   "total_completed": 4,
   "total_failed": 0,
-  "last_updated": "2026-10-31T11:26:51.103Z"
+  "last_updated": "2026-11-01T02:03:14.111Z"
 }

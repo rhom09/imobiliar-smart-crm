@@ -200,3 +200,28 @@ export function contactUrgency(iso: string, now = Date.now()): "ok" | "warn" | "
   if (d >= 3) return "warn";
   return "ok";
 }
+
+export function suggestNeighborhoods(city: string, properties: Property[]): string[] {
+  const set = new Set<string>();
+  const defaultNeighborhoods: Record<string, string[]> = {
+    "São Paulo": ["Centro", "Pinheiros", "Brooklin", "Itaim Bibi", "Vila Madalena", "Moema", "Jardins", "Perdizes", "Vila Mariana"],
+    "São Pedro": ["Centro", "Estância", "Recanto das Aguas", "Jardim Italcam"],
+    "Piracicaba": ["Centro", "São Dimas", "Vila Nova", "Algodoal", "Porto"],
+  };
+
+  const defaults = defaultNeighborhoods[city] || ["Centro"];
+  defaults.forEach((n) => set.add(n));
+
+  properties.forEach((p) => {
+    if (normalizeText(p.city) === normalizeText(city) && p.neighborhood) {
+      set.add(p.neighborhood.trim());
+    }
+  });
+
+  const list = Array.from(set);
+  return list.sort((a, b) => {
+    if (normalizeText(a) === "centro") return -1;
+    if (normalizeText(b) === "centro") return 1;
+    return a.localeCompare(b, "pt-BR");
+  });
+}
