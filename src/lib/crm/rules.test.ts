@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildSeed } from "./seed";
-import { contactUrgency, smartMatch, visibleLeads, waLink } from "./rules";
+import { contactUrgency, smartMatch, suggestNeighborhoods, visibleLeads, waLink } from "./rules";
 import type { Lead } from "./types";
 
 const { leads, properties } = buildSeed(Date.UTC(2026, 0, 15));
@@ -68,5 +68,13 @@ describe("whatsapp e urgência", () => {
     expect(contactUrgency(new Date(now - 2 * 86_400_000).toISOString(), now)).toBe("ok");
     expect(contactUrgency(new Date(now - 3 * 86_400_000).toISOString(), now)).toBe("warn");
     expect(contactUrgency(new Date(now - 7 * 86_400_000).toISOString(), now)).toBe("late");
+  });
+});
+
+describe("sugestão de bairros", () => {
+  it("retorna bairros da cidade com Centro primeiro e ordenados alfabeticamente", () => {
+    const list = suggestNeighborhoods("São Pedro", properties);
+    expect(list.length).toBeGreaterThan(0);
+    expect(list[0]).toBe("Centro");
   });
 });

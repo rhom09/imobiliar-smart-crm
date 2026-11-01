@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo } from "react";
 import { Check, ImagePlus, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CITIES, NEIGHBORHOODS, PROPERTY_TYPES } from "@/lib/crm/rules";
+import { CITIES, PROPERTY_TYPES, suggestNeighborhoods, normalizeText } from "@/lib/crm/rules";
 import {
   PHOTO_BUCKET,
   SAMPLE_PHOTO_KEYS,
@@ -67,7 +67,7 @@ export function PropertyForm({
   submitLabel: string;
   onSave: (p: PropertyInput) => void;
 }) {
-  const { team: brokers, viewer, me } = useCrm();
+  const { team: brokers, viewer, me, properties } = useCrm();
   const str = (n: number | undefined, d = "") => (n === undefined ? d : String(n));
   const fileRef = useRef<HTMLInputElement>(null);
   const [photos, setPhotos] = useState<string[]>(initial?.photos ?? []);
@@ -77,7 +77,7 @@ export function PropertyForm({
     type: (initial?.type ?? "Apartamento") as PropertyType,
     price: str(initial?.price),
     city: initial?.city ?? CITIES[0]!,
-    neighborhood: initial?.neighborhood ?? NEIGHBORHOODS[0]!,
+    neighborhood: initial?.neighborhood ?? "",
     address: initial?.address ?? "",
     bedrooms: str(initial?.bedrooms, "2"),
     suites: str(initial?.suites, "1"),
@@ -120,6 +120,10 @@ export function PropertyForm({
       toast.error("Preencha título, preço e área");
       return;
     }
+    if (!f.neighborhood.trim()) {
+      toast.error("Informe o bairro do imóvel");
+      return;
+    }
     if (uploading) {
       toast.error("Aguarde o envio das fotos terminar");
       return;
@@ -132,7 +136,7 @@ export function PropertyForm({
       title: f.title.trim(),
       type: f.type,
       price: num(f.price),
-      neighborhood: f.neighborhood.trim() || "Centro",
+      neighborhood: f.neighborhood.trim(),
       city: f.city.trim() || "São Paulo",
       address: f.address.trim() || "Endereço sob consulta",
       bedrooms: num(f.bedrooms),
@@ -212,7 +216,15 @@ export function PropertyForm({
             <Field label="Cidade">
               <Select
                 value={f.city}
-                onValueChange={(v) => setF((x) => ({ ...x, city: v }))}
+                onValueChange={(v) => {
+                  const oldSuggestions = suggestNeighborhoods(f.city, properties);
+                  const shouldClear = oldSuggestions.includes(f.neighborhood);
+                  setF((x) => ({
+                    ...x,
+                    city: v,
+                    neighborhood: shouldClear ? "" : x.neighborhood,
+                  }));
+                }}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -227,18 +239,12 @@ export function PropertyForm({
               </Select>
             </Field>
             <Field label="Bairro" id="nb">
-              <Input
-                id="nb"
-                list="neighborhoods-list"
+              <NeighborhoodCombobox
+                city={f.city}
                 value={f.neighborhood}
-                onChange={set("neighborhood")}
-                placeholder="Selecione ou digite o bairro"
+                onChange={(val) => setF((x) => ({ ...x, neighborhood: val }))}
+                properties={properties}
               />
-              <datalist id="neighborhoods-list">
-                {NEIGHBORHOODS.map((n) => (
-                  <option key={n} value={n} />
-                ))}
-              </datalist>
             </Field>
             <Field label="Endereço" id="ad">
               <Input
@@ -381,6 +387,86 @@ export function PropertyForm({
         </Button>
       </div>
     </form>
+  );
+}
+
+function NeighborhoodCombobox({
+  city,
+  value,
+  onChange,
+  properties,
+}: {
+  city: string;
+  value: string;
+  onChange: (val: string) => void;
+  properties: Property[];
+}) {
+  const [open, setOpen] = useState(false);
+  const [filterText, setFilterText] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const suggestions = useMemo(() => {
+    return suggestNeighborhoods(city, properties);
+  }, [city, properties]);
+
+  const filteredSuggestions = useMemo(() => {
+    if (!filterText) return suggestions;
+    const normFilter = normalizeText(filterText);
+    return suggestions.filter((n) => normalizeText(n).includes(normFilter));
+  }, [suggestions, filterText]);
+
+  return (
+    <div className="relative">
+      <Input
+        ref={inputRef}
+        id="nb"
+        value={value}
+        onFocus={() => {
+          setFilterText("");
+          setOpen(true);
+        }}
+        onClick={() => {
+          setFilterText("");
+          setOpen(true);
+        }}
+        onChange={(e) => {
+          const val = e.target.value;
+          onChange(val);
+          setFilterText(val);
+          setOpen(true);
+        }}
+        onBlur={() => {
+          setTimeout(() => setOpen(false), 200);
+        }}
+        placeholder="Selecione ou digite o bairro"
+      />
+      {open && (
+        <div className="absolute z-50 mt-1 max-h-60 w-full overflow-y-auto rounded-xl border bg-popover p-1 text-popover-foreground shadow-md">
+          {filteredSuggestions.length > 0 ? (
+            filteredSuggestions.map((n) => (
+              <button
+                type="button"
+                key={n}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => {
+                  onChange(n);
+                  setFilterText("");
+                  setOpen(false);
+                  inputRef.current?.blur();
+                }}
+                className="w-full rounded-lg px-3 py-2 text-left text-sm transition hover:bg-accent hover:text-accent-foreground"
+              >
+                {n}
+              </button>
+            ))
+          ) : (
+            <div className="px-3 py-2 text-xs text-muted-foreground">
+              Nenhum bairro encontrado. O texto digitado será salvo como novo bairro.
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 

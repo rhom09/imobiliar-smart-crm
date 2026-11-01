@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-31T11:26:49.320Z",
+  "updatedAt": "2026-11-01T02:03:08.459Z",
   "missions": [
     {
       "id": "session:66e0ed58-83ba-4316-ae70-c1d83c74bd0b:none",
@@ -7,15 +7,15 @@
       "name": "none",
       "objective": "Session mission",
       "createdAt": "2026-10-31T10:36:05.723Z",
-      "updatedAt": "2026-10-31T11:26:49.320Z",
+      "updatedAt": "2026-11-01T02:03:08.459Z",
       "status": "running",
-      "workerCount": 5,
+      "workerCount": 6,
       "taskCounts": {
-        "total": 5,
+        "total": 6,
         "pending": 0,
         "blocked": 0,
         "inProgress": 2,
-        "completed": 3,
+        "completed": 4,
         "failed": 0
       },
       "agents": [
@@ -68,17 +68,19 @@
           "latestUpdate": null,
           "completedSummary": null,
           "updatedAt": "2026-10-31T11:26:49.320Z"
+        },
+        {
+          "name": "workflow-subagent:a43a95f",
+          "role": "workflow-subagent",
+          "ownership": "a43a95faa67b8b8d4",
+          "status": "done",
+          "currentStep": null,
+          "latestUpdate": "completed",
+          "completedSummary": null,
+          "updatedAt": "2026-11-01T02:03:08.459Z"
         }
       ],
       "timeline": [
-        {
-          "id": "session-start:a8f3f0bf98d1a52d4:2026-10-31T11:20:03.892Z",
-          "at": "2026-10-31T11:20:03.892Z",
-          "kind": "update",
-          "agent": "workflow-subagent:a8f3f0b",
-          "detail": "started workflow-subagent:a8f3f0b",
-          "sourceKey": "session-start:a8f3f0bf98d1a52d4"
-        },
         {
           "id": "session-stop:a8f3f0bf98d1a52d4:2026-10-31T11:26:46.528Z",
           "at": "2026-10-31T11:26:46.528Z",
@@ -94,6 +96,22 @@
           "agent": "workflow-subagent:a93af79",
           "detail": "started workflow-subagent:a93af79",
           "sourceKey": "session-start:a93af79bf435d0255"
+        },
+        {
+          "id": "session-start:a43a95faa67b8b8d4:2026-11-01T01:57:30.674Z",
+          "at": "2026-11-01T01:57:30.674Z",
+          "kind": "update",
+          "agent": "workflow-subagent:a43a95f",
+          "detail": "started workflow-subagent:a43a95f",
+          "sourceKey": "session-start:a43a95faa67b8b8d4"
+        },
+        {
+          "id": "session-stop:a43a95faa67b8b8d4:2026-11-01T02:03:08.459Z",
+          "at": "2026-11-01T02:03:08.459Z",
+          "kind": "completion",
+          "agent": "workflow-subagent:a43a95f",
+          "detail": "completed",
+          "sourceKey": "session-stop:a43a95faa67b8b8d4"
         }
       ]
     }

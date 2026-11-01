@@ -232,21 +232,33 @@
       "type": "file"
     },
     {
+      "path": "src/components/crm/PropertyForm.tsx",
+      "accessCount": 6,
+      "lastAccessed": 1793498510715,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/crm/rules.test.ts",
+      "accessCount": 4,
+      "lastAccessed": 1793498395912,
+      "type": "file"
+    },
+    {
       "path": "src/routes/_authenticated/index.tsx",
       "accessCount": 3,
       "lastAccessed": 1793457040033,
       "type": "file"
     },
     {
-      "path": "src/components/crm/PropertyForm.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1793456829135,
+      "path": "src/routes/_authenticated/imoveis.index.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1793498285821,
       "type": "file"
     },
     {
-      "path": "src/routes/_authenticated/imoveis.index.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1793456865456,
+      "path": "src/lib/crm/rules.ts",
+      "accessCount": 3,
+      "lastAccessed": 1793498377286,
       "type": "file"
     },
     {
@@ -263,8 +275,14 @@
     },
     {
       "path": "src/components/crm/NewLeadDialog.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1793498301443,
+      "type": "file"
+    },
+    {
+      "path": "src/routes/_authenticated/imoveis.novo.tsx",
       "accessCount": 1,
-      "lastAccessed": 1793456748387,
+      "lastAccessed": 1793498307275,
       "type": "file"
     }
   ],

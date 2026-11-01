@@ -149,6 +149,27 @@ export function waLink(phone: string, text: string) {
   return `https://wa.me/${normalizePhone(phone)}?text=${encodeURIComponent(text)}`;
 }
 
+export function suggestNeighborhoods(city: string, properties: Property[]): string[] {
+  const set = new Set<string>();
+  properties.forEach((p) => {
+    if (!city || p.city === city) {
+      if (p.neighborhood) set.add(p.neighborhood);
+    }
+  });
+  if (set.size === 0) {
+    NEIGHBORHOODS.forEach((n) => set.add(n));
+  }
+  const list = Array.from(set).sort((a, b) => a.localeCompare(b, "pt-BR", { sensitivity: "base" }));
+  const centroIdx = list.findIndex((n) => normalizeText(n) === "centro");
+  if (centroIdx > 0) {
+    const [centro] = list.splice(centroIdx, 1);
+    list.unshift(centro);
+  } else if (centroIdx === -1 && list.length === 0) {
+    list.push("Centro");
+  }
+  return list;
+}
+
 /** Message tailored to the lead's funnel stage. */
 export function contextualMessage(lead: Lead, broker: Broker | undefined, property?: Property) {
   const first = lead.name.split(" ")[0];

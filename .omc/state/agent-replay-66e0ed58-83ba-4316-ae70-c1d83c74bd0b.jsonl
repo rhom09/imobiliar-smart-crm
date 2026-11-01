@@ -8,3 +8,5 @@
 {"t":0,"agent":"a8f3f0b","agent_type":"workflow-subagent","event":"agent_stop","success":true,"duration_ms":402636}
 {"t":0,"agent":"a93af79","agent_type":"workflow-subagent","event":"agent_start","parent_mode":"none"}
 {"t":0,"agent":"system","event":"skill_invoked","skill_name":"orquestrador-maestro"}
+{"t":0,"agent":"a43a95f","agent_type":"workflow-subagent","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"a43a95f","agent_type":"workflow-subagent","event":"agent_stop","success":true,"duration_ms":337785}
