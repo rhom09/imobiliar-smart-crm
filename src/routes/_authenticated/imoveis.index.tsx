@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { NEIGHBORHOODS, PROPERTY_TYPES } from "@/lib/crm/rules";
+import { CITIES, NEIGHBORHOODS, PROPERTY_TYPES } from "@/lib/crm/rules";
 import { useCrm } from "@/lib/crm/store";
 import { cn } from "@/lib/utils";
 
@@ -23,12 +23,12 @@ export const Route = createFileRoute("/_authenticated/imoveis/")({
       {
         name: "description",
         content:
-          "Busque imóveis à venda por tipo, preço, quartos e bairro e compartilhe com seus clientes.",
+          "Busque imóveis à venda por cidade, bairro, tipo, preço e quartos e compartilhe com seus clientes.",
       },
       { property: "og:title", content: "Catálogo de imóveis — Morada CRM" },
       {
         property: "og:description",
-        content: "Imóveis à venda com filtros por tipo, preço, quartos e bairro.",
+        content: "Imóveis à venda com filtros por cidade, bairro, tipo, preço e quartos.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -39,20 +39,34 @@ export const Route = createFileRoute("/_authenticated/imoveis/")({
 
 const PRICE_RANGES = [
   { id: "all", label: "Qualquer preço", min: 0, max: Infinity },
-  { id: "a", label: "Até R$ 700 mil", min: 0, max: 700_000 },
-  { id: "b", label: "R$ 700 mil – 1,5 mi", min: 700_000, max: 1_500_000 },
-  { id: "c", label: "R$ 1,5 – 3 mi", min: 1_500_000, max: 3_000_000 },
-  { id: "d", label: "Acima de R$ 3 mi", min: 3_000_000, max: Infinity },
+  { id: "a", label: "Até R$ 300 mil", min: 0, max: 300_000 },
+  { id: "b", label: "R$ 300 mil – 600 mil", min: 300_000, max: 600_000 },
+  { id: "c", label: "R$ 600 mil – 1 mi", min: 600_000, max: 1_000_000 },
+  { id: "d", label: "Acima de R$ 1 mi", min: 1_000_000, max: Infinity },
 ];
 
 function CatalogPage() {
   const { ready, properties } = useCrm();
   const [q, setQ] = useState("");
+  const [city, setCity] = useState("all");
   const [type, setType] = useState("all");
   const [price, setPrice] = useState("all");
   const [beds, setBeds] = useState(0);
   const [hood, setHood] = useState("all");
   const [showSold, setShowSold] = useState(false);
+
+  const availableNeighborhoods = useMemo(() => {
+    const set = new Set<string>();
+    properties.forEach((p) => {
+      if (city === "all" || p.city === city) {
+        if (p.neighborhood) set.add(p.neighborhood);
+      }
+    });
+    if (set.size === 0) {
+      NEIGHBORHOODS.forEach((n) => set.add(n));
+    }
+    return Array.from(set).sort();
+  }, [properties, city]);
 
   const list = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -60,19 +74,30 @@ function CatalogPage() {
     return properties.filter(
       (p) =>
         (showSold || p.status !== "vendido") &&
+        (city === "all" || p.city === city) &&
         (type === "all" || p.type === type) &&
         (hood === "all" || p.neighborhood === hood) &&
         p.bedrooms >= beds &&
         p.price >= range.min &&
         p.price < range.max &&
         (!term ||
-          [p.title, p.code, p.address, p.neighborhood].some((s) => s.toLowerCase().includes(term))),
+          [p.title, p.code, p.address, p.neighborhood, p.city].some((s) =>
+            s.toLowerCase().includes(term),
+          )),
     );
-  }, [properties, q, type, price, beds, hood, showSold]);
+  }, [properties, q, city, type, price, beds, hood, showSold]);
 
-  const active = type !== "all" || price !== "all" || beds > 0 || hood !== "all" || q;
+  const active =
+    city !== "all" ||
+    type !== "all" ||
+    price !== "all" ||
+    beds > 0 ||
+    hood !== "all" ||
+    q;
+
   const clear = () => {
     setQ("");
+    setCity("all");
     setType("all");
     setPrice("all");
     setBeds(0);
@@ -83,7 +108,9 @@ function CatalogPage() {
     <div>
       <PageHeader
         title="Catálogo de imóveis"
-        subtitle={ready ? `${list.length} de ${properties.length} imóveis` : "Carregando…"}
+        subtitle={
+          ready ? `${list.length} de ${properties.length} imóveis` : "Carregando…"
+        }
         actions={
           <Button asChild className="rounded-full">
             <Link to="/imoveis/novo">
@@ -107,6 +134,18 @@ function CatalogPage() {
           <div className="flex items-center gap-2 overflow-x-auto scrollbar-none">
             <SlidersHorizontal className="size-4 shrink-0 text-muted-foreground" />
             <FilterSelect
+              value={city}
+              onChange={(v) => {
+                setCity(v);
+                setHood("all");
+              }}
+              placeholder="Cidade"
+              options={[
+                ["all", "Todas as cidades"],
+                ...CITIES.map((c) => [c, c] as [string, string]),
+              ]}
+            />
+            <FilterSelect
               value={type}
               onChange={setType}
               placeholder="Tipo"
@@ -127,7 +166,7 @@ function CatalogPage() {
               placeholder="Bairro"
               options={[
                 ["all", "Todos os bairros"],
-                ...NEIGHBORHOODS.map((n) => [n, n] as [string, string]),
+                ...availableNeighborhoods.map((n) => [n, n] as [string, string]),
               ]}
             />
             <div className="flex shrink-0 items-center gap-1 rounded-full border bg-card p-1">
@@ -137,7 +176,9 @@ function CatalogPage() {
                   onClick={() => setBeds(n)}
                   className={cn(
                     "rounded-full px-2.5 py-1 text-xs font-semibold transition",
-                    beds === n ? "bg-primary text-primary-foreground" : "text-muted-foreground",
+                    beds === n
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground",
                   )}
                 >
                   {n === 0 ? "Qts" : `${n}+`}

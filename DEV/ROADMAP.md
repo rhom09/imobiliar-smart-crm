@@ -3,6 +3,7 @@
 Estado atual das melhorias planejadas e resumo das funcionalidades entregues.
 
 ## O que já está 100% pronto e conectado
+
 - **Funil Kanban:** arrastar e soltar leads, WhatsApp rápido com mensagem contextual, busca e filtros.
 - **Ficha 360° do Lead:** histórico de interações (anotações e agendamento de visitas) e cruzamento inteligente (Smart Match) com os imóveis da base.
 - **Gestão de Imóveis:** cadastro completo, edição de dados e fotos, alternador de status (Disponível, Reservado, Vendido) e upload direto no Supabase Storage (`property-photos`).
@@ -20,14 +21,19 @@ Estado atual das melhorias planejadas e resumo das funcionalidades entregues.
 ## Próximas Melhorias Planejadas
 
 ### 1. Dashboard de Métricas e KPIs
+
 - Painel gerencial dedicado para acompanhar a saúde do funil de vendas.
 - Gráficos de conversão por etapa, volume de vendas no mês e produtividade por corretor (utilizando `recharts`).
 
 ### 2. Templates de Mensagem de WhatsApp Personalizáveis
-- Tela de configuração para administradores e corretores adaptarem os textos padrão de abordagem por etapa do funil.
+
+- **Status da UI:** Tela de configuração (`/imobiliaria`) e persistência no banco implementadas.
+- **Pendente (Próximo passo):** Conectar os templates salvos na tabela `whatsapp_templates` à função `contextualMessage` no Kanban e na Ficha 360° do lead, substituindo os textos padrão hardcoded pelos textos customizados da imobiliária.
 
 ### 3. Arquivamento e Lixeira (Soft Delete)
+
 - Alternativa à exclusão definitiva, permitindo mover leads ou imóveis para uma área de arquivados/lixeira com opção de restauração.
 
 ### 4. Captação Automática de Leads via Webhook
+
 - Integração de server functions para receber leads de portais imobiliários (OLX, Zap, VivaReal) e campanhas do Meta Ads diretamente no funil.

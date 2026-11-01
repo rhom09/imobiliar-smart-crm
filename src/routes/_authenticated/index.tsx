@@ -8,7 +8,7 @@ import { NewLeadDialog } from "@/components/crm/NewLeadDialog";
 import { ImportLeadsDialog } from "@/components/crm/ImportLeadsDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { OPEN_STAGES, brlCompact, contactUrgency } from "@/lib/crm/rules";
+import { OPEN_STAGES, brlCompact, contactUrgency, normalizeText } from "@/lib/crm/rules";
 import { useCrm } from "@/lib/crm/store";
 import { exportLeadsToCSV } from "@/lib/crm/export";
 import { cn } from "@/lib/utils";
@@ -42,13 +42,14 @@ function FunnelPage() {
   const [broker, setBroker] = useState<string>("all");
 
   const filtered = useMemo(() => {
-    const term = q.trim().toLowerCase();
+    const term = normalizeText(q);
     return leads.filter(
       (l) =>
         (viewer.kind !== "admin" || broker === "all" || l.ownerId === broker) &&
         (!term ||
-          l.name.toLowerCase().includes(term) ||
-          l.neighborhoods.some((n) => n.toLowerCase().includes(term))),
+          normalizeText(l.name).includes(term) ||
+          l.neighborhoods.some((n) => normalizeText(n).includes(term)) ||
+          l.cities.some((c) => normalizeText(c).includes(term))),
     );
   }, [leads, q, broker, viewer.kind]);
 
@@ -93,11 +94,7 @@ function FunnelPage() {
             {viewer.kind === "admin" && (
               <>
                 <ImportLeadsDialog />
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => exportLeadsToCSV(filtered)}
-                >
+                <Button variant="outline" size="sm" onClick={() => exportLeadsToCSV(filtered)}>
                   <Download className="mr-2 size-4" /> Exportar CSV
                 </Button>
               </>

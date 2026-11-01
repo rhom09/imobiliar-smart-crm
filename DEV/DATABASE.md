@@ -24,7 +24,7 @@ Postgres (Supabase gerenciado pelo Lovable Cloud). Fonte: `drizzle/migrations/00
 
 ### `leads`
 
-`id`, `name`, `phone`, `email`, `owner_id` (corretor dono), `stage` (`novo` | `contato` | `visita` | `proposta` | `ganho` | `perdido`), `property_type`, `budget_min`, `budget_max`, `bedrooms`, `neighborhoods text[]`, `interest_property_id` (FK → `properties`, `ON DELETE SET NULL`), `source`, `created_at`, `last_contact_at`.
+`id`, `name`, `phone`, `email`, `owner_id` (corretor dono), `stage` (`novo` | `contato` | `visita` | `proposta` | `ganho` | `perdido`), `property_type`, `budget_min`, `budget_max`, `bedrooms`, `neighborhoods text[]`, `cities text[]`, `interest_property_id` (FK → `properties`, `ON DELETE SET NULL`), `source`, `created_at`, `last_contact_at`.
 
 ### `interactions`
 

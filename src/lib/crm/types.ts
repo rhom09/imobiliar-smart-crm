@@ -1,7 +1,18 @@
 export type StageId = "novo" | "contato" | "visita" | "proposta" | "ganho" | "perdido";
 
 export type PropertyType =
-  "Apartamento" | "Casa" | "Cobertura" | "Studio" | "Sobrado" | "Comercial";
+  | "Apartamento"
+  | "Casa"
+  | "Cobertura"
+  | "Studio"
+  | "Sobrado"
+  | "Comercial"
+  | "Terreno"
+  | "Chácara"
+  | "Sítio"
+  | "Galpão"
+  | "Loja"
+  | "Ponto Comercial";
 
 export type Broker = {
   id: string;
@@ -37,6 +48,7 @@ export type Lead = {
   budgetMax: number;
   bedrooms: number;
   neighborhoods: string[];
+  cities: string[];
   interestPropertyId?: string | undefined;
   source: string;
   createdAt: string;

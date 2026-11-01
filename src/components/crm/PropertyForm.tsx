@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { NEIGHBORHOODS, PROPERTY_TYPES } from "@/lib/crm/rules";
+import { CITIES, NEIGHBORHOODS, PROPERTY_TYPES } from "@/lib/crm/rules";
 import {
   PHOTO_BUCKET,
   SAMPLE_PHOTO_KEYS,
@@ -76,6 +76,7 @@ export function PropertyForm({
     title: initial?.title ?? "",
     type: (initial?.type ?? "Apartamento") as PropertyType,
     price: str(initial?.price),
+    city: initial?.city ?? CITIES[0]!,
     neighborhood: initial?.neighborhood ?? NEIGHBORHOODS[0]!,
     address: initial?.address ?? "",
     bedrooms: str(initial?.bedrooms, "2"),
@@ -131,8 +132,8 @@ export function PropertyForm({
       title: f.title.trim(),
       type: f.type,
       price: num(f.price),
-      neighborhood: f.neighborhood,
-      city: initial?.city ?? "São Paulo",
+      neighborhood: f.neighborhood.trim() || "Centro",
+      city: f.city.trim() || "São Paulo",
       address: f.address.trim() || "Endereço sob consulta",
       bedrooms: num(f.bedrooms),
       suites: num(f.suites),
@@ -207,23 +208,37 @@ export function PropertyForm({
               </Select>
             </Field>
           </div>
-          <div className="grid gap-4 sm:grid-cols-[200px_1fr]">
-            <Field label="Bairro">
+          <div className="grid gap-4 sm:grid-cols-3">
+            <Field label="Cidade">
               <Select
-                value={f.neighborhood}
-                onValueChange={(v) => setF((x) => ({ ...x, neighborhood: v }))}
+                value={f.city}
+                onValueChange={(v) => setF((x) => ({ ...x, city: v }))}
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {NEIGHBORHOODS.map((n) => (
-                    <SelectItem key={n} value={n}>
-                      {n}
+                  {CITIES.map((c) => (
+                    <SelectItem key={c} value={c}>
+                      {c}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+            </Field>
+            <Field label="Bairro" id="nb">
+              <Input
+                id="nb"
+                list="neighborhoods-list"
+                value={f.neighborhood}
+                onChange={set("neighborhood")}
+                placeholder="Selecione ou digite o bairro"
+              />
+              <datalist id="neighborhoods-list">
+                {NEIGHBORHOODS.map((n) => (
+                  <option key={n} value={n} />
+                ))}
+              </datalist>
             </Field>
             <Field label="Endereço" id="ad">
               <Input

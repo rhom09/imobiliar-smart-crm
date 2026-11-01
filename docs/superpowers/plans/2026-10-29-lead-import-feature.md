@@ -11,19 +11,22 @@
 **Spec:** User requirements for Lead Import feature in Morada CRM imobiliário.
 
 ## Global Constraints
+
 - Strictly follow existing codebase patterns (`useCrm` store hook, shadcn components, Lucide icons, pt-BR localization).
 - Reuse `normalizePhone`, `PROPERTY_TYPES`, `NEIGHBORHOODS`, and stage rules from `src/lib/crm/rules.ts`.
 - File size must be read client-side securely with error handling for malformed CSVs and invalid row data.
 
 ## Trade-offs Analysis: Manual Row-by-Row Import vs Batch Supabase Insert
+
 1. **Current `addLead` per-row approach (Chosen for MVP):**
-   - *Pros:* Fully leverages existing store actions (`addLead`), handles Supabase table sync and state updates automatically, simpler error handling per row, maintains consistency with single lead creation.
-   - *Cons:* Multiple network requests for large CSVs (N roundtrips to Supabase), potential race conditions or partial failures if midway.
+   - _Pros:_ Fully leverages existing store actions (`addLead`), handles Supabase table sync and state updates automatically, simpler error handling per row, maintains consistency with single lead creation.
+   - _Cons:_ Multiple network requests for large CSVs (N roundtrips to Supabase), potential race conditions or partial failures if midway.
 2. **Direct Batch Supabase Insert (`supabase.from("leads").insert([...])`):**
-   - *Pros:* Single network request, highly efficient for large datasets, transactional atomicity (all-or-nothing with Postgres transactions if configured).
-   - *Cons:* Bypasses store action encapsulation, requires manual state synchronization or store reload, error handling is aggregated rather than row-by-row (harder to pinpoint which specific row failed unless using Postgres `ON CONFLICT` or detailed feedback arrays).
+   - _Pros:_ Single network request, highly efficient for large datasets, transactional atomicity (all-or-nothing with Postgres transactions if configured).
+   - _Cons:_ Bypasses store action encapsulation, requires manual state synchronization or store reload, error handling is aggregated rather than row-by-row (harder to pinpoint which specific row failed unless using Postgres `ON CONFLICT` or detailed feedback arrays).
 
 ## Review Focus
+
 - **Malformed CSV / Encoding Issues:** Handling missing headers, incorrect delimiters (comma vs semicolon), or missing BOM.
 - **Data Validation & Sanitization:** Ensuring phone numbers normalize correctly, budgets are valid numbers where `budgetMin <= budgetMax`, and property types/neighborhoods match allowed values or fall back gracefully with clear row error messages.
 - **Empty / Huge Files:** Graceful empty state checks and file size / row count limits.
@@ -34,10 +37,12 @@
 ### Task 1: Create CSV Parsing & Validation Utility
 
 **Files:**
+
 - Create: `src/lib/crm/import.ts`
 - Test: `src/lib/crm/import.test.ts` (or integration tests)
 
 **Interfaces:**
+
 - Consumes: `Lead`, `PropertyType`, `normalizePhone`, `PROPERTY_TYPES`, `NEIGHBORHOODS` from `src/lib/crm/types` and `src/lib/crm/rules.ts`.
 - Produces: `parseLeadCSV(csvText: string, defaultOwnerId: string): { leads: Omit<Lead, "id" | "createdAt" | "lastContactAt" | "interactions">[], errors: { row: number; message: string }[] }`
 
@@ -50,10 +55,12 @@
 ### Task 2: Create `ImportLeadsDialog.tsx` Component
 
 **Files:**
+
 - Create: `src/components/crm/ImportLeadsDialog.tsx`
 - Modify: `src/routes/_authenticated/index.tsx`
 
 **Interfaces:**
+
 - Consumes: `parseLeadCSV` from `src/lib/crm/import.ts`, `useCrm` from `src/lib/crm/store.tsx`, Shadcn Dialog/Button/Alert components.
 - Produces: `ImportLeadsDialog` component exported for use in the funnel page.
 
@@ -66,9 +73,11 @@
 ### Task 3: Integrate Import Button in Funnel Page
 
 **Files:**
+
 - Modify: `src/routes/_authenticated/index.tsx`
 
 **Interfaces:**
+
 - Consumes: `ImportLeadsDialog` from `@/components/crm/ImportLeadsDialog`.
 - Produces: Updated funnel page actions header with "Importar CSV" button visible to admins and authorized users.
 

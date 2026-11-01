@@ -1,12 +1,30 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useRef, useState } from "react";
-import { Building2, Check, Crown, Edit2, ImagePlus, Lock, MapPin, Phone, Trophy, Users, X } from "lucide-react";
+import {
+  Building2,
+  Check,
+  Crown,
+  Edit2,
+  ImagePlus,
+  Lock,
+  MapPin,
+  Phone,
+  Trophy,
+  Users,
+  X,
+} from "lucide-react";
 import { PageHeader, LoadingBlock } from "@/components/crm/AppShell";
 import { OPEN_STAGES, STAGES, brlCompact, formatPhone } from "@/lib/crm/rules";
 import { useCrm } from "@/lib/crm/store";
 import type { Lead, Property, StageId } from "@/lib/crm/types";
 import { cn } from "@/lib/utils";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -82,7 +100,10 @@ function AgencyPage() {
   const [editAgencyOpen, setEditAgencyOpen] = useState(false);
   const [editTemplatesOpen, setEditTemplatesOpen] = useState(false);
 
-  const [activeUser] = useState(() => brokers.find((b) => b.id === me?.id) || currentBroker || { name: "", phone: "", creci: "" });
+  const [activeUser] = useState(
+    () =>
+      brokers.find((b) => b.id === me?.id) || currentBroker || { name: "", phone: "", creci: "" },
+  );
   const [profileName, setProfileName] = useState(activeUser.name);
   const [profilePhone, setProfilePhone] = useState(activeUser.phone);
   const [profileCreci, setProfileCreci] = useState(activeUser.creci);
@@ -143,7 +164,7 @@ function AgencyPage() {
     if (agencyLogoUrl) {
       payload["logoUrl"] = agencyLogoUrl;
     }
-    const ok = await updateAgency(payload as any);
+    const ok = await updateAgency(payload as Partial<Agency>);
     if (ok) setEditAgencyOpen(false);
   };
 
@@ -583,7 +604,8 @@ function AgencyPage() {
           </DialogHeader>
           <div className="space-y-4 pt-2">
             <p className="text-xs text-muted-foreground">
-              Personalize as mensagens rápidas enviadas aos clientes em cada etapa do funil. Você pode usar variáveis como o nome do lead.
+              Personalize as mensagens rápidas enviadas aos clientes em cada etapa do funil. Você
+              pode usar variáveis como o nome do lead.
             </p>
             {STAGES.map((s) => (
               <div key={s.id} className="space-y-1.5">
@@ -635,4 +657,3 @@ function Mark({ ok, active }: { ok: boolean; active: boolean }) {
     </span>
   );
 }
-

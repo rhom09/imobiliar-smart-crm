@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { parseLeadCSV, type ImportLeadResult } from "@/lib/crm/import";
-  import { useCrm } from "@/lib/crm/store";
+import { useCrm } from "@/lib/crm/store";
 import { brlCompact, stageLabel } from "@/lib/crm/rules";
 import { cn } from "@/lib/utils";
 
@@ -31,7 +31,8 @@ export function ImportLeadsDialog({ onImported }: { onImported?: () => void }) {
   const [parseResult, setParseResult] = useState<ImportLeadResult | null>(null);
   const [ownerId, setOwnerId] = useState<string>(me?.id ?? "");
 
-  const defaultBrokerId = viewer.kind === "broker" ? viewer.brokerId : (ownerId || me?.id || brokers[0]?.id || "");
+  const defaultBrokerId =
+    viewer.kind === "broker" ? viewer.brokerId : ownerId || me?.id || brokers[0]?.id || "";
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -40,7 +41,7 @@ export function ImportLeadsDialog({ onImported }: { onImported?: () => void }) {
     setFileName(file.name);
     const reader = new FileReader();
     reader.onload = (event) => {
-      const text = event.target?.result as string ?? "";
+      const text = (event.target?.result as string) ?? "";
       const result = parseLeadCSV(text, defaultBrokerId);
       setParseResult(result);
     };
@@ -56,7 +57,8 @@ export function ImportLeadsDialog({ onImported }: { onImported?: () => void }) {
       return;
     }
 
-    const assignedOwner = viewer.kind === "broker" ? viewer.brokerId : (ownerId || me?.id || defaultBrokerId);
+    const assignedOwner =
+      viewer.kind === "broker" ? viewer.brokerId : ownerId || me?.id || defaultBrokerId;
 
     let count = 0;
     for (const leadData of parseResult.leads) {
@@ -161,7 +163,8 @@ export function ImportLeadsDialog({ onImported }: { onImported?: () => void }) {
                   <div>
                     <p className="font-semibold text-sm">{fileName}</p>
                     <p className="text-xs text-muted-foreground">
-                      {parseResult.leads.length} lead(s) válido(s) · {parseResult.errors.length} erro(s)
+                      {parseResult.leads.length} lead(s) válido(s) · {parseResult.errors.length}{" "}
+                      erro(s)
                     </p>
                   </div>
                 </div>
@@ -198,7 +201,8 @@ export function ImportLeadsDialog({ onImported }: { onImported?: () => void }) {
                         <div>
                           <p className="font-semibold">{l.name}</p>
                           <p className="text-muted-foreground text-[11px]">
-                            {l.phone} · {l.propertyType} · {brlCompact(l.budgetMax)} · {l.neighborhoods.join(", ")}
+                            {l.phone} · {l.propertyType} · {brlCompact(l.budgetMax)} ·{" "}
+                            {l.neighborhoods.join(", ")}
                           </p>
                         </div>
                         <span className="shrink-0 rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium">

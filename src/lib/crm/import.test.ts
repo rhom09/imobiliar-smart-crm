@@ -61,10 +61,10 @@ Maria Lima,11988887777,maria@example.com,InvalidoType,500000,800000,2,Pinheiros,
     const result = parseLeadCSV(csv, "b1");
     expect(result.leads).toHaveLength(0);
     expect(result.errors.length).toBeGreaterThanOrEqual(3);
-    expect(result.errors.some(e => e.message.includes("Nome"))).toBe(true);
-    expect(result.errors.some(e => e.message.includes("Telefone"))).toBe(true);
-    expect(result.errors.some(e => e.message.includes("mínimo"))).toBe(true);
-    expect(result.errors.some(e => e.message.includes("Tipo"))).toBe(true);
+    expect(result.errors.some((e) => e.message.includes("Nome"))).toBe(true);
+    expect(result.errors.some((e) => e.message.includes("Telefone"))).toBe(true);
+    expect(result.errors.some((e) => e.message.includes("mínimo"))).toBe(true);
+    expect(result.errors.some((e) => e.message.includes("Tipo"))).toBe(true);
   });
 
   it("handles empty or malformed CSV gracefully", () => {

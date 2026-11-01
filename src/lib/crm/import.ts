@@ -16,16 +16,30 @@ export function parseLeadCSV(csvText: string, defaultOwnerId: string): ImportLea
     return { leads, errors: [{ row: 0, message: "Arquivo CSV vazio." }] };
   }
 
-  const lines = csvText.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n").filter((l) => l.trim().length > 0);
+  const lines = csvText
+    .replace(/\r\n/g, "\n")
+    .replace(/\r/g, "\n")
+    .split("\n")
+    .filter((l) => l.trim().length > 0);
 
   if (lines.length < 2) {
-    return { leads, errors: [{ row: 0, message: "O arquivo CSV precisa de uma linha de cabeçalho e ao menos uma linha de dados." }] };
+    return {
+      leads,
+      errors: [
+        {
+          row: 0,
+          message: "O arquivo CSV precisa de uma linha de cabeçalho e ao menos uma linha de dados.",
+        },
+      ],
+    };
   }
 
   const headerLine = lines[0]!;
   const delimiter = headerLine.includes(";") ? ";" : ",";
 
-  const headers = headerLine.split(delimiter).map((h) => h.trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""));
+  const headers = headerLine
+    .split(delimiter)
+    .map((h) => h.trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""));
 
   const getColIndex = (candidates: string[]) => {
     for (const c of candidates) {
@@ -47,13 +61,19 @@ export function parseLeadCSV(csvText: string, defaultOwnerId: string): ImportLea
   const idxBudgetMax = getColIndex(["orcamentomax", "valormax", "precomax", "orcamento"]);
   const idxBedrooms = getColIndex(["quartos", "dormitorios", "bedrooms"]);
   const idxNeighborhoods = getColIndex(["bairros", "bairro", "regiao", "neighborhoods"]);
+  const idxCities = getColIndex(["cidades", "cidade", "cities", "city"]);
   const idxSource = getColIndex(["origem", "source", "canal"]);
   const idxStage = getColIndex(["etapa", "stage", "status"]);
 
   if (idxName === -1 || idxPhone === -1) {
     return {
       leads,
-      errors: [{ row: 1, message: "Cabeçalho inválido: colunas obrigatórias 'Nome' e 'Telefone' não encontradas." }],
+      errors: [
+        {
+          row: 1,
+          message: "Cabeçalho inválido: colunas obrigatórias 'Nome' e 'Telefone' não encontradas.",
+        },
+      ],
     };
   }
 
@@ -66,12 +86,15 @@ export function parseLeadCSV(csvText: string, defaultOwnerId: string): ImportLea
     const rawPhone = cols[idxPhone]?.trim() ?? "";
     const email = cols[idxEmail]?.trim() ?? "";
     const typeStr = cols[idxType]?.trim() ?? "Apartamento";
-    const minStr = idxBudgetMin !== -1 ? cols[idxBudgetMin]?.trim() ?? "" : "";
-    const maxStr = idxBudgetMax !== -1 ? cols[idxBudgetMax]?.trim() ?? "" : "";
-    const bedStr = idxBedrooms !== -1 ? cols[idxBedrooms]?.trim() ?? "1" : "1";
-    const neighborhoodsStr = idxNeighborhoods !== -1 ? cols[idxNeighborhoods]?.trim() ?? "" : "";
-    const sourceStr = idxSource !== -1 ? cols[idxSource]?.trim() ?? "Importação CSV" : "Importação CSV";
-    const stageStr = idxStage !== -1 ? (cols[idxStage]?.trim().toLowerCase() ?? "novo") as StageId : "novo";
+    const minStr = idxBudgetMin !== -1 ? (cols[idxBudgetMin]?.trim() ?? "") : "";
+    const maxStr = idxBudgetMax !== -1 ? (cols[idxBudgetMax]?.trim() ?? "") : "";
+    const bedStr = idxBedrooms !== -1 ? (cols[idxBedrooms]?.trim() ?? "1") : "1";
+    const neighborhoodsStr = idxNeighborhoods !== -1 ? (cols[idxNeighborhoods]?.trim() ?? "") : "";
+    const citiesStr = idxCities !== -1 ? (cols[idxCities]?.trim() ?? "") : "";
+    const sourceStr =
+      idxSource !== -1 ? (cols[idxSource]?.trim() ?? "Importação CSV") : "Importação CSV";
+    const stageStr =
+      idxStage !== -1 ? ((cols[idxStage]?.trim().toLowerCase() ?? "novo") as StageId) : "novo";
 
     const rowErrors: string[] = [];
 
@@ -84,8 +107,8 @@ export function parseLeadCSV(csvText: string, defaultOwnerId: string): ImportLea
       rowErrors.push(`Telefone inválido ('${rawPhone}').`);
     }
 
-    const budgetMin = minStr ? (Number(minStr.replace(/\D/g, "")) || 0) : 0;
-    const budgetMax = maxStr ? (Number(maxStr.replace(/\D/g, "")) || 0) : 0;
+    const budgetMin = minStr ? Number(minStr.replace(/\D/g, "")) || 0 : 0;
+    const budgetMax = maxStr ? Number(maxStr.replace(/\D/g, "")) || 0 : 0;
 
     if (budgetMin > 0 && budgetMax > 0 && budgetMin > budgetMax) {
       rowErrors.push("Orçamento mínimo não pode ser maior que o máximo.");
@@ -103,7 +126,10 @@ export function parseLeadCSV(csvText: string, defaultOwnerId: string): ImportLea
     const validBedrooms = isNaN(bedrooms) || bedrooms < 0 ? 1 : bedrooms;
 
     const neighborhoods = neighborhoodsStr
-      ? neighborhoodsStr.split(/[;,]/).map((n) => n.trim()).filter(Boolean)
+      ? neighborhoodsStr
+          .split(/[;,]/)
+          .map((n) => n.trim())
+          .filter(Boolean)
       : ["Pinheiros"];
 
     const stage: StageId = VALID_STAGES.includes(stageStr) ? stageStr : "novo";

@@ -146,6 +146,7 @@ export const submitInterest = createServerFn({ method: "POST" })
       budget_max: Math.round(Number(p.price) * 1.1),
       bedrooms: p.bedrooms,
       neighborhoods: [p.neighborhood],
+      cities: [p.city],
       interest_property_id: p.id,
       source: "Página pública",
       last_contact_at: now,

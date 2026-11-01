@@ -34,11 +34,15 @@ import {
 import { WhatsAppIcon } from "./WhatsAppIcon";
 import { ConfirmDelete } from "./ConfirmDelete";
 import { timeAgo } from "./LeadCard";
+import { Label } from "@/components/ui/label";
 import {
+  NEIGHBORHOODS,
+  PROPERTY_TYPES,
   STAGES,
   brl,
   contextualMessage,
   formatPhone,
+  normalizePhone,
   propertySheet,
   smartMatch,
   stageLabel,
@@ -47,7 +51,7 @@ import {
 import { useCrm } from "@/lib/crm/store";
 import { img } from "@/lib/crm/images";
 import { shareLink } from "@/lib/crm/share";
-import type { InteractionKind, Lead, StageId } from "@/lib/crm/types";
+import type { InteractionKind, Lead, PropertyType, StageId } from "@/lib/crm/types";
 import { cn } from "@/lib/utils";
 
 const KIND_META: Record<InteractionKind, { label: string; icon: typeof StickyNote }> = {
@@ -75,7 +79,18 @@ export function LeadDrawer({ leadId, onClose }: { leadId: string | null; onClose
 }
 
 function LeadDetails({ lead }: { lead: Lead }) {
-  const { brokerById, properties, moveLead, addInteraction, viewer, deleteLead } = useCrm();
+  const { brokerById, properties, moveLead, addInteraction, viewer, deleteLead, updateLead } = useCrm();
+  const [editing, setEditing] = useState(false);
+  const [form, setForm] = useState({
+    name: lead.name,
+    phone: lead.phone,
+    email: lead.email,
+    propertyType: lead.propertyType,
+    budgetMin: String(lead.budgetMin),
+    budgetMax: String(lead.budgetMax),
+    bedrooms: String(lead.bedrooms),
+    neighborhoods: lead.neighborhoods,
+  });
   const owner = brokerById(lead.ownerId);
   const interest = properties.find((p) => p.id === lead.interestPropertyId);
   const matches = smartMatch(lead, properties);
@@ -85,6 +100,38 @@ function LeadDetails({ lead }: { lead: Lead }) {
     .map((p) => p[0])
     .slice(0, 2)
     .join("");
+
+  async function handleSave(e: React.FormEvent) {
+    e.preventDefault();
+    const min = Number(form.budgetMin.replace(/\D/g, "")) || 0;
+    const max = Number(form.budgetMax.replace(/\D/g, "")) || 0;
+    if (!form.name.trim() || form.phone.replace(/\D/g, "").length < 10) {
+      toast.error("Informe nome e telefone com DDD válidos");
+      return;
+    }
+    if (!max || min > max) {
+      toast.error("Confira a faixa de orçamento");
+      return;
+    }
+    if (form.neighborhoods.length === 0) {
+      toast.error("Escolha ao menos um bairro");
+      return;
+    }
+    const success = await updateLead(lead.id, {
+      name: form.name.trim(),
+      phone: normalizePhone(form.phone),
+      email: form.email.trim(),
+      propertyType: form.propertyType,
+      budgetMin: min,
+      budgetMax: max,
+      bedrooms: Number(form.bedrooms) || 1,
+      neighborhoods: form.neighborhoods,
+    });
+    if (success) {
+      toast.success("Lead atualizado");
+      setEditing(false);
+    }
+  }
 
   return (
     <div className="flex min-h-full flex-col">
@@ -178,24 +225,177 @@ function LeadDetails({ lead }: { lead: Lead }) {
         </TabsList>
 
         <TabsContent value="profile" className="mt-5 space-y-5">
-          <Section title="Dados de contato">
-            <InfoRow icon={Phone} label="Telefone" value={formatPhone(lead.phone)} />
-            <InfoRow icon={Mail} label="E-mail" value={lead.email} />
-          </Section>
-          <Section title="Perfil de busca">
-            <InfoRow icon={Home} label="Tipo" value={lead.propertyType} />
-            <InfoRow
-              icon={Wallet}
-              label="Orçamento"
-              value={`${brl(lead.budgetMin)} a ${brl(lead.budgetMax)}`}
-            />
-            <InfoRow icon={BedDouble} label="Quartos" value={`${lead.bedrooms} ou mais`} />
-            <InfoRow icon={MapPin} label="Bairros" value={lead.neighborhoods.join(", ")} />
-          </Section>
-          {interest && (
-            <Section title="Imóvel de interesse">
-              <PropertyMini propertyId={interest.id} />
-            </Section>
+          <div className="flex items-center justify-between">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+              {editing ? "Editando dados e perfil" : "Informações do lead"}
+            </h3>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 gap-1.5 text-xs"
+              onClick={() => {
+                if (!editing) {
+                  setForm({
+                    name: lead.name,
+                    phone: lead.phone,
+                    email: lead.email,
+                    propertyType: lead.propertyType,
+                    budgetMin: String(lead.budgetMin),
+                    budgetMax: String(lead.budgetMax),
+                    bedrooms: String(lead.bedrooms),
+                    neighborhoods: lead.neighborhoods,
+                  });
+                }
+                setEditing(!editing);
+              }}
+            >
+              {editing ? "Cancelar" : "Editar"}
+            </Button>
+          </div>
+
+          {editing ? (
+            <form onSubmit={handleSave} className="space-y-4 rounded-2xl border bg-card p-4">
+              <div className="grid gap-1.5">
+                <Label htmlFor="edit-name">Nome</Label>
+                <Input
+                  id="edit-name"
+                  value={form.name}
+                  onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                />
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-1.5">
+                  <Label htmlFor="edit-phone">WhatsApp</Label>
+                  <Input
+                    id="edit-phone"
+                    value={form.phone}
+                    onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+                  />
+                </div>
+                <div className="grid gap-1.5">
+                  <Label htmlFor="edit-email">E-mail</Label>
+                  <Input
+                    id="edit-email"
+                    type="email"
+                    value={form.email}
+                    onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                  />
+                </div>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-1.5">
+                  <Label>Tipo de imóvel</Label>
+                  <Select
+                    value={form.propertyType}
+                    onValueChange={(v) => setForm((f) => ({ ...f, propertyType: v as PropertyType }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PROPERTY_TYPES.map((t) => (
+                        <SelectItem key={t} value={t}>
+                          {t}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-1.5">
+                  <Label>Quartos (mín.)</Label>
+                  <Select
+                    value={form.bedrooms}
+                    onValueChange={(v) => setForm((f) => ({ ...f, bedrooms: v }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {["1", "2", "3", "4"].map((n) => (
+                        <SelectItem key={n} value={n}>
+                          {n}+
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-1.5">
+                  <Label htmlFor="edit-min">Orçamento mín. (R$)</Label>
+                  <Input
+                    id="edit-min"
+                    inputMode="numeric"
+                    value={form.budgetMin}
+                    onChange={(e) => setForm((f) => ({ ...f, budgetMin: e.target.value }))}
+                  />
+                </div>
+                <div className="grid gap-1.5">
+                  <Label htmlFor="edit-max">Orçamento máx. (R$)</Label>
+                  <Input
+                    id="edit-max"
+                    inputMode="numeric"
+                    value={form.budgetMax}
+                    onChange={(e) => setForm((f) => ({ ...f, budgetMax: e.target.value }))}
+                  />
+                </div>
+              </div>
+              <div className="grid gap-1.5">
+                <Label>Bairros de interesse</Label>
+                <div className="flex flex-wrap gap-1.5">
+                  {NEIGHBORHOODS.map((n) => {
+                    const on = form.neighborhoods.includes(n);
+                    return (
+                      <button
+                        type="button"
+                        key={n}
+                        onClick={() =>
+                          setForm((f) => ({
+                            ...f,
+                            neighborhoods: on
+                              ? f.neighborhoods.filter((x) => x !== n)
+                              : [...f.neighborhoods, n],
+                          }))
+                        }
+                        className={cn(
+                          "rounded-lg px-2.5 py-1 text-xs font-semibold transition",
+                          on
+                            ? "bg-primary text-primary-foreground shadow-sm"
+                            : "bg-muted text-muted-foreground hover:bg-muted/80",
+                        )}
+                      >
+                        {n}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <Button type="submit" className="w-full">
+                Salvar alterações
+              </Button>
+            </form>
+          ) : (
+            <>
+              <Section title="Dados de contato">
+                <InfoRow icon={Phone} label="Telefone" value={formatPhone(lead.phone)} />
+                <InfoRow icon={Mail} label="E-mail" value={lead.email} />
+              </Section>
+              <Section title="Perfil de busca">
+                <InfoRow icon={Home} label="Tipo" value={lead.propertyType} />
+                <InfoRow
+                  icon={Wallet}
+                  label="Orçamento"
+                  value={`${brl(lead.budgetMin)} a ${brl(lead.budgetMax)}`}
+                />
+                <InfoRow icon={BedDouble} label="Quartos" value={`${lead.bedrooms} ou mais`} />
+                <InfoRow icon={MapPin} label="Bairros" value={lead.neighborhoods.join(", ")} />
+              </Section>
+              {interest && (
+                <Section title="Imóvel de interesse">
+                  <PropertyMini propertyId={interest.id} />
+                </Section>
+              )}
+            </>
           )}
         </TabsContent>
 

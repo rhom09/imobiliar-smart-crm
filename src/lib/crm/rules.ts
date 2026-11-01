@@ -11,15 +11,24 @@ export const STAGES: { id: StageId; label: string; short: string; color: string 
 
 export const OPEN_STAGES: StageId[] = ["novo", "contato", "visita", "proposta"];
 
+export const CITIES = [
+  "São Pedro",
+  "Águas de São Pedro",
+  "Santa Maria da Serra",
+  "Charqueada",
+  "Piracicaba",
+  "Torrinha",
+];
+
 export const NEIGHBORHOODS = [
-  "Pinheiros",
-  "Vila Madalena",
-  "Moema",
-  "Itaim Bibi",
-  "Jardins",
-  "Perdizes",
-  "Vila Mariana",
-  "Brooklin",
+  "Centro",
+  "Vila Nova",
+  "São Dimas",
+  "Estância",
+  "Jardim Italcam",
+  "Recanto das Aguas",
+  "Porto",
+  "Algodoal",
 ];
 
 export const PROPERTY_TYPES = [
@@ -29,7 +38,16 @@ export const PROPERTY_TYPES = [
   "Studio",
   "Sobrado",
   "Comercial",
+  "Terreno",
+  "Chácara",
+  "Sítio",
+  "Galpão",
+  "Loja",
 ] as const;
+
+export function normalizeText(s: string) {
+  return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim().replace(/\s+/g, " ");
+}
 
 export function stageLabel(id: StageId) {
   return STAGES.find((s) => s.id === id)?.label ?? id;
@@ -55,20 +73,41 @@ export type MatchResult = {
 export const BUDGET_TOLERANCE = 0.1;
 
 /**
- * Smart Match: cross-references budget, property type and neighborhood.
- * Weights: type 40, budget 40, neighborhood 20. A property is compatible when it
+ * Smart Match: cross-references budget, property type, city and neighborhood.
+ * Weights: type 40, budget 40, neighborhood/city 20. A property is compatible when it
  * scores at least 60 (i.e. it must hit budget or type plus one other criterion)
  * and is not sold. Results are sorted by score, then price closeness.
  */
 export function smartMatch(lead: Lead, properties: Property[]): MatchResult[] {
   const target = (lead.budgetMin + lead.budgetMax) / 2;
+  const leadCitiesNorm = (lead.cities ?? []).map(normalizeText);
+  const leadHoodsNorm = (lead.neighborhoods ?? []).map(normalizeText);
+
   return properties
-    .filter((p) => p.status !== "vendido")
+    .filter((p) => {
+      if (p.status === "vendido") return false;
+      if (leadCitiesNorm.length > 0) {
+        if (!leadCitiesNorm.includes(normalizeText(p.city))) return false;
+      }
+      return true;
+    })
     .map((p) => {
       const type = p.type === lead.propertyType;
       const budget =
         p.price <= lead.budgetMax * (1 + BUDGET_TOLERANCE) && p.price >= lead.budgetMin * 0.8;
-      const neighborhood = lead.neighborhoods.includes(p.neighborhood);
+
+      const pHoodNorm = normalizeText(p.neighborhood);
+      const pCityNorm = normalizeText(p.city);
+
+      let neighborhood = false;
+      if (leadHoodsNorm.length > 0) {
+        neighborhood = leadHoodsNorm.includes(pHoodNorm);
+      } else if (leadCitiesNorm.length > 0) {
+        neighborhood = leadCitiesNorm.includes(pCityNorm);
+      } else {
+        neighborhood = false;
+      }
+
       const score = (type ? 40 : 0) + (budget ? 40 : 0) + (neighborhood ? 20 : 0);
       return { property: p, score, reasons: { type, budget, neighborhood } };
     })
@@ -114,9 +153,10 @@ export function waLink(phone: string, text: string) {
 export function contextualMessage(lead: Lead, broker: Broker | undefined, property?: Property) {
   const first = lead.name.split(" ")[0];
   const me = broker ? `${broker.name.split(" ")[0]}, da Morada Imóveis` : "da Morada Imóveis";
+  const locationFallback = lead.neighborhoods[0] ?? lead.cities[0] ?? "São Pedro";
   const imovel = property
     ? `o ${property.title} em ${property.neighborhood}`
-    : `${article(lead.propertyType)} ${lead.propertyType.toLowerCase()} em ${lead.neighborhoods[0] ?? "São Paulo"}`;
+    : `${article(lead.propertyType)} ${lead.propertyType.toLowerCase()} em ${locationFallback}`;
   switch (lead.stage) {
     case "novo":
       return `Olá, ${first}! Aqui é ${me}. Vi seu interesse em ${imovel} e separei algumas opções dentro de ${brlCompact(lead.budgetMax)}. Posso te enviar?`;
@@ -134,7 +174,7 @@ export function contextualMessage(lead: Lead, broker: Broker | undefined, proper
 }
 
 function article(type: string) {
-  return type === "Casa" || type === "Cobertura" ? "uma" : "um";
+  return type === "Casa" || type === "Cobertura" || type === "Chácara" ? "uma" : "um";
 }
 
 export function propertySheet(p: Property, url: string) {

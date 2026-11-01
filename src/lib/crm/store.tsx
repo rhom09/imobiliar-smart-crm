@@ -53,7 +53,14 @@ type Ctx = {
   addLead: (l: Omit<Lead, "id" | "createdAt" | "lastContactAt" | "interactions">) => Lead;
   addProperty: (p: Omit<Property, "id" | "code" | "createdAt">) => Property;
   updateProperty: (id: string, p: Partial<Omit<Property, "id" | "code" | "createdAt">>) => void;
-  updateProfile: (id: string, data: { name?: string; phone?: string; creci?: string }) => Promise<boolean>;
+  updateLead: (
+    id: string,
+    data: Partial<Omit<Lead, "id" | "createdAt" | "lastContactAt" | "interactions">>,
+  ) => Promise<boolean>;
+  updateProfile: (
+    id: string,
+    data: { name?: string; phone?: string; creci?: string },
+  ) => Promise<boolean>;
   updateAgency: (data: Partial<Agency>) => Promise<boolean>;
   updateTemplate: (stage: StageId, text: string) => Promise<boolean>;
   /** Resolve false when the database refused (e.g. no permission). */
@@ -109,7 +116,10 @@ export function CrmProvider({ children }: { children: ReactNode }) {
       supabase.from("properties").select("*").order("created_at", { ascending: false }),
       supabase.from("leads").select("*").order("created_at", { ascending: false }),
       supabase.from("interactions").select("*").order("at", { ascending: false }),
-      supabase.from("agency" as never).select("*").maybeSingle(),
+      supabase
+        .from("agency" as never)
+        .select("*")
+        .maybeSingle(),
       supabase.from("whatsapp_templates" as never).select("*"),
     ]);
     const err = profiles.error || roles.error || props.error || leadRows.error || inter.error;
@@ -156,12 +166,17 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         if (saved) {
           setAgency(JSON.parse(saved));
         }
-      } catch {}
+      } catch {
+        // ignore
+      }
     }
 
     if (templatesRes.data) {
       const templates: Record<StageId, string> = { ...whatsappTemplates };
-      for (const t of (templatesRes.data as unknown as Array<{ stage_id?: StageId; template_text?: string }>)) {
+      for (const t of templatesRes.data as unknown as Array<{
+        stage_id?: StageId;
+        template_text?: string;
+      }>) {
         if (t.stage_id && t.template_text) {
           templates[t.stage_id] = t.template_text;
         }
@@ -227,6 +242,7 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         budgetMax: Number(l.budget_max),
         bedrooms: l.bedrooms,
         neighborhoods: l.neighborhoods,
+        cities: l.cities ?? [],
         interestPropertyId: l.interest_property_id ?? undefined,
         source: l.source,
         createdAt: l.created_at,
@@ -247,24 +263,16 @@ export function CrmProvider({ children }: { children: ReactNode }) {
     if (!me) return;
     const channel = supabase
       .channel("crm-realtime")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "leads" },
-        (payload) => {
-          const newLead = payload.new as { name?: string; source?: string };
-          toast.success("Novo lead recebido!", {
-            description: `${newLead.name || "Novo cliente"} cadastrado no funil.`,
-          });
-          void reload();
-        },
-      )
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "leads" },
-        () => {
-          void reload();
-        },
-      )
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "leads" }, (payload) => {
+        const newLead = payload.new as { name?: string; source?: string };
+        toast.success("Novo lead recebido!", {
+          description: `${newLead.name || "Novo cliente"} cadastrado no funil.`,
+        });
+        void reload();
+      })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "leads" }, () => {
+        void reload();
+      })
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "properties" },
@@ -276,13 +284,9 @@ export function CrmProvider({ children }: { children: ReactNode }) {
           void reload();
         },
       )
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "properties" },
-        () => {
-          void reload();
-        },
-      )
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "properties" }, () => {
+        void reload();
+      })
       .subscribe();
 
     return () => {
@@ -387,6 +391,7 @@ export function CrmProvider({ children }: { children: ReactNode }) {
             budget_max: lead.budgetMax,
             bedrooms: lead.bedrooms,
             neighborhoods: lead.neighborhoods,
+            cities: lead.cities,
             interest_property_id: lead.interestPropertyId ?? null,
             source: lead.source,
           })
@@ -445,6 +450,26 @@ export function CrmProvider({ children }: { children: ReactNode }) {
           .eq("id", id)
           .then(({ error }) => error && fail(error));
       },
+      updateLead: async (id, data) => {
+        setLeads((ls) => ls.map((l) => (l.id === id ? { ...l, ...data } : l)));
+        const row: Record<string, unknown> = {};
+        const map: Record<string, string> = {
+          ownerId: "owner_id",
+          propertyType: "property_type",
+          budgetMin: "budget_min",
+          budgetMax: "budget_max",
+          interestPropertyId: "interest_property_id",
+        };
+        for (const [k, v] of Object.entries(data)) {
+          row[map[k] ?? k] = v === undefined ? null : v;
+        }
+        const { error } = await supabase.from("leads").update(row as never).eq("id", id);
+        if (error) {
+          fail(error);
+          return false;
+        }
+        return true;
+      },
       updateProfile: async (id, data) => {
         const updatePayload: Record<string, unknown> = {};
         if (data.name !== undefined) updatePayload["name"] = data.name;
@@ -479,10 +504,15 @@ export function CrmProvider({ children }: { children: ReactNode }) {
         setAgency(updated);
         try {
           localStorage.setItem("morada_agency", JSON.stringify(updated));
-        } catch {}
+        } catch {
+          // ignore
+        }
 
         try {
-          const { data: existing } = await supabase.from("agency" as never).select("id").maybeSingle();
+          const { data: existing } = await supabase
+            .from("agency" as never)
+            .select("id")
+            .maybeSingle();
           const row = {
             name: updated.name,
             creci: updated.creci,
@@ -494,7 +524,10 @@ export function CrmProvider({ children }: { children: ReactNode }) {
           };
           const existingRecord = existing as { id: string } | null;
           if (existingRecord) {
-            await supabase.from("agency" as never).update(row as never).eq("id", existingRecord.id);
+            await supabase
+              .from("agency" as never)
+              .update(row as never)
+              .eq("id", existingRecord.id);
           } else {
             await supabase.from("agency" as never).insert(row as never);
           }

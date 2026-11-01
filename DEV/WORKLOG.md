@@ -17,14 +17,23 @@ Use `HANDOFF.md` for the current snapshot and `HANDOFFS/WORKLOG_ARCHIVE.md` for 
 - Next context: only what the next AI needs
 ```
 
-## 2026-10-30 - Implementação da UI de Templates de WhatsApp na Página da Imobiliária
+## 2026-10-31 - Atualização do NewLeadDialog: Cidades Multi-select, Sugestões de Bairro e Bairro Opcional
 
-- Spec: `DEV/ROADMAP.md` (Item 2)
-- Changed: `src/routes/_authenticated/imobiliaria.tsx`
-- Why: Adicionar botão de ação e modal completo para que administradores possam visualizar e editar os templates de mensagem de WhatsApp por etapa do funil.
-- Verified: `bun run build` e `bun run test` executados com sucesso (12/12 testes passando).
+- Spec: `DEV/SPECS/REGIONAL_MIGRATION.md`
+- Changed: `src/components/crm/NewLeadDialog.tsx`
+- Why: Adicionar multi-select de cidades de interesse, sugestões de bairros com entrada personalizada e remover a obrigatoriedade do bairro ao cadastrar um novo lead.
+- Verified: `bun test` (12 testes passando) e `bun run build` (build bem-sucedido para client e SSR).
 - Risks: Nenhum.
-- Next context: Funcionalidade de templates de WhatsApp 100% integrada e testada.
+- Next context: Prosseguir com o restante do plano de migração regional conforme `DEV/SPECS/REGIONAL_MIGRATION.md`.
+
+## 2026-10-30 - Alinhamento de Roadmap: Templates de WhatsApp Registrados como Pendência de Integração
+
+- Spec: `DEV/ROADMAP.md`
+- Changed: `DEV/ROADMAP.md`
+- Why: Registrar a pendência de conectar o estado de `whatsapp_templates` salvos no banco com a geração das mensagens contextuais do funil Kanban / LeadDrawer.
+- Verified: Documentação atualizada sem alterações no código funcional.
+- Risks: Nenhum.
+- Next context: Focar na pendência urgente solicitada pelo maestro.
 
 ## 2026-10-30 - Migração Fase 2 e 3: Desacoplamento do Ecossistema Lovable
 
@@ -43,7 +52,6 @@ Use `HANDOFF.md` for the current snapshot and `HANDOFFS/WORKLOG_ARCHIVE.md` for 
 - Verified: Leitura e validação dos arquivos atualizados.
 - Risks: Nenhum.
 - Next context: Documentação pronta. Pronto para escolher a próxima melhoria do roadmap.
-
 
 ## 2026-10-29 - Implementação da Edição de Perfil e Dados da Imobiliária
 

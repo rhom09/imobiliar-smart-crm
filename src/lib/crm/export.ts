@@ -9,6 +9,8 @@ export function exportLeadsToCSV(leads: Lead[]) {
     "Tipo de Imóvel",
     "Orçamento Mínimo",
     "Orçamento Máximo",
+    "Cidades",
+    "Bairros",
     "Data de Criação",
   ];
 
@@ -20,6 +22,8 @@ export function exportLeadsToCSV(leads: Lead[]) {
     `"${lead.propertyType}"`,
     lead.budgetMin,
     lead.budgetMax,
+    `"${(lead.cities ?? []).join(";")}"`,
+    `"${(lead.neighborhoods ?? []).join(";")}"`,
     lead.createdAt,
   ]);
 

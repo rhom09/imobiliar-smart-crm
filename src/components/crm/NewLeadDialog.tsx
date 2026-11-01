@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { NEIGHBORHOODS, PROPERTY_TYPES, normalizePhone } from "@/lib/crm/rules";
+import { CITIES, NEIGHBORHOODS, PROPERTY_TYPES, normalizePhone } from "@/lib/crm/rules";
 import { useCrm } from "@/lib/crm/store";
 import type { PropertyType } from "@/lib/crm/types";
 import { cn } from "@/lib/utils";
@@ -35,10 +35,13 @@ export function NewLeadDialog({ onCreated }: { onCreated?: (id: string) => void 
     budgetMin: "",
     budgetMax: "",
     bedrooms: "2",
+    cities: [] as string[],
     neighborhoods: [] as string[],
     source: "WhatsApp",
     ownerId: me?.id ?? "",
   });
+  const [customNeighborhood, setCustomNeighborhood] = useState("");
+
   const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
 
@@ -54,10 +57,6 @@ export function NewLeadDialog({ onCreated }: { onCreated?: (id: string) => void 
       toast.error("Confira a faixa de orçamento");
       return;
     }
-    if (form.neighborhoods.length === 0) {
-      toast.error("Escolha ao menos um bairro");
-      return;
-    }
     const lead = addLead({
       name: form.name.trim(),
       phone: normalizePhone(form.phone),
@@ -66,6 +65,7 @@ export function NewLeadDialog({ onCreated }: { onCreated?: (id: string) => void 
       budgetMin: min,
       budgetMax: max,
       bedrooms: Number(form.bedrooms),
+      cities: form.cities,
       neighborhoods: form.neighborhoods,
       source: form.source,
       stage: "novo",
@@ -81,8 +81,10 @@ export function NewLeadDialog({ onCreated }: { onCreated?: (id: string) => void 
       email: "",
       budgetMin: "",
       budgetMax: "",
+      cities: [],
       neighborhoods: [],
     }));
+    setCustomNeighborhood("");
   }
 
   return (
@@ -186,18 +188,18 @@ export function NewLeadDialog({ onCreated }: { onCreated?: (id: string) => void 
             </div>
           </div>
           <div className="grid gap-1.5">
-            <Label>Bairros de interesse</Label>
+            <Label>Cidades de interesse</Label>
             <div className="flex flex-wrap gap-1.5">
-              {NEIGHBORHOODS.map((n) => {
-                const on = form.neighborhoods.includes(n);
+              {CITIES.map((c) => {
+                const on = form.cities.includes(c);
                 return (
                   <button
                     type="button"
-                    key={n}
+                    key={c}
                     onClick={() =>
                       set(
-                        "neighborhoods",
-                        on ? form.neighborhoods.filter((x) => x !== n) : [...form.neighborhoods, n],
+                        "cities",
+                        on ? form.cities.filter((x) => x !== c) : [...form.cities, c],
                       )
                     }
                     className={cn(
@@ -207,10 +209,96 @@ export function NewLeadDialog({ onCreated }: { onCreated?: (id: string) => void 
                         : "bg-card hover:border-primary/40",
                     )}
                   >
-                    {n}
+                    {c}
                   </button>
                 );
               })}
+            </div>
+          </div>
+          <div className="grid gap-1.5">
+            <Label>Bairros de interesse (opcional)</Label>
+            <div className="flex gap-2">
+              <Input
+                value={customNeighborhood}
+                onChange={(e) => setCustomNeighborhood(e.target.value)}
+                placeholder="Digite um bairro e pressione Enter..."
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    const trimmed = customNeighborhood.trim();
+                    if (trimmed && !form.neighborhoods.includes(trimmed)) {
+                      set("neighborhoods", [...form.neighborhoods, trimmed]);
+                      setCustomNeighborhood("");
+                    }
+                  }
+                }}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  const trimmed = customNeighborhood.trim();
+                  if (trimmed && !form.neighborhoods.includes(trimmed)) {
+                    set("neighborhoods", [...form.neighborhoods, trimmed]);
+                    setCustomNeighborhood("");
+                  }
+                }}
+              >
+                Adicionar
+              </Button>
+            </div>
+            {form.neighborhoods.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mt-1">
+                {form.neighborhoods.map((n) => (
+                  <span
+                    key={n}
+                    className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary border border-primary/20 px-2.5 py-0.5 text-xs font-medium"
+                  >
+                    {n}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        set(
+                          "neighborhoods",
+                          form.neighborhoods.filter((x) => x !== n),
+                        )
+                      }
+                      className="hover:text-destructive rounded-full p-0.5"
+                      aria-label={`Remover ${n}`}
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+            <div className="mt-1">
+              <p className="text-[11px] text-muted-foreground mb-1">Sugestões de bairros:</p>
+              <div className="flex flex-wrap gap-1.5">
+                {NEIGHBORHOODS.map((n) => {
+                  const on = form.neighborhoods.includes(n);
+                  return (
+                    <button
+                      type="button"
+                      key={n}
+                      onClick={() =>
+                        set(
+                          "neighborhoods",
+                          on ? form.neighborhoods.filter((x) => x !== n) : [...form.neighborhoods, n],
+                        )
+                      }
+                      className={cn(
+                        "rounded-full border px-2.5 py-0.5 text-xs transition",
+                        on
+                          ? "border-primary bg-primary/20 text-primary font-medium"
+                          : "bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground",
+                      )}
+                    >
+                      {on ? `✓ ${n}` : `+ ${n}`}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
