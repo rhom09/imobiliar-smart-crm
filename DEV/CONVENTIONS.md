@@ -27,6 +27,7 @@
 - Utilitário de classes: `cn()` de `src/lib/utils.ts`.
 - Mobile-first: o corretor usa na rua; teste layouts em tela pequena.
 - Formatação: Prettier (`.prettierrc`); rode `lint` e `test` antes de concluir uma tarefa.
+- **Sanitização de CSV:** Sempre sanitizar campos textuais ao exportar dados para CSV para evitar injeção de fórmulas (ex: valores começando com `=`, `+`, `-`, `@`).
 
 ## Não fazer
 
