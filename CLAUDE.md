@@ -64,3 +64,8 @@ Convenção: `users/$id.tsx` → `/users/:id` (apenas `$`, sem chaves). Não cri
 - `DEV/ENV.md` — variáveis de ambiente e setup local
 
 Leia o doc relevante **antes** de alterar banco, autenticação ou regras de permissão.
+
+## Protocolo Multi-Agente (OpenMausBot)
+- Nunca edite o mesmo arquivo simultaneamente com outro agente.
+- Ao finalizar qualquer alteração, rode `bun run test` e `bun run lint` antes de entregar.
+
